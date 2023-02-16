@@ -9,6 +9,7 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var sportRouter = require('./routes/Sports/sportRoutes');
+var sportTypeRouter = require('./routes/Sports/sportTypeRoutes');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/sports', sportRouter);
+app.use('/api/sportTypes', sportTypeRouter);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

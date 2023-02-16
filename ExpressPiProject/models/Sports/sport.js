@@ -1,13 +1,33 @@
-var mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const TypeSportSchema = require('./typeSportSchema')
 
-var SportSchema = new mongoose.Schema({
-    sportType: String,
-    demoVideo: String,
-    advantages: String,
-    limits: String,
-    slug: String
-})
-const Sport = mongoose.model(
-    "sport", SportSchema
-);
+const Schema = mongoose.Schema;
+
+const SportSchema = new Schema({
+    sportType: {
+        type: TypeSportSchema,
+        required: true,
+    },
+    demoVideo: {
+    type: String,
+    required: true,
+    },
+    advantages: {
+    type: String,
+    required: true,
+    },
+    limits: {
+    type: String,
+    required: true,
+    },
+    slug: {
+    type: String,
+    required: true,
+    },
+}, {
+    timestamps: true,
+});
+
+const Sport = mongoose.model('sport', SportSchema);
+
 module.exports = Sport;
