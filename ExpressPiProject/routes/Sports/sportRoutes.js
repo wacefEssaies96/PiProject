@@ -17,6 +17,6 @@
     router.delete("/:id", sports.deleteSport);
 
     // Update a Sport with id
-    router.put("/:id", sports.updateSports);
+    router.put("/:id", sports.updateSport);
 
     module.exports=router;

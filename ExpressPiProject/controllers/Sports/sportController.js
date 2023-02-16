@@ -1,14 +1,20 @@
 const Sport = require("../../models/Sports/sport");
+const TypeSport = require("../../models/Sports/typeSportModel")
 
 // Create and Save a new Sport
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     // Validate request
     if (!req.body.sportType) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
 
+    let response = await TypeSport.find({ title: req.body.sportType.title });
+    if (response === null) {
+        res.status(404).send({ message: "TypeSport not found!" });
+    }
+    else {
     // Create a Sport
     const newSport = new Sport({
         sportType: req.body.sportType,
@@ -27,9 +33,10 @@ exports.create = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Tutorial."
+                    err.message || "Some error occurred while creating the Sport."
             });
         });
+    }
 };
 
 //get all sports 
@@ -54,7 +61,7 @@ exports.deleteSport = (req, res) => {
 }
 
 //update a sport 
-exports.updateSports = (req, res) => {
+exports.updateSport = (req, res) => {
     Sport.findById(req.params.id)
     .then(sport => {
         sport.sportType = req.body.sportType;
