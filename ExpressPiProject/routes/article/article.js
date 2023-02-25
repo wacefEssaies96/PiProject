@@ -23,4 +23,7 @@ router.get("/find-published", controller.findAllPublished);
 // Retrieve a single Article with id
 router.get("/find/:id", controller.findOne);
 
+// Scrap data from medium
+router.get("/scrap/wired/:subcategory", controller.scrapFromWired);
+
 module.exports = router;

@@ -1,5 +1,8 @@
 const Article = require('../../models/article/article');
 const Category = require('../../models/article/category');
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
+const axios = require('axios')
 
 // Create and Save a new Article
 exports.create = async (req, res) => {
@@ -70,28 +73,36 @@ exports.findOne = (req, res) => {
 };
 
 // Update a article by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
         });
     }
-
-    const id = req.params.id;
-
-    Article.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-        .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot update Article with id=${id}. Maybe Article was not found!`
+    let response = await Category.findOne({ title: req.body.category.title });
+    if (response === null) {
+        res.status(404).send({ message: "Category not found." });
+    }
+    else {
+        if (!await response.subcategory.find(element => element.title == req.body.subcategory.title)) {
+            res.status(404).send({ message: "SubCategory not found." });
+        } else {
+            const id = req.params.id;
+            Article.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+                .then(data => {
+                    if (!data) {
+                        res.status(404).send({
+                            message: `Cannot update Article with id=${id}. Maybe Article was not found!`
+                        });
+                    } else res.send({ message: "Article was updated successfully." });
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: "Error updating Article with id=" + id
+                    });
                 });
-            } else res.send({ message: "Article was updated successfully." });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Article with id=" + id
-            });
-        });
+        }
+    }
 };
 
 // Delete a article with the specified id in the request
@@ -145,3 +156,49 @@ exports.findAllPublished = (req, res) => {
             });
         });
 };
+
+exports.scrapWikipedia = (req, res) => {
+    axios.get("https://en.wikipedia.org/wiki/National_Basketball_Association")
+        .then((response) => {
+            const html = response.data;
+            const $ = cheerio.load(html);
+            let title = $("#firstHeading").text();
+            let teams = [];
+            for (let i = 0; i < 30; i++) {
+                teams.push($('td > b > a', html)[i].attribs.title);
+            }
+            console.log(title);
+            console.log(teams);
+            res.send(teams);
+        })
+}
+exports.scrapFromWired = async (req, res) => {
+
+    const url = `https://www.wired.com/search/?q=${req.params.subcategory}&sort=score+desc`;
+    const articles = [];
+    const response = await axios.get(url)
+    let $ = cheerio.load(response.data);
+    $('.klkoMz.klkoMz.summary-item--has-border').each((i, el) => {
+        const title = $(el).find('h3').text();
+        const excerpt = $(el).find('p').text();
+        const link = $(el).find('a').attr('href');
+
+        articles.push({
+            title: title,
+            excerpt: excerpt,
+            link: link
+        });
+    });
+    
+    const a = await axios.get('https://www.wired.com' + articles[0].link)
+    $ = cheerio.load(a.data)
+    let texts = []
+    $('.paywall').each((i, el) => {
+        const text = $(el).text();
+        if (text.length > 200)
+            texts.push({
+                text: text
+            });
+    });
+    res.send(texts)
+}

@@ -8,7 +8,10 @@ const Article = Mongoose.model(
         content: String,
         status: String,
         slug: String,
-        category: CategorySchema,
+        category: {
+            type: CategorySchema,
+            required: true
+        },
         subcategory: SubCategorySchema
     },{ timestamps: true })
 );
