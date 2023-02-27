@@ -1,4 +1,4 @@
-const sportTypes = require("../../controllers/Sports/typeSportController");
+const sportTypes = require("../../controllers/Sports/sportTypeController");
   
 var express = require('express');
 var router = express.Router();
