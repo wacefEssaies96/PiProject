@@ -20,5 +20,8 @@ router.get("/find-all", controller.findAll);
 // Retrieve a single categorie with id
 router.get("/find/:id", controller.findOne);
 
+// Retrieve a single categorie with title
+router.get("/find/title/:title", controller.findOneBytitle);
+
 
 module.exports = router;

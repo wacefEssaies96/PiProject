@@ -8,6 +8,7 @@ const Article = Mongoose.model(
         content: String,
         status: String,
         slug: String,
+        description: String,
         category: {
             type: CategorySchema,
             required: true

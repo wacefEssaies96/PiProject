@@ -1,5 +1,6 @@
 const Category = require('../../models/article/category');
 const SubCategory = require('../../models/article/subcategory');
+const slug = require('slug');
 
 // Create and Save a new Category
 exports.create = async (req, res) => {
@@ -19,7 +20,7 @@ exports.create = async (req, res) => {
         return;
     }
     //  check subcategories exists or not
-    for (let index = 0; index < allsubcategories.length; index++) {
+    for (let index = 0; index < subcategories.length; index++) {
         let r = await SubCategory.findOne({ title: subcategories[index].title });
         if (r === null) {
             test = false;
@@ -31,7 +32,7 @@ exports.create = async (req, res) => {
         // Create a Category
         const newCategory = new Category({
             title: req.body.title,
-            slug: req.body.slug,
+            slug: slug(req.body.title),
             subcategory: req.body.subcategory
         });
 
@@ -72,7 +73,21 @@ exports.findOne = (req, res) => {
             else res.send(data);
         })
         .catch(err => {
-            res.status(500).send({ message: "Error retrieving Category with id=" + id });
+            res.status(500).send({ message: "Error retrieving Category with id " + id });
+        });
+};
+
+// Find a single Category with an id
+exports.findOneBytitle = (req, res) => {
+    const title = req.params.title;
+    Category.findOne({title: title})
+        .then(data => {
+            if (!data)
+                res.status(404).send({ message: "Not found Category with title " + title });
+            else res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({ message: "Error retrieving Category with title " + title });
         });
 };
 

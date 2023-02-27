@@ -1,13 +1,13 @@
 const Article = require('../../models/article/article');
 const Category = require('../../models/article/category');
-const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const axios = require('axios')
+const axios = require('axios');
+const slug = require('slug');
 
 // Create and Save a new Article
 exports.create = async (req, res) => {
     // Validate request
-    if (!req.body.title) {
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory ) { //|| !req.body.description
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
@@ -24,8 +24,9 @@ exports.create = async (req, res) => {
             const newArticle = new Article({
                 title: req.body.title,
                 content: req.body.content,
-                status: req.body.status,
-                slug: req.body.slug,
+                description: req.body.description,
+                status: 'draft',
+                slug: slug(req.body.title),
                 category: req.body.category,
                 subcategory: req.body.subcategory
             });
@@ -52,8 +53,7 @@ exports.findAll = (req, res) => {
             })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while fetching data."
+                message: err.message || "Some error occurred while fetching data."
             });
         })
 }
@@ -137,8 +137,7 @@ exports.deleteAll = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all Articles."
+                message: err.message || "Some error occurred while removing all Articles."
             });
         });
 };
@@ -151,12 +150,12 @@ exports.findAllPublished = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Articles."
+                message: err.message || "Some error occurred while retrieving Articles."
             });
         });
 };
 
+//  Scrap data from wikipedia
 exports.scrapWikipedia = (req, res) => {
     axios.get("https://en.wikipedia.org/wiki/National_Basketball_Association")
         .then((response) => {
@@ -172,8 +171,9 @@ exports.scrapWikipedia = (req, res) => {
             res.send(teams);
         })
 }
+//  Scrap articles from wired.com
 exports.scrapFromWired = async (req, res) => {
-
+    //  Search articles by subcategory sorted by score
     const url = `https://www.wired.com/search/?q=${req.params.subcategory}&sort=score+desc`;
     const articles = [];
     const response = await axios.get(url)
@@ -182,23 +182,20 @@ exports.scrapFromWired = async (req, res) => {
         const title = $(el).find('h3').text();
         const excerpt = $(el).find('p').text();
         const link = $(el).find('a').attr('href');
-
         articles.push({
             title: title,
             excerpt: excerpt,
             link: link
         });
     });
-    
+    //  Extract texts from the most rated article and send it to next js
     const a = await axios.get('https://www.wired.com' + articles[0].link)
     $ = cheerio.load(a.data)
-    let texts = []
+    let texts = ''
     $('.paywall').each((i, el) => {
         const text = $(el).text();
         if (text.length > 200)
-            texts.push({
-                text: text
-            });
+            texts =  texts + ' '+text
     });
-    res.send(texts)
+    res.send({ text: texts })
 }
