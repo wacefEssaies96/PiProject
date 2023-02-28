@@ -1,7 +1,13 @@
+import DeleteArticle from "@/components/article/deleteArticle";
 import Link from "next/link";
-import { Button, Container, Table } from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
+import { getAllArticles } from "@/services/article";
+import { useState } from "react";
 
 export default function ListArticles({ articles }) {
+  const [list, setList] = useState(articles)
+  const refresh = async () => setList(await getAllArticles())
+
   return (
     <Container>
       <h1>List of Articles</h1>
@@ -17,7 +23,7 @@ export default function ListArticles({ articles }) {
         </thead>
         <tbody>
 
-          {articles.map((article, index) => {
+          {list.map((article, index) => {
             return (
               <tr>
                 <td key={article.title}>{article.title}</td>
@@ -25,7 +31,7 @@ export default function ListArticles({ articles }) {
                 <td key={article.subcategory.title}>{article.subcategory.title}</td>
                 <td key={article._id}>
                   <Link className="btn btn-outline-secondary me-3 ms-3" href={`/article/edit/${article._id}`}>Edit</Link>
-                  <Button variant="outline-danger">Delete</Button>
+                  <DeleteArticle refresh={refresh} id={article._id}></DeleteArticle>
                 </td>
               </tr>
             )
@@ -39,8 +45,7 @@ export default function ListArticles({ articles }) {
 
 export async function getServerSideProps() {
   // Fetching data
-  const res = await fetch(`${process.env.backurl}/api/admin/articles/find-all`);
-  const data = await res.json();
+  const data = await getAllArticles();
   // Passing data to the listArticles Page using props
   return {
     props: {

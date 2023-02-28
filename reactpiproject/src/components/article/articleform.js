@@ -1,6 +1,8 @@
+import { submitArticle } from "@/services/article";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
-import CKeditor from "../layouts/CKeditor";
+import CKeditor from "../layouts/CKeditor"
 
 export default function ArticleForm(props) {
 
@@ -17,6 +19,7 @@ export default function ArticleForm(props) {
     content: "",
     description: ""
   })
+  const router = useRouter()
 
   const fetchData = async (url) => {
     const response = await fetch(url)
@@ -44,35 +47,8 @@ export default function ArticleForm(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const formdata = {
-      title: event.target.title.value,
-      content: data,
-      description: event.target.description.value,
-      category: { title: event.target.category.value },
-      subcategory: { title: event.target.subcategory.value },
-    }
-    const JSONdata = JSON.stringify(formdata)
-    console.log(JSONdata)
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSONdata,
-    }
-    const response =
-      operationMode === 'Create'
-        ? await fetch(`${process.env.backurl}/api/admin/articles/create`, options)
-        : await fetch(`${process.env.backurl}/api/admin/articles/update/${article._id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSONdata,
-        })
-
-    const result = await response.json()
-    alert(`${result.message}`)
+    await submitArticle(event, operationMode, data)
+    router.push('/article/list')
   }
 
   useEffect(() => {
@@ -80,6 +56,7 @@ export default function ArticleForm(props) {
     setEditorLoaded(true)
     if (props.article !== undefined) {
       setArticle(props.article)
+      setData(props.article.content)
       getSubcategories(props.article.category.title)
       setOperationMode('Modify')
     }
@@ -87,10 +64,12 @@ export default function ArticleForm(props) {
 
   return (
     <Container>
+
       <h3>{operationMode}</h3>
       <form onSubmit={handleSubmit}>
         <Stack gap={4}>
           <Form.Group>
+            <input type="hidden" name="id" defaultValue={article._id}></input>
             <Form.Label htmlFor="title">Title</Form.Label>
             <Form.Control defaultValue={article.title} placeholder="Title" type="text" id="title" name="title" required></Form.Control>
           </Form.Group>
