@@ -1,12 +1,13 @@
-import DeleteArticle from "@/components/article/deleteArticle";
+import DeleteArticle from "@/components/article/DeleteArticle";
 import Link from "next/link";
 import { Container, Table } from "react-bootstrap";
-import { getAllArticles } from "@/services/article";
+import { fetchData } from "@/services/article";
 import { useState } from "react";
 
-export default function ListArticles({ articles }) {
+export default function List({ articles }) {
+
   const [list, setList] = useState(articles)
-  const refresh = async () => setList(await getAllArticles())
+  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/admin/articles/find-all`))
 
   return (
     <Container>
@@ -22,10 +23,9 @@ export default function ListArticles({ articles }) {
           </tr>
         </thead>
         <tbody>
-
           {list.map((article, index) => {
             return (
-              <tr>
+              <tr key={index}>
                 <td key={article.title}>{article.title}</td>
                 <td key={article.category.title}>{article.category.title}</td>
                 <td key={article.subcategory.title}>{article.subcategory.title}</td>
@@ -44,9 +44,7 @@ export default function ListArticles({ articles }) {
 }
 
 export async function getServerSideProps() {
-  // Fetching data
-  const data = await getAllArticles();
-  // Passing data to the listArticles Page using props
+  const data = await fetchData(`${process.env.backurl}/api/admin/articles/find-all`);
   return {
     props: {
       articles: data

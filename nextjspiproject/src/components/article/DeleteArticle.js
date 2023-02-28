@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { confirmDeleteOneArticle } from "./alerts";
+import { confirmDeleteOneArticle } from "./Alerts";
 
 export default function DeleteArticle(props) {
     const deleteOneArticle = async () => {

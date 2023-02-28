@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react"
+import { Spinner } from "react-bootstrap";
 
 export default function CKeditor({ change, editorLoaded, name, value }) {
 
@@ -21,11 +22,15 @@ export default function CKeditor({ change, editorLoaded, name, value }) {
                     data={value}
                     onChange={(event, editor) => {
                         const data = editor.getData();
-                        change(()=>data)
+                        change(() => data)
                     }}
                 />
             ) : (
-                <div>Editor loading</div>
+                <div className="text-center">
+                    <Spinner style={{ width: '3rem', height: '3rem' }} animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>
             )}
         </>
     )

@@ -1,11 +1,12 @@
-import { submitArticle } from "@/services/article";
+import { submitArticle, fetchData } from "@/services/article";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
-import CKeditor from "../layouts/CKeditor"
+import SpinnerLoading from "./SpinnerLoading";
+const CKeditor = lazy(() => import('./CKeditor'))
 
 export default function ArticleForm(props) {
-
+  const [isLoading, setIsLoading] = useState(false)
   const [editorLoaded, setEditorLoaded] = useState(false)
   const [data, setData] = useState("");
   const [categories, setCategories] = useState([])
@@ -21,12 +22,6 @@ export default function ArticleForm(props) {
   })
   const router = useRouter()
 
-  const fetchData = async (url) => {
-    const response = await fetch(url)
-    const data = await response.json()
-    return data
-  }
-
   const getSubcategories = async (event) => {
     const param = event.hasOwnProperty('target') ? event.target.value : event
     let response = await fetchData(`${process.env.backurl}/api/admin/categories/find/title/${param}`)
@@ -35,10 +30,12 @@ export default function ArticleForm(props) {
   }
 
   const getRecommendations = async (event) => {
+    setIsLoading(true)
     const param = event.target.value
     article.subcategory.title = param
     const response = await fetchData(`${process.env.backurl}/api/admin/articles/scrap/wired/${param}`)
     setRecommendation(response.text)
+    setIsLoading(false)
   }
 
   const getCategories = async () => {
@@ -64,7 +61,7 @@ export default function ArticleForm(props) {
 
   return (
     <Container>
-
+      {isLoading && <SpinnerLoading></SpinnerLoading>}
       <h3>{operationMode}</h3>
       <form onSubmit={handleSubmit}>
         <Stack gap={4}>

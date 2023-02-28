@@ -1,4 +1,4 @@
-import { success } from "@/components/article/alerts"
+import { success } from "@/components/article/Alerts"
 
 export const deleteArticle = async (id) => {
     const response = await fetch(`${process.env.backurl}/api/admin/articles/delete/${id}`, {
@@ -8,11 +8,11 @@ export const deleteArticle = async (id) => {
     return data
 }
 
-export const getAllArticles = async () => {
-    const res = await fetch(`${process.env.backurl}/api/admin/articles/find-all`);
-    const data = await res.json();
+export const fetchData = async (url) => {
+    const response = await fetch(url)
+    const data = await response.json()
     return data
-}
+  }
 
 export const submitArticle = async (data, operationMode, content) => {
 
