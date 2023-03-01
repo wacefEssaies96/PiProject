@@ -8,6 +8,7 @@ var mongoose = require('mongoose')
 require('dotenv').config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/clinic', ClinicRouter);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
