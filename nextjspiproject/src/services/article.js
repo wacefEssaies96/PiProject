@@ -1,19 +1,5 @@
 import { success } from "@/components/article/Alerts"
 
-export const deleteArticle = async (id) => {
-    const response = await fetch(`${process.env.backurl}/api/admin/articles/delete/${id}`, {
-        method: 'DELETE'
-    })
-    const data = await response.json()
-    return data
-}
-
-export const fetchData = async (url) => {
-    const response = await fetch(url)
-    const data = await response.json()
-    return data
-  }
-
 export const submitArticle = async (data, operationMode, content) => {
 
     const JSONdata = JSON.stringify({

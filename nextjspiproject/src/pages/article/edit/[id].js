@@ -1,6 +1,6 @@
-import SpinnerLoading from '@/components/article/SpinnerLoading'
+import SpinnerLoading from '@/components/article/PageSpinnerLoading'
 import { Suspense, lazy } from 'react'
-import { fetchData } from "@/services/article";
+import { fetchData } from "@/services/mix";
 
 
 export default function EditArticle({ article }) {

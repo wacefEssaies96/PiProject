@@ -1,11 +1,13 @@
-import { submitArticle, fetchData } from "@/services/article";
+import { submitArticle} from "@/services/article";
+import { fetchData } from "@/services/mix";
 import { useRouter } from "next/router";
 import { useEffect, useState, lazy } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
-import SpinnerLoading from "./SpinnerLoading";
+import SpinnerLoading from "./PageSpinnerLoading";
 const CKeditor = lazy(() => import('./CKeditor'))
 
 export default function ArticleForm(props) {
+
   const [isLoading, setIsLoading] = useState(false)
   const [editorLoaded, setEditorLoaded] = useState(false)
   const [data, setData] = useState("");
@@ -97,7 +99,6 @@ export default function ArticleForm(props) {
           <Form.Group>
             <Form.Label htmlFor="content">Content</Form.Label>
             <CKeditor
-              style={{ height: '200px' }}
               name="content"
               editorLoaded={editorLoaded}
               value={article.content}
@@ -107,7 +108,8 @@ export default function ArticleForm(props) {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Control placeholder="Recommendation" value={recommendation} as="textarea" readOnly name="recommendation" style={{ height: '100px' }}></Form.Control>
+            <Form.Control
+              rows={9} placeholder="Recommendation" value={recommendation} as="textarea" readOnly name="recommendation"></Form.Control>
           </Form.Group>
         </Stack>
         <Button variant="success" type="submit">Submit</Button>

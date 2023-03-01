@@ -1,4 +1,4 @@
-import SpinnerLoading from '@/components/article/SpinnerLoading'
+import SpinnerLoading from '@/components/article/PageSpinnerLoading'
 import { Suspense, lazy } from 'react'
 const ArticleForm = lazy(() => import('@/components/article/Articleform'))
 

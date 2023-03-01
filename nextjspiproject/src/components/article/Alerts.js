@@ -1,8 +1,8 @@
 import Swal from "sweetalert2"
-import { deleteArticle } from "@/services/article";
+import { deleteOne } from "@/services/mix";
 
 
-export const confirmDeleteOneArticle = (props) => {
+export const confirmDelete = (url, props) => {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -13,11 +13,11 @@ export const confirmDeleteOneArticle = (props) => {
         confirmButtonText: 'Yes, delete it!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            await deleteArticle(props.id)
-            props.refresh()
+            const res = await deleteOne(url)
+            props()
             Swal.fire(
                 'Deleted!',
-                'Article has been deleted.',
+                res.message,
                 'success'
             )
         }
