@@ -5,14 +5,16 @@ const SubTypeSport = require("../../models/Sports/SubTypeSportModel")
 
 exports.create = async (req, res) => {
     // Validate request
-    if (!req.body.title || !req.body.SubTypeSport) {
+    if (!req.body.title || !req.body.sportSubType) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
 
-    let response = await SubTypeSport.find({ title: req.body.sportSubType.title });
-    if (response === null) {
-        res.status(404).send({ message: "TypeSubSport not found!" });
+    for(let i=0; i<req.body.sportSubType.length; i++){
+        let response = await SubTypeSport.find({ title: req.body.sportSubType[i].title });
+        if (response.length===0) {
+            res.status(404).send({ message: "TypeSubSport not found!" });
+        }
     }
 
     const sportTypesList = await TypeSport.find({title : req.body.title})

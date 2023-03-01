@@ -6,7 +6,7 @@ const SportHomePage = ({ sportTypes }) => {
         <div>
             <h1>All Sports Types</h1>
             {sportTypes.map(sportType => (
-                <Link href={'/SubSportTypes'} key={sportType._id} legacyBehavior>
+                <Link href={'/Front-Office/SubSportTypes'} key={sportType._id} legacyBehavior>
                     <a className={styles.single}>
                         <h3>{sportType.title}</h3>
                     </a>

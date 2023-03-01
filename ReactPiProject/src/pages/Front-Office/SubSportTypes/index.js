@@ -1,4 +1,4 @@
-import styles from '../../styles/SportList.module.css';
+import styles from '../../../styles/SportList.module.css';
 import Link from 'next/link'
 
 const SportSubTypesPage = ({ sportTypes, sportSubTypes }) => {
@@ -8,7 +8,7 @@ const SportSubTypesPage = ({ sportTypes, sportSubTypes }) => {
                 <>
                     <h1>All {sportType.title} Sub Types</h1>
                     {sportType.sportSubType.map(subT=>(
-                        <Link href={'/SubSportTypes/' + subT._id} key={subT._id} legacyBehavior>
+                        <Link href={'/Front-Office/SubSportTypes/' + subT._id} key={subT._id} legacyBehavior>
                         <a className={styles.single}>
                             {sportSubTypes.map(subType => (
                                 (subType.title== subT.title) && <h3 key={subType.id}>{subType.title}</h3>
