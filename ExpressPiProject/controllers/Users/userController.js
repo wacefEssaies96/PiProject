@@ -46,6 +46,23 @@ exports.findAll = (req, res) => {
   
 };
 
+// Find a single user with an Email
+exports.findUserByEmail = (req, res) => {
+    const email = req.params.email;
+
+    user.find({email: email})
+      .then(data => {
+        if (!data)
+          res.status(404).send({ message: "Not found user with email " + email });
+        else res.send(data);
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .send({ message: "Error retrieving user with email=" + email });
+      });
+};
+
 // Find a single user with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;

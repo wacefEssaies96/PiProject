@@ -10,6 +10,9 @@ router.post("/", user.create);
 // Retrieve all Users
 router.get("/", user.findAll);
 
+// Retrieve a single User with email
+router.get("/:email", user.findUserByEmail);
+
 // Retrieve a single User with id
 router.get("/:id", user.findOne);
 
