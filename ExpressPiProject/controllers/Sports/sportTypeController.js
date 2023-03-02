@@ -74,3 +74,10 @@ exports.updateSportType = (req, res) => {
     })
     .catch(err => res.status(400).json('Error: '+ err));
 }
+
+//get sport type by title
+exports.findSportTypeByTitle = (req, res) => {
+    TypeSport.findOne({title : req.params.title})
+    .then(sportType => res.json(sportType))
+    .catch(err => res.status(400).json('Error: '+ err));
+}

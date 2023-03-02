@@ -6,15 +6,15 @@ const Schema = mongoose.Schema;
 const SportTypeSchema = new Schema({
     title : {
         type: String,
-        required:true,
+        // required:true,
     },
     sportSubType: {
         type: [SubTypeSportSchema],
-        required: true,
+        // required: true,
     },
     slug: {
     type: String,
-    required: true,
+    // required: true,
     },
 }, {
     timestamps: true,

@@ -18,4 +18,7 @@ router.delete("/:id", sportTypes.deleteSportType);
 // Update a SportType with id
 router.put("/:id", sportTypes.updateSportType);
 
+// Retrieve a single SportType by title
+router.get("/searchTypeByTitle/:title", sportTypes.findSportTypeByTitle);
+
 module.exports=router;
