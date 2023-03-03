@@ -1,4 +1,4 @@
-import { success } from "@/components/article/Alerts"
+import { success } from "@/components/layouts/Alerts"
 
 export const submitArticle = async (data, operationMode, content) => {
 

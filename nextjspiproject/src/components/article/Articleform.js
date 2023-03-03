@@ -3,7 +3,7 @@ import { fetchData } from "@/services/mix";
 import { useRouter } from "next/router";
 import { useEffect, useState, lazy } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
-import SpinnerLoading from "./PageSpinnerLoading";
+import SpinnerLoading from "../layouts/PageSpinnerLoading";
 const CKeditor = lazy(() => import('./CKeditor'))
 
 export default function ArticleForm(props) {
@@ -72,7 +72,6 @@ export default function ArticleForm(props) {
             <Form.Label htmlFor="title">Title</Form.Label>
             <Form.Control defaultValue={article.title} placeholder="Title" type="text" id="title" name="title" required></Form.Control>
           </Form.Group>
-
           <Form.Group>
             <Row>
               <Col>

@@ -1,9 +1,8 @@
 import { success } from "@/components/layouts/Alerts"
 
-export const submitCategory = async (event, subcategories, operation) => {
+export const submitSubCategory = async (event, operation) => {
     const JSONdata = JSON.stringify({
-        title: event.target.category.value,
-        subcategory: subcategories
+        title: event.target.category.value
     })
     const method = operation === 'Create' ? 'POST' : 'PUT'
     const options = {
@@ -15,8 +14,8 @@ export const submitCategory = async (event, subcategories, operation) => {
     }
     const response =
         operation === 'Create'
-            ? await fetch(`${process.env.backurl}/api/admin/categories/create`, options)
-            : await fetch(`${process.env.backurl}/api/admin/categories/update/${event.target.id.value}`, options)
+            ? await fetch(`${process.env.backurl}/api/admin/subcategories/create`, options)
+            : await fetch(`${process.env.backurl}/api/admin/subcategories/update/${event.target.id.value}`, options)
     const result = await response.json()
     success(result.message)
 }

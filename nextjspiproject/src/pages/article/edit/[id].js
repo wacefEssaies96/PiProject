@@ -1,10 +1,9 @@
-import SpinnerLoading from '@/components/article/PageSpinnerLoading'
+import SpinnerLoading from '@/components/layouts/PageSpinnerLoading'
 import { Suspense, lazy } from 'react'
 import { fetchData } from "@/services/mix";
-
+const ArticleForm = lazy(() => import('@/components/article/Articleform'))
 
 export default function EditArticle({ article }) {
-    const ArticleForm = lazy(() => import('@/components/article/Articleform'))
     return (
         <Suspense fallback={<SpinnerLoading></SpinnerLoading>}>
             <ArticleForm article={article}></ArticleForm>

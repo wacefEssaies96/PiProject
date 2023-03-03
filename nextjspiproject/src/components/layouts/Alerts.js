@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import { deleteOne } from "@/services/mix";
+import { deleteData } from "@/services/mix";
 
 
 export const confirmDelete = (url, props) => {
@@ -13,7 +13,7 @@ export const confirmDelete = (url, props) => {
         confirmButtonText: 'Yes, delete it!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            const res = await deleteOne(url)
+            const res = await deleteData(url)
             props()
             Swal.fire(
                 'Deleted!',

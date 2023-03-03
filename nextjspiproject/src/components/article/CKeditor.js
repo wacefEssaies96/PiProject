@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import SpinnerLoading from "./SpinnerLoading";
+import SpinnerLoading from "../layouts/SpinnerLoading";
 
 export default function CKeditor({ change, editorLoaded, name, value }) {
 

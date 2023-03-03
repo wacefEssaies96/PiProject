@@ -1,4 +1,4 @@
-export const deleteOne = async (url) => {
+export const deleteData = async (url) => {
     const response = await fetch(url, {
         method: 'DELETE'
     })
