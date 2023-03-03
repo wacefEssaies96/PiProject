@@ -14,8 +14,8 @@ export default function CatAndSubCatList({ show, handleClose, mode }) {
 
     const handleCloseForm = () => setshowForm(false);
     const handleshowForm = (data, opMode) => {
-        if(mode === 'Category' && opMode === 'Create')
-            data = {subcategory:[]}
+        if (mode === 'Category' && opMode === 'Create')
+            data = { subcategory: [] }
         setOperationMode(opMode)
         setDataToEdit(data)
         setshowForm(true)
@@ -25,6 +25,11 @@ export default function CatAndSubCatList({ show, handleClose, mode }) {
         mode === "Category"
             ? setData(await fetchData(`${process.env.backurl}/api/admin/categories/find-all`))
             : setData(await fetchData(`${process.env.backurl}/api/admin/subcategories/find-all`))
+    }
+    const deleteAll = () => {
+        mode === "Category"
+            ? confirmDelete(`${process.env.backurl}/api/admin/categories/delete-all`, refresh)
+            : confirmDelete(`${process.env.backurl}/api/admin/subcategories/delete-all`, refresh)
     }
     useEffect(() => {
         refresh()
@@ -39,6 +44,9 @@ export default function CatAndSubCatList({ show, handleClose, mode }) {
             <Modal.Body>
                 <Button variant="outline-success" onClick={() => handleshowForm({}, 'Create')}>
                     Create new {mode}
+                </Button>
+                <Button variant="outline-warning" onClick={deleteAll}>
+                    Delete All {mode}
                 </Button>
                 <Suspense fallback={<p>Loading...</p>}>
                     <CategoriesAndSubCatForm refresh={refresh} operation={operationMode} data={dataToEdit} show={showForm} handleClose={handleCloseForm} mode={mode}></CategoriesAndSubCatForm>

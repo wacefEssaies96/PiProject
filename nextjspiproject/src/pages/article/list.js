@@ -21,17 +21,24 @@ export default function List({ articles }) {
   }
   const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/admin/articles/find-all`))
   const deleteOneArticle = async (id) => confirmDelete(`${process.env.backurl}/api/admin/articles/delete/${id}`, refresh)
+  const deleteAll = () => confirmDelete(`${process.env.backurl}/api/admin/articles/delete-all`, refresh)
 
   return (
     <Container>
       <h1>List of Articles</h1>
       <Link className="btn btn-outline-success" href={`/article/create`}>Create new article</Link>
+      <Button variant="outline-warning" onClick={deleteAll}>
+        Delete all articles
+      </Button>
+
       <Button variant="outline-success" onClick={() => handleShowViewCatAndSubCat('Category')}>
         Categories management
       </Button>
       <Button variant="outline-success" onClick={() => handleShowViewCatAndSubCat('Sub Category')}>
         Sub categories management
       </Button>
+
+
       <Suspense fallback={<SpinnerLoading></SpinnerLoading>}>
         <CategoriesAndSubCategories show={showViewCatAndSubCat} handleClose={handleCloseViewCatAndSubCat} mode={showMode}></CategoriesAndSubCategories>
       </Suspense>
