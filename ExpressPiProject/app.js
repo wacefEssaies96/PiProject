@@ -24,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/admin/articles', articleRouter);
 app.use('/api/admin/categories', categoryRouter);
 app.use('/api/admin/subcategories', subcategoryRouter);
+app.use('/uploads', express.static('uploads'))
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
@@ -47,13 +48,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(500).send({error: err})
 });
 
 module.exports = app;

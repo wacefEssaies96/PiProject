@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const controller = require('../../controllers/article/article');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 // Create a new Article
-router.post("/create", controller.create);
+router.post("/create", upload.single('thumbnail'), controller.create);
 
 // Update a Article with id
-router.put("/update/:id", controller.update);
+router.put("/update/:id", upload.single('thumbnail'), controller.update);
 
 // Delete a Article with id
 router.delete("/delete/:id", controller.delete);

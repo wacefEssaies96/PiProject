@@ -1,27 +1,20 @@
-import { success } from "@/components/layouts/Alerts"
+import { success, errorAlert } from "@/components/layouts/Alerts"
+import axios from "axios";
 
 export const submitArticle = async (data, operationMode, content) => {
-
-    const JSONdata = JSON.stringify({
-        title: data.target.title.value,
-        content: content,
-        description: data.target.description.value,
-        category: { title: data.target.category.value },
-        subcategory: { title: data.target.subcategory.value },
-    })
-    const method = operationMode === 'Create' ? 'POST' : 'PUT'
-    const options = {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSONdata,
-    }
-    const response =
-        operationMode === 'Create'
-            ? await fetch(`${process.env.backurl}/api/admin/articles/create`, options)
-            : await fetch(`${process.env.backurl}/api/admin/articles/update/${data.target.id.value}`, options)
-
-    const result = await response.json()
-    success(result.message)
+    let formData = new FormData();
+    formData.append('title', data.target.title.value);
+    formData.append('content', content);
+    formData.append('description', data.target.description.value);
+    formData.append('category', JSON.stringify({ title: data.target.category.value }));
+    formData.append('subcategory', JSON.stringify({ title: data.target.subcategory.value }));
+    if (data.target.thumbnail.files[0] !== undefined)
+        formData.append('thumbnail', data.target.thumbnail.files[0]);
+    operationMode === 'Create'
+        ? axios.post(`${process.env.backurl}/api/admin/articles/create`, formData)
+            .then(res => success(res.data.message))
+            .catch(err => errorAlert(err.response.data.message))
+        : axios.put(`${process.env.backurl}/api/admin/articles/update/${data.target.id.value}`, formData)
+            .then((res) => success(res.data.message))
+            .catch(err => errorAlert(err.response.data.message))
 }

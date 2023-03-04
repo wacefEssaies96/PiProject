@@ -9,11 +9,12 @@ const Article = Mongoose.model(
         status: String,
         slug: String,
         description: String,
+        thumbnail: String,
         category: {
             type: CategorySchema,
             required: true
         },
         subcategory: SubCategorySchema
-    },{ timestamps: true })
+    }, { timestamps: true })
 );
 module.exports = Article;

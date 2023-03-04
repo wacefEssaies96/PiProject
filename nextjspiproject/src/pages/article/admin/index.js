@@ -8,7 +8,7 @@ import SpinnerLoading from "@/components/layouts/SpinnerLoading";
 const CategoriesAndSubCategories = lazy(() => import('@/components/cat_and_subcat/CatAndSubCatList'))
 
 
-export default function List({ articles }) {
+export default function Index({ articles }) {
 
   const [list, setList] = useState(articles)
   const [showMode, setShowMode] = useState('');
@@ -26,7 +26,7 @@ export default function List({ articles }) {
   return (
     <Container>
       <h1>List of Articles</h1>
-      <Link className="btn btn-outline-success" href={`/article/create`}>Create new article</Link>
+      <Link className="btn btn-outline-success" href={`/article/admin/create`}>Create new article</Link>
       <Button variant="outline-warning" onClick={deleteAll}>
         Delete all articles
       </Button>
@@ -60,7 +60,7 @@ export default function List({ articles }) {
                 <td key={article.category.title}>{article.category.title}</td>
                 <td key={article.subcategory.title}>{article.subcategory.title}</td>
                 <td key={article._id}>
-                  <Link className="btn btn-outline-secondary me-3 ms-3" href={`/article/edit/${article._id}`}>Edit</Link>
+                  <Link className="btn btn-outline-secondary me-3 ms-3" href={`/article/admin/edit/${article._id}`}>Edit</Link>
                   <Button onClick={() => deleteOneArticle(article._id)} variant="outline-danger">Delete</Button>
                 </td>
               </tr>

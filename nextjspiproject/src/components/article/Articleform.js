@@ -1,6 +1,5 @@
-import { submitArticle} from "@/services/article";
+import { submitArticle } from "@/services/article";
 import { fetchData } from "@/services/mix";
-import { useRouter } from "next/router";
 import { useEffect, useState, lazy } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
 import SpinnerLoading from "../layouts/PageSpinnerLoading";
@@ -22,7 +21,6 @@ export default function ArticleForm(props) {
     content: "",
     description: ""
   })
-  const router = useRouter()
 
   const getSubcategories = async (event) => {
     const param = event.hasOwnProperty('target') ? event.target.value : event
@@ -47,7 +45,6 @@ export default function ArticleForm(props) {
   const handleSubmit = async (event) => {
     event.preventDefault()
     await submitArticle(event, operationMode, data)
-    router.push('/article/list')
   }
 
   useEffect(() => {
@@ -65,12 +62,20 @@ export default function ArticleForm(props) {
     <Container>
       {isLoading && <SpinnerLoading></SpinnerLoading>}
       <h3>{operationMode}</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType='multipart/form-data'>
         <Stack gap={4}>
           <Form.Group>
             <input type="hidden" name="id" defaultValue={article._id}></input>
             <Form.Label htmlFor="title">Title</Form.Label>
             <Form.Control defaultValue={article.title} placeholder="Title" type="text" id="title" name="title" required></Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Thumbnail</Form.Label>
+            <Form.Control
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              name="thumbnail"
+            />
           </Form.Group>
           <Form.Group>
             <Row>

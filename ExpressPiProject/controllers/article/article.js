@@ -6,29 +6,36 @@ const slug = require('slug');
 
 // Create and Save a new Article
 exports.create = async (req, res) => {
+
+    const cat = JSON.parse(req.body.category)
+    const subcat = JSON.parse(req.body.subcategory)
+
     // Validate request
-    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory ) { //|| !req.body.description
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description || !req.body.thumbnail) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
 
-    let response = await Category.findOne({ title: req.body.category.title });
+    let response = await Category.findOne({ title: cat.title });
     if (response === null) {
         res.status(404).send({ message: "Category not found." });
+        return;
     }
     else {
-        if (!await response.subcategory.find(element => element.title == req.body.subcategory.title)) {
+        if (!await response.subcategory.find(element => element.title == subcat.title)) {
             res.status(404).send({ message: "SubCategory not found." });
+            return;
         } else {
             // Create a article
             const newArticle = new Article({
                 title: req.body.title,
                 content: req.body.content,
                 description: req.body.description,
+                thumbnail: req.file.path,
                 status: 'draft',
                 slug: slug(req.body.title),
-                category: req.body.category,
-                subcategory: req.body.subcategory
+                category: cat,
+                subcategory: subcat
             });
             // Save article in the database
             newArticle.save()
@@ -50,6 +57,7 @@ exports.findAll = (req, res) => {
         .then(
             data => {
                 res.send(data);
+                return;
             })
         .catch(err => {
             res.status(500).send({
@@ -74,18 +82,28 @@ exports.findOne = (req, res) => {
 
 // Update a article by the id in the request
 exports.update = async (req, res) => {
-    if (!req.body) {
+    const cat = JSON.parse(req.body.category);
+    const subcat = JSON.parse(req.body.subcategory);
+    req.body.category = cat;
+    req.body.subcategory = subcat;
+
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description || !req.body.thumbnail) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
         });
     }
-    let response = await Category.findOne({ title: req.body.category.title });
+    if (req.file)
+        req.body.thumbnail = req.file.path
+
+    let response = await Category.findOne({ title: cat.title });
     if (response === null) {
         res.status(404).send({ message: "Category not found." });
+        return;
     }
     else {
-        if (!await response.subcategory.find(element => element.title == req.body.subcategory.title)) {
+        if (!await response.subcategory.find(element => element.title == subcat.title)) {
             res.status(404).send({ message: "SubCategory not found." });
+            return;
         } else {
             const id = req.params.id;
             Article.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
@@ -195,7 +213,7 @@ exports.scrapFromWired = async (req, res) => {
     $('.paywall').each((i, el) => {
         const text = $(el).text();
         if (text.length > 200)
-            texts =  texts + ' '+text
+            texts = texts + ' ' + text
     });
     res.send({ text: texts })
 }
