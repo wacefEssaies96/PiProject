@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     const subcat = JSON.parse(req.body.subcategory)
 
     // Validate request
-    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description || !req.body.thumbnail) {
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description ) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
     req.body.category = cat;
     req.body.subcategory = subcat;
 
-    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description || !req.body.thumbnail) {
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
         });

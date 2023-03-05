@@ -1,12 +1,14 @@
 import { submitArticle } from "@/services/article";
 import { fetchData } from "@/services/mix";
+import { useRouter } from "next/router";
+import { NextResponse } from "next/server";
 import { useEffect, useState, lazy } from "react"
 import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
 import SpinnerLoading from "../layouts/PageSpinnerLoading";
 const CKeditor = lazy(() => import('./CKeditor'))
 
 export default function ArticleForm(props) {
-
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [editorLoaded, setEditorLoaded] = useState(false)
   const [data, setData] = useState("");
@@ -21,6 +23,7 @@ export default function ArticleForm(props) {
     content: "",
     description: ""
   })
+  const [validated, setValidated] = useState(false);
 
   const getSubcategories = async (event) => {
     const param = event.hasOwnProperty('target') ? event.target.value : event
@@ -44,7 +47,12 @@ export default function ArticleForm(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    const form = event.currentTarget;
+    setValidated(true);
     await submitArticle(event, operationMode, data)
+    if (form.checkValidity() === true) {
+      router.push('/article/admin')
+    }
   }
 
   useEffect(() => {
@@ -62,12 +70,18 @@ export default function ArticleForm(props) {
     <Container>
       {isLoading && <SpinnerLoading></SpinnerLoading>}
       <h3>{operationMode}</h3>
-      <form onSubmit={handleSubmit} encType='multipart/form-data'>
+      <Form noValidate validated={validated} onSubmit={handleSubmit} encType='multipart/form-data'>
         <Stack gap={4}>
           <Form.Group>
             <input type="hidden" name="id" defaultValue={article._id}></input>
             <Form.Label htmlFor="title">Title</Form.Label>
-            <Form.Control defaultValue={article.title} placeholder="Title" type="text" id="title" name="title" required></Form.Control>
+            <Form.Control defaultValue={article.title} placeholder="Title" type="text" id="title" name="title" required minLength={4} maxLength={50}></Form.Control>
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please choose a title,
+              minimum length : 4,
+              maximum length : 50.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
             <Form.Label>Thumbnail</Form.Label>
@@ -75,30 +89,47 @@ export default function ArticleForm(props) {
               type="file"
               accept=".png, .jpg, .jpeg"
               name="thumbnail"
+              required
             />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please choose a thumbnail of type : png, jpg, jpeg.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
             <Row>
               <Col>
-                <Form.Select value={article.category.title} name="category" onChange={getSubcategories} aria-label="Default select example">
-                  <option value="nothing">Select a category</option>
+                <Form.Select required value={article.category.title} name="category" onChange={getSubcategories} aria-label="Default select example">
+                  <option value="">Select a category</option>
                   {categories && categories.map((category, index) => {
                     return <option value={category.title} key={index}>{category.title}</option>
                   })}
                 </Form.Select>
+                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  Please select a category.
+                </Form.Control.Feedback>
               </Col>
               <Col>
-                <Form.Select value={article.subcategory.title} name="subcategory" onChange={getRecommendations} aria-label="Default select example">
-                  <option value="nothing">Select a subcategory</option>
+                <Form.Select required value={article.subcategory.title} name="subcategory" onChange={getRecommendations} aria-label="Default select example">
+                  <option value="">Select a subcategory</option>
                   {subcategories && subcategories.map((subcategory, index) => {
                     return <option value={subcategory.title} key={index}>{subcategory.title}</option>
                   })}
                 </Form.Select>
+                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  Please select a sub category.
+                </Form.Control.Feedback>
               </Col>
             </Row>
           </Form.Group>
           <Form.Group>
-            <Form.Control placeholder="Description" defaultValue={article.description} as="textarea" name="description" style={{ height: '100px' }}></Form.Control>
+            <Form.Control placeholder="Description" defaultValue={article.description} as="textarea" name="description" style={{ height: '100px' }} required minLength={10} maxLength={200}></Form.Control>
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please write a description, minimum length : 10, maximum length : 200.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
             <Form.Label htmlFor="content">Content</Form.Label>
@@ -110,15 +141,24 @@ export default function ArticleForm(props) {
                 setData(data);
               }}
             />
+            <Form.Control defaultValue={data} hidden required minLength={50}></Form.Control>
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please write a content, minimum length : 50.
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group>
-            <Form.Control
-              rows={9} placeholder="Recommendation" value={recommendation} as="textarea" readOnly name="recommendation"></Form.Control>
-          </Form.Group>
+          {recommendation.length > 0 &&
+            <Form.Group>
+              <Form.Label>Recommadation</Form.Label>
+              <div style={{ minHeight: "max-content" }}>
+                {recommendation}
+              </div>
+            </Form.Group>
+          }
         </Stack>
         <Button variant="success" type="submit">Submit</Button>
-      </form>
-    </Container>
+      </Form>
+    </Container >
   )
 }
 
