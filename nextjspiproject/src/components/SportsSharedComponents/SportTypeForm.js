@@ -1,4 +1,3 @@
-
 import { postSportType } from "@/services/SportTypeService"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -17,9 +16,16 @@ export default function SportTypeForm({sportType}) {
     const submit = async (e) => {
         e.preventDefault()
         const selectedSubTypes = data.map(e => ({ title: e.value }))
+        const subTypesList = selectedSubTypes.map(
+            async (subTypeTitle) =>{ 
+            const res = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${subTypeTitle.title}`)
+            const data = await res.json()
+            return data
+            })
+        console.log(subTypesList)
         const sportType = {
             title: e.target.title.value,
-            sportSubType: selectedSubTypes
+            sportSubType: subTypesList
         }
         await postSportType(e, operation, selectedSubTypes)
         setShowAlert(true)
@@ -45,7 +51,6 @@ export default function SportTypeForm({sportType}) {
 
     return (
         <form onSubmit={submit}>
-
             {showAlert && <Success message={"Sport Type Added Successfully !"}></Success>}
             <div className="form-floating mb-3">
                 <input defaultValue={sportType._id} name="id" type="hidden" />

@@ -72,3 +72,10 @@ exports.updateSportSubType = (req, res) => {
     })
     .catch(err => res.status(400).json('Error: '+ err));
 }
+
+//get SportSubType by title
+exports.findSportSubTypeByTitle = (req, res) => {
+    SportSubType.findOne({title : req.params.title})
+    .then(sportSubType => res.json(sportSubType))
+    .catch(err => res.status(400).json('Error: '+ err));
+}

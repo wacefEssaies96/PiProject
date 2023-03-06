@@ -19,12 +19,22 @@ exports.create = async (req, res) => {
 
     const sportTypesList = await TypeSport.find({title : req.body.title})
 
+    const sportSubTypesList=[]
+
     if(sportTypesList.length==0){
+
+        for(let i=0; i<req.body.sportSubType.length; i++){
+            let response = await SubTypeSport.findOne({ title: req.body.sportSubType[i].title });
+            sportSubTypesList.push(response)
+        }
+        console.log(sportSubTypesList)
+
         var newSportType = new TypeSport({
             title: req.body.title,
-            sportSubType : req.body.sportSubType,
+            sportSubType : sportSubTypesList,
             slug: req.body.slug,
         })
+
         newSportType.save()
         .then(data=>res.send(data))
         .catch(err => {
@@ -40,11 +50,20 @@ exports.create = async (req, res) => {
 };
 
 //get all SportTypes 
-exports.findAll = (req, res) => {
-    TypeSport.find()
-    .then(sportTypes => res.json(sportTypes))
-    .catch(err => res.status(400).json('Error: '+ err));
-}
+// exports.findAll = (req, res) => {
+//     TypeSport.find()
+//     .then(sportTypes => res.json(sportTypes))
+//     .catch(err => res.status(400).json('Error: '+ err));
+// }
+exports.findAll = async (req, res) => {
+    try {
+      const r= await TypeSport.find()
+      res.status(200).send(r);
+    } catch (error) {
+      res.status(500).send("couldn't get sportTypes");
+    }
+  }
+
 
 //get SportType by id
 exports.findSportTypeById = (req, res) => {
@@ -61,11 +80,16 @@ exports.deleteSportType = (req, res) => {
 }
 
 //update a SportType 
-exports.updateSportType = (req, res) => {
+exports.updateSportType = async (req, res) => {
+    const sportSubTypesList=[]
+    for(let i=0; i<req.body.sportSubType.length; i++){
+        let response = await SubTypeSport.findOne({ title: req.body.sportSubType[i].title });
+        sportSubTypesList.push(response)
+    }
     TypeSport.findById(req.params.id)
     .then(sportType => {
         sportType.title = req.body.title;
-        sportType.sportSubType = req.body.sportSubType;
+        sportType.sportSubType = sportSubTypesList;
         sportType.slug = req.body.slug;
 
         sportType.save()

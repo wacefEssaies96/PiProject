@@ -14,7 +14,6 @@ const Details = ({sportTypeByTitle}) => {
                 <h1>All {sportTypeByTitle.title} Details</h1>
                 <div className="d-flex justify-content-around">
                     {sportTypeByTitle.sportSubType.map((subType,index)=>{
-                        console.log(subType.demoVideo)
                         return (
                             <Card
                                 bg={"info"}
@@ -22,13 +21,13 @@ const Details = ({sportTypeByTitle}) => {
                                 style={{ width: '18rem' }}
                                 className="mb-2"
                                 >
-                                <Card.Header>{ subType.title }</Card.Header>
+                                <Card.Header> Details </Card.Header>
                                 <Card.Body>
-                                <Card.Title> Details </Card.Title>
+                                <Card.Title>{ subType.title }</Card.Title>
                                 <Card.Text>
-                                    {subType.demoVideo}
-                                    {subType.advantages}
-                                    {subType.limits}
+                                    <p>{subType?.demoVideo}</p>
+                                    <p>{subType?.advantages}</p>
+                                    <p>{subType?.limits}</p>
                                 </Card.Text>
                                 </Card.Body>
                             </Card>

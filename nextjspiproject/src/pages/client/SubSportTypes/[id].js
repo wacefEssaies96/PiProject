@@ -1,10 +1,10 @@
 export default function Details ({sportSubType}) {
     return (
             <>
-                <h1>All {sportSubType.title} Details</h1>
-                <h3>{sportSubType.demoVideo}</h3>
-                <h3>{sportSubType.advantages}</h3>
-                <h3>{sportSubType.limits}</h3>
+                <h1>All {sportSubType?.title} Details</h1>
+                <h3>{sportSubType?.demoVideo}</h3>
+                <h3>{sportSubType?.advantages}</h3>
+                <h3>{sportSubType?.limits}</h3>
             </>
     );
 }

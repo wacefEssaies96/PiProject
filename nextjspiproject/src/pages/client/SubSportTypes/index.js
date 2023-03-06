@@ -10,7 +10,7 @@ const SportSubTypesPage = ({ sportTypes, sportSubTypes }) => {
                     {sportType.sportSubType.map(subT=>(
                         <Link href={'/client/SubSportTypes/' + subT._id} key={subT._id} legacyBehavior>
                         <a className={styles.single} key={subT._id}>
-                            {sportSubTypes.map(subType => (
+                            {sportSubTypes.map(subType =>(
                                 (subType.title== subT.title) && <h3 key={subType._id}>{subType.title}</h3>
                             )
                             )}

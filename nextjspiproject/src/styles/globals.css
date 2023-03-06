@@ -106,7 +106,6 @@ a {
   }
 } */
 
-
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
 
 body {
@@ -118,10 +117,10 @@ a {
   color: #333;
   text-decoration: none;
 }
-.content {
+/* .content {
   max-width: 960px;
   margin: 0 auto;
-}
+} */
 nav {
   margin: 10px auto 80px;
   padding: 10px 0;
@@ -132,9 +131,6 @@ nav {
 }
 nav a {
   margin-left: 12px;
-}
-nav .logo {
-  margin-right: auto;
 }
 footer {
   display: block;
@@ -150,4 +146,81 @@ footer {
 .not-found a{
   color: #4979ff;
   text-decoration: underline;
+}
+
+.modalBackground {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(244, 216, 216);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer {
+  width: 400px;
+  height: 400px;
+  border-radius: 12px;
+  background-color: rgb(247, 174, 174);
+  box-shadow: rgba(84, 2, 2, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  margin-bottom: 40px;
+  overflow: auto;
+}
+
+.modalContainer .title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.titleCloseBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.titleCloseBtn button {
+  background-color: transparent;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.modalContainer .body {
+  flex: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.modalContainer .footer {
+  flex: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer .footer button {
+  width: 150px;
+  height: 45px;
+  margin: 10px;
+  border: none;
+  background-color: lightcoral;
+  color: white;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modalContainer .footer button:hover {
+  opacity:1;
+}
+
+#cancelBtn {
+  background-color: crimson;
 }

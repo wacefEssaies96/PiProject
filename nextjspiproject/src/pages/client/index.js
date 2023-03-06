@@ -7,7 +7,6 @@ const SportHomePage = ({ sportTypes }) => {
 
     const [title, setTitle] = useState('')
     const router = useRouter()
-
     const handleChange = async (e) => {
         setTitle(e.target.value)
 

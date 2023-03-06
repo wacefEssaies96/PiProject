@@ -9,12 +9,7 @@ const NotFound = () => {
 
     //Redirection the user automaticlly after 3 seconds to the home page
     useEffect(()=> {
-        // console.log("useEffect runs")
         setTimeout(()=> {
-            //Redirect using the history routes
-            // router.go(1) //or -1
-
-            //to redirect to home page
             router.push('/');
         }, 3000)
     }, [])

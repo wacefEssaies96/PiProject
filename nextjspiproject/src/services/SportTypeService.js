@@ -52,6 +52,5 @@ export const submitSportTypeForm = async (data, operationMode, selectedSubTypes)
             : await fetch(`${process.env.backurl}/api/sportSubTypes/${data.target.id.value}`, options)
 
     const result = await res.json()
-    console.log(result)
     return result
 }
