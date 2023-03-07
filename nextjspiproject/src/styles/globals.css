@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
@@ -104,4 +104,123 @@ a {
   html {
     color-scheme: dark;
   }
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+
+body {
+  background: #f2f2f2;
+  color: #333;
+  font-family: "Nunito";
+}
+a {
+  color: #333;
+  text-decoration: none;
+}
+/* .content {
+  max-width: 960px;
+  margin: 0 auto;
+} */
+nav {
+  margin: 10px auto 80px;
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  border-bottom: 1px solid #ddd;
+}
+nav a {
+  margin-left: 12px;
+}
+footer {
+  display: block;
+  text-align: center;
+  padding: 30px 0;
+  margin-top: 60px;
+  color: #777;
+  border-top: 1px solid #eaeaea;
+}
+.not-found {
+  text-align: center;
+}
+.not-found a{
+  color: #4979ff;
+  text-decoration: underline;
+}
+
+.modalBackground {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(244, 216, 216);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer {
+  width: 400px;
+  height: 400px;
+  border-radius: 12px;
+  background-color: rgb(247, 174, 174);
+  box-shadow: rgba(84, 2, 2, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  margin-bottom: 40px;
+  overflow: auto;
+}
+
+.modalContainer .title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.titleCloseBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.titleCloseBtn button {
+  background-color: transparent;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.modalContainer .body {
+  flex: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.modalContainer .footer {
+  flex: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer .footer button {
+  width: 150px;
+  height: 45px;
+  margin: 10px;
+  border: none;
+  background-color: lightcoral;
+  color: white;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modalContainer .footer button:hover {
+  opacity:1;
+}
+
+#cancelBtn {
+  background-color: crimson;
 }
