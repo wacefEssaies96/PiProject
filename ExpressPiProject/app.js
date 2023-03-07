@@ -22,6 +22,8 @@ var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
 var articleRouter = require('./routes/article/article');
 var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
+// routes Clinics
+var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
 
 var app = express();
 
@@ -46,6 +48,7 @@ app.use('/api/admin/articles', articleRouter);
 app.use('/api/admin/categories', categoryRouter);
 app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'))
+app.use('/api/clinic', ClinicRouter);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
