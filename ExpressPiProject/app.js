@@ -13,8 +13,6 @@ require('dotenv').config();
 var mealRouter = require('./routes/Meals/mealRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 // routes SportTypes - SubTypes
 var sportTypeRouter = require('./routes/Sports/sportTypeRoutes');
 var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
@@ -44,7 +42,6 @@ app.use(cors())
 
 //Routes
 app.use('/api/admin/products', productRouter);
-app.use('/', indexRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
