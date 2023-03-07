@@ -1,16 +1,15 @@
+
+import Head from 'next/head'
+import Image from 'next/image'
+import { Inter } from '@next/font/google'
 import Navigation from '../components/Navigation'
-// import Navigation from '../components/Navigation'
-// import { login } from '../utils/auth'
 
-// set up cookies
-// const MealForm = lazy(() => import('@/components/meal/MealForm'))
+const inter = Inter({ subsets: ['latin'] })
+
 export default function Home() {
-  
-    return (
-      <div>
-        <h1>Main page</h1>
-
-        <Navigation />
-      </div>
-    )
+  return (
+    <>
+      <Navigation />
+    </>
+  )
 }

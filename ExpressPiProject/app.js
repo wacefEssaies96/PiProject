@@ -3,15 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
 var mongoose = require('mongoose')
 var cors = require('cors')
 const bodyParser = require('body-parser');
 
 require('dotenv').config();
+//Routes Meals and auth
 var indexRouter = require('./routes/index');
 var mealRouter = require('./routes/Meals/mealRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
+// routers Articles and category-subcategory
+var articleRouter = require('./routes/article/article');
+var categoryRouter = require('./routes/article/category');
+var subcategoryRouter = require('./routes/article/subcategory');
 
 var app = express();
 
@@ -33,6 +39,9 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/meal', mealRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/admin/articles', articleRouter);
+app.use('/api/admin/categories', categoryRouter);
+app.use('/api/admin/subcategories', subcategoryRouter);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
@@ -50,12 +59,12 @@ mongoose.connect(
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
