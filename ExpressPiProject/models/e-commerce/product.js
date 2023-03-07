@@ -9,7 +9,8 @@ const productSchema = new mongoose.Schema({
   category: { type: String },
   marque: { type: String },
   nutrition: [NutritionSchema]
-});
+},
+{ timestamps: true });
 
 
 const Product = mongoose.model('product', productSchema);
