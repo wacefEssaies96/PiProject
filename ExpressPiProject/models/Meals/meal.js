@@ -1,16 +1,9 @@
-    const mongoose =require('mongoose');
-    
-    const mealSchema =new mongoose.Schema(
-      {
-          FoodCategory: String,
-          FoodItem: String
-      },
-      { timestamps: true }
-    )
-    const meal = mongoose.model(
-      "meal",
-      mealSchema
-      
-    );
-    module.exports = meal;
+const mongoose =require('mongoose');
+const mealSchema =require('./mealSchema');
+
+const Meal = mongoose.model(
+  "Meal", mealSchema
+);
+
+module.exports = Meal;
   

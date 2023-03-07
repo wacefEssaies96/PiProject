@@ -38,7 +38,15 @@ export default function login(props) {
             token,
             error: null,
           })
+          if(user['role'=="ADMIN"])  {
+            router.push('/admin')
+          }
+          else if(user['role'=="User"])  {
+            router.push('/user')
+          }
+          else  {
             router.push('/')
+          }
         } catch (error) {
           console.error(
             'You have an error in your code or there are Network issues.',
@@ -75,7 +83,6 @@ export default function login(props) {
         {auth.token && <p>Token: {auth.token}</p>}
     
     </Container>
-    // <></>
   )
 }
 

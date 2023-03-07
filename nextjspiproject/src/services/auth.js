@@ -4,7 +4,9 @@ import { Cookies } from 'react-cookie'
 import nextCookie from 'next-cookies'
 
 // set up cookies
-const cookies = new Cookies()
+const cookies = new Cookies();
+
+
 
 export const handleAuthSSR = async (ctx) => {
     
@@ -18,7 +20,7 @@ export const handleAuthSSR = async (ctx) => {
     if (typeof window !== 'undefined') {
       Router.push('/')
     } else {
-      ctx.res.writeHead(302, { Location: '/login' })
+      ctx.res.writeHead(302, { Location: '/' })
       ctx.res.end()
     }
   }

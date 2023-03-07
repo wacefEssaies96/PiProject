@@ -1,58 +1,77 @@
-const user = require("../../models/Users/user");
+const User = require("../../models/Users/user");
 
-// Create and Save a new user
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.password || !req.body.email) {
-    res.status(400).send({ message: "email and password can not be empty!" });
-    return;
-  }
-
-  // Create a user
-  const u = new user({
-    fullname : req.body.fullname,
-    email : req.body.email,
-    password : req.body.password,
-    role : req.body.role,
-    height : req.body.height,
-    weight : req.body.weight,
+// Retrieve all users from the database.
+exports.findAllUsers = (req, res) => {
+  User.find()
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+  res.status(500).send({
+      message:
+      err.message || "Some error occurred while retrieving users."
+  });
   });
 
-  // Save user in the database
-  u.save()
+};
+
+// Create and Save a new user
+exports.createUser = (req, res) => {
+
+  // Validate request
+  // if (!req.params.fullname || !req.params.email|| !req.params.password|| !req.params.role) {
+  //   res.status(400).send({ message: "User field must be provided !" });
+  // }
+  
+  User.find({ email: req.body.email })
     .then(data => {
-      res.send(data);
+      if (data[0]) {
+        res.status(422).send({
+          message: "User already exist with email "+req.body.email
+        }); 
+      } else {
+        // Create a user
+        const u = new User({
+          fullname : req.body.fullname,
+          email : req.body.email,
+          password : req.body.password,
+          role : req.body.role,
+          gender : req.body.gender,
+          height : req.body.height,
+          weight : req.body.weight,
+          phone : req.body.phone,
+          address : req.body.address,
+          disease : req.body.disease,
+        });
+        // Save user in the database
+        u.save()
+          .then(data1 => {
+            res.status(200).send(data1);
+          })
+          .catch(err => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the user."
+            });
+          });
+      }
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the user."
+          message:
+          err.message || "Some error occurred while retrieving users."
       });
     });
 };
 
-// Retrieve all users from the database.
-exports.findAll = (req, res) => {
-    user.find()
-    .then(data => {
-        res.send(data);
-    })
-    .catch(err => {
-    res.status(500).send({
-        message:
-        err.message || "Some error occurred while retrieving users."
-    });
-    });
-  
-};
 
 // Find a single user with an Email
 exports.findUserByEmail = (req, res) => {
     const email = req.params.email;
 
-    user.find({email: email})
+    User.find({email: email})
       .then(data => {
-        if (!data)
+        if (!data[0])
           res.status(404).send({ message: "Not found user with email " + email });
         else res.send(data);
       })
@@ -64,10 +83,10 @@ exports.findUserByEmail = (req, res) => {
 };
 
 // Find a single user with an id
-exports.findOne = (req, res) => {
+exports.findUserById = (req, res) => {
     const id = req.params.id;
 
-    user.findById(id)
+    User.findById(id)
       .then(data => {
         if (!data)
           res.status(404).send({ message: "Not found user with id " + id });
@@ -81,35 +100,48 @@ exports.findOne = (req, res) => {
 };
 
 // Update a user by the id in the request
-exports.update = (req, res) => {
+exports.updateUser = (req, res) => {
     if (!req.body) {
-        return res.status(400).send({
-          message: "Data to update can not be empty!"
-        });
-      }
-    
-      const id = req.params.id;
-    
-      user.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+      return res.status(400).send({
+        message: "Data to update can not be empty!"
+      });
+    }  
+    const id = req.params.id;
+    User.find({ email: req.body.email })
+    .then(data => {
+      if (data[0]) {
+        res.status(422).send({
+          message: "User already exist with email "+req.body.email
+        }); 
+      } else {
+        User.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
         .then(data => {
-          if (!data) {
+          if (data) {
+            res.send({ message: "user was updated successfully." });
+          } else {
             res.status(404).send({
               message: `Cannot update user with id=${id}. Maybe user was not found!`
             });
-          } else res.send({ message: "user was updated successfully." });
-        })
-        .catch(err => {
+          }
+        }).catch(err => {
           res.status(500).send({
             message: "Error updating user with id=" + id
           });
         });
+      }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error finding user with id=" + id
+        });
+      });
 };
 
 // Delete a user with the specified id in the request
-exports.delete = (req, res) => {
+exports.deleteUser = (req, res) => {
     const id = req.params.id;
 
-    user.findByIdAndRemove(id)
+    User.findByIdAndRemove(id)
       .then(data => {
         if (!data) {
           res.status(404).send({
@@ -123,7 +155,7 @@ exports.delete = (req, res) => {
       })
       .catch(err => {
         res.status(500).send({
-          message: "Could not user with id=" + id
+          message: "Could not delete user with id=" + id
         });
       });
 };

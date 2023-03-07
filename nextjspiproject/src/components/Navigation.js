@@ -32,26 +32,55 @@ export default function Navigation() {
             Main page
           </Link>
         </li>
-        <li>
-          <Link href={"/secured"}>
-            Secured page
-          </Link>
-        </li>
         {!auth.token
           ?
-          <li>
-            <Link href={"/login"}>
-              Login page
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link href={"/login"}>
+                Login page
+              </Link>
+            </li>
+          </>
           :
-          <li>
-            <Link href={"/logout"}>
-              {auth.user.email} Logout page
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link href={"/meals"}>
+                Meals page
+              </Link>
+            </li>
+            <li>
+              <Link href={"/secured"}>
+                Secured page
+              </Link>
+            </li>
+            {auth.user.role === "ADMIN"
+              ?
+              
+              <li>
+                <Link href={"/admin"}>
+                  Admin page
+                </Link>
+              </li>
+              :<></>
+            }
+            {auth.user.role === "USER"
+              ?
+              <li>
+                <Link href={"/user"}>
+                  User page
+                </Link>
+              </li>
+            :<></>
+            }
+            <li>
+              <Link href={"/logout"}>
+                {auth.user.email} Logout page
+              </Link>
+            </li>
+          </>
         }
       </ul>
+      
     </>
   )
 
