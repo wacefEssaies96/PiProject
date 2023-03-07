@@ -1,6 +1,6 @@
 import Article from "@/components/article/Article";
 import { fetchData } from "@/services/mix";
-import { Col, Container, Row, Stack } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 export default function Index({ articles }) {
     return (
@@ -8,8 +8,8 @@ export default function Index({ articles }) {
             <Row>
                 {articles.map((element, index) => {
                     return (
-                        <Col style={{marginBottom: '20px'}}>
-                            <Article key={index} article={element}></Article>
+                        <Col key={index} style={{ marginBottom: '20px' }}>
+                            <Article key={element._id} article={element}></Article>
                         </Col>
                     )
                 })}
