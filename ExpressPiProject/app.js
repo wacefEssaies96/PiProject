@@ -27,7 +27,7 @@ var app = express();
 
 app.use(cors());
 app.enable('trust proxy');
-app.use(bodyParser.json({type: '*/*'}));
+// app.use(bodyParser.json({type: '*/*'}));
 
 app.use(logger('dev'));
 app.use(express.json());
