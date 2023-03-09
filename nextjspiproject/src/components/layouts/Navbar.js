@@ -1,44 +1,54 @@
-import Link from 'next/link'
-import styles from '../../styles/Home.module.css'
+import Link from 'next/link';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
-const Navbar = () => {
-    return (
-    <div className={styles.container}>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">Sport Types Section</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link href="/" legacyBehavior><a className="nav-link active" aria-current="page">Home</a></Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/client" legacyBehavior><a className="nav-link">Client</a></Link>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Admin
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <Link href="/admin/sport-type" legacyBehavior><a className="dropdown-item">Sport Type</a></Link>
-                    </li>
-                  <li>
-                    <Link href="/admin/sport-sub-type" legacyBehavior><a className="dropdown-item">Sport Sub Type</a></Link>
-                  </li>
-                  <li><hr className="dropdown-divider"/></li>
-                  <li><a className="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-    );
+function Navigationbar() {
+  return (
+    <Navbar variant="dark" bg="dark" expand="lg" className="mb-3">
+      <Container fluid>
+        <Navbar.Brand href="#">Health SpotLight</Navbar.Brand>
+        <Container>
+          <Navbar.Brand type="button" className='btn btn-success'><Link href={'/login'}>sign in</Link></Navbar.Brand>
+          <Navbar.Brand type="button" className='btn btn-warning'><Link href={'/register'}>register</Link></Navbar.Brand>
+        </Container>
+        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} />
+        <Navbar.Offcanvas
+          aria-labelledby={`offcanvasNavbarLabel-expand-lg`}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-lg`}>
+              Health SpotLight
+            </Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Nav className="justify-content-end flex-grow-1 pe-3">
+              <Nav.Link href="/">Home</Nav.Link>
+              <NavDropdown
+                title="Admin"
+                id={`offcanvasNavbarDropdown-expand-lg`}
+              >
+                <NavDropdown.Item href="#action3">User Management</NavDropdown.Item>
+                <NavDropdown.Item href="/admin/sport-type">Sport Type Management</NavDropdown.Item>
+                <NavDropdown.Item href="/admin/sport-sub-type">Sport SubType Management</NavDropdown.Item>
+                <NavDropdown.Item href="/article/admin">Article Management</NavDropdown.Item>
+                <NavDropdown.Item href="#action4">Product Management</NavDropdown.Item>
+                <NavDropdown.Item href="#action3">Appointement Management</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action5">
+                  Contact
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Offcanvas.Body>
+        </Navbar.Offcanvas>
+      </Container>
+    </Navbar>
+  );
 }
- 
-export default Navbar;
+
+export default Navigationbar;
