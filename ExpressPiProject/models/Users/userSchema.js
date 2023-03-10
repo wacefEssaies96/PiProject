@@ -14,7 +14,7 @@ const userSchema =new mongoose.Schema(
     role : String,
     height : Number,
     weight : Number,
-    gender   : Number,
+    gender   : String,
     phone : Number,
     address : String,
     disease : String,

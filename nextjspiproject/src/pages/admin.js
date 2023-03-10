@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Component } from 'react'
 import Navigation from '../components/Navigation'
 import { handleAuthSSR } from '../services/auth'
@@ -15,7 +16,11 @@ export default class Admin extends Component {
     return (
       <div>
         <h1>Admin page</h1>
-        
+        <li>
+          <Link href={"/users"}>
+            User page
+          </Link>
+        </li>
         <Navigation />
       </div>
     )
