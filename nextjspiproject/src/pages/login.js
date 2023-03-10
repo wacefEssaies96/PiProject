@@ -32,8 +32,9 @@ export default function login(props) {
       })
       const token = response.data.token
       const user = response.data.user[0]
+      const mode = 'local'
       // console.log(" in login "+token+" user : "+user.id+" user email : "+user.email)
-      await loginService({ token, user })
+      await loginService({ token, user, mode })
       setAuth({
         token,
         error: null,
