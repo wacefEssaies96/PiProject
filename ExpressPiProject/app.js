@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const passport = require("passport");
 
 var mongoose = require('mongoose')
 var cors = require('cors')
@@ -23,6 +24,9 @@ var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
 
+const googleAuthRouter = require("./routes/googleauth");
+
+
 var app = express();
 
 app.use(cors());
@@ -34,8 +38,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors())
+app.use(passport.initialize());
+// app.use(passport.session());
 
+app.use("/", googleAuthRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
