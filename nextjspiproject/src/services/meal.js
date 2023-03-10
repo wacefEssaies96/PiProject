@@ -55,10 +55,10 @@ export const submitMeal = async (data, operationMode) => {
     }
 
     operationMode === 'Create'
-        ? axios.post(`${process.env.backurl}/api/meal`, meal)
+        ? axios.post(`${process.env.backurl}/api/meal/Create`, meal)
             .then(res => console.log(" meal created succesfuly "))
             .catch(err => console.log(" meal created err "+err))
-        : axios.put(`${process.env.backurl}/api/meal/${data.target.id.value}`, meal)
+        : axios.put(`${process.env.backurl}/api/meal/Update/${data.target.id.value}`, meal)
             .then(res => console.log(" meal updated succesfuly "))
             .catch(err => console.log(" meal updated err "+err))
 }
