@@ -6,6 +6,10 @@ import nextCookie from 'next-cookies'
 // set up cookies
 const cookies = new Cookies();
 
+// export var isAuthenticated = (cookies.get('token') !== undefined && cookies.get('user') !== undefined)
+
+// export var AuthenticatedUser = cookies.get('user') 
+// export var token = cookies.get('token') 
 
 
 export const handleAuthSSR = async (ctx) => {

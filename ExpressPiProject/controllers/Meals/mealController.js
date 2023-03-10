@@ -91,7 +91,7 @@ exports.createMeal = (req1, res) => {
   Meal.find({FoodItem: FoodItem})
     .then(dataFood => {
       if (dataFood[0]){
-        res.status(404).send({ message: " Meals already exist with FoodItem = " + req1.body.FoodItem });
+        res.status(200).send({ message: " Meals already exist with FoodItem = " + req1.body.FoodItem });
       }else{
         const id =req1.body.userId;
         User.findById(id).then( dataUser => {
@@ -109,8 +109,7 @@ exports.createMeal = (req1, res) => {
               serving_size_portion : req1.body.serving_size_portion, 
               calories_portion  : req1.body.calories_portion,
               serving_size_oz  : req1.body.serving_size_oz,
-              calories_oz    : req1.body.calories_oz,
-              userId : u,
+              calories_oz    : req1.body.calories_oz
             });
             
             m.save()
