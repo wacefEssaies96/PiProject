@@ -5,8 +5,12 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import nextCookie from 'next-cookies'
 
-function Navigationbar() {
+function Navigationbar(ctx) {
+
+  const {user} = nextCookie(ctx)
+
   return (
     <Navbar variant="dark" bg="dark" expand="lg" className="mb-3">
       <Container fluid>
@@ -14,6 +18,7 @@ function Navigationbar() {
         <Container>
           <Navbar.Brand type="button" className='btn btn-success'><Link href={'/login'}>sign in</Link></Navbar.Brand>
           <Navbar.Brand type="button" className='btn btn-warning'><Link href={'/register'}>register</Link></Navbar.Brand>
+          {user !== undefined && <Navbar.Brand type="button" className='btn btn-info'><Link href={'/editProfile'}>edit profile</Link></Navbar.Brand>}
         </Container>
         <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} />
         <Navbar.Offcanvas
