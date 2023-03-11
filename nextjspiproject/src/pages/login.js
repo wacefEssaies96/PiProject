@@ -32,8 +32,9 @@ export default function login(props) {
       })
       const token = response.data.token
       const user = response.data.user[0]
+      const mode = 'local'
       // console.log(" in login "+token+" user : "+user.id+" user email : "+user.email)
-      await loginService({ token, user })
+      await loginService({ token, user, mode })
       setAuth({
         token,
         error: null,
@@ -59,6 +60,12 @@ export default function login(props) {
   const googleAuth = () => {
     window.open(
       `${process.env.backurl}/auth/google`,
+      "_self"
+    );
+  };
+  const linkedInAuth = () => {
+    window.open(
+      `${process.env.backurl}/auth/linkedin`,
       "_self"
     );
   };
@@ -88,7 +95,9 @@ export default function login(props) {
           <button onClick={googleAuth}>
             <span>Sing in with Google</span>
           </button>
-          {/* <a href="/auth/google">google</a> */}
+          <button onClick={linkedInAuth}>
+            <span>Sing in with LinkedIn</span>
+          </button>
         </>
       )}
 
