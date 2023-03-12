@@ -7,12 +7,16 @@ import { fetchData } from "@/services/mix";
 export default function Index({ users }) {
 
   const [list, setList] = useState(users)
-  const [admin, setAdmin] = useState(true)
+  const [allRoles, setAllRoles] = useState(true)
+  const [admin, setAdmin] = useState(false)
   const [client, setClient] = useState(false)
   
   const showRoleFilter = (filter) =>{
+    setAllRoles(false)
     setAdmin(false)
     setClient(false)
+    if(filter == "allRoles")
+      setAllRoles(true)
     if(filter == "admin")
         setAdmin(true)
     if(filter == "client")
@@ -24,6 +28,10 @@ export default function Index({ users }) {
       <h1>List of Users</h1>
       <Link className="btn btn-outline-success" href={`/users/admin/create`}>Create new user</Link>
         <hr/>
+      <Button variant="outline-success" onClick={() => showRoleFilter("allRoles")}>
+      All
+      </Button>
+      &nbsp;
       <Button variant="outline-success" onClick={() => showRoleFilter("admin")}>
       admin
       </Button>
@@ -47,7 +55,7 @@ export default function Index({ users }) {
         <tbody>
 
           {list.map((user, index) => {
-            if((admin && user.role == "ADMIN") || (client && user.role == "USER")){
+            if((allRoles) || (admin && user.role == "ADMIN") || (client && user.role == "USER")){
                 return (
                   <tr key={index}>
                     <td key={user.email}>{user.email}</td>

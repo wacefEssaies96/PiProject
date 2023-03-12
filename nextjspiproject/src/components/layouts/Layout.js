@@ -1,10 +1,13 @@
-import Footer from "./Footer";
+import Footer from "../UserTemplate/Footer";
+import Header from "../UserTemplate/Header";
 import Navbar from "./Navbar";
 
 const Layout = ({ children }) => {
     return ( 
         <div className="content">
-            { children }
+            <Header/>
+                { children }
+            <Footer/>
         </div>
     );
 }

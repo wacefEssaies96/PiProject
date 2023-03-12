@@ -1,6 +1,26 @@
 import React from 'react'
+import { Cookies } from 'react-cookie'
+import { useEffect,useState } from "react"
+import Link from 'next/link'
+
 
 function Header() {
+   
+    
+   const cookies = new Cookies()
+
+   const [auth, setAuth] = useState({
+     token: null,
+     user: null,
+   })
+   useEffect(() => {
+     setAuth(
+       {
+         token: cookies.get('token'),
+         user: cookies.get('user')
+       })
+   }, [])
+       
   return (
     <>
     
@@ -10,35 +30,44 @@ function Header() {
            <div className="wd-header-left">
                         <ul className="list-inline">
                             <li className="list-inline-item"><a href="#"> <i className="icon-phone"></i>+012 3456789</a></li>
-                              <li className="list-inline-item"><a href="mailto:someone@example.com"> <i className="icon-envelope"></i> someone@example.com </a></li>
+                              <li className="list-inline-item"><a href="#"> <i className="icon-envelope"></i> someone@example.com </a></li>
                             </ul>
                         </div>
            <div className="wd-header-right">
              <div className="wd-user-cart">
                <ul>
-                                                                 <li>
-                           <a href="#"><i className="fab fa-facebook-f"></i></a>
-                        </li>
-                                                                        <li>
-                           <a href="#"><i className="fab fa-twitter"></i></a>
-                        </li>
-                                                                        <li>
-                           <a href="#"><i className="fab fa-linkedin-in"></i></a>
-                        </li>
-                                                                        <li>
-                           <a href="#"><i className="fab fa-youtube"></i></a>
-                        </li>
-                                                                        <li>
-                           <a href="#"><i className="fab fa-instagram"></i></a>
-                        </li>
-                                                 <li className="has-dropdown">
-                                                      <a href="#"><i className="icon-user"></i></a>
-                           <ul className="user-option">
-                              <li><a href="register/index.html">Register</a></li>
-                              <li><a href="login/index.html">Login</a></li>
-                           </ul>
-                                                    </li>
-                                       </ul>
+                  <li>
+                     <a href="#"><i className="fab fa-facebook-f"></i></a>
+                  </li>
+                  <li>
+                     <a href="#"><i className="fab fa-twitter"></i></a>
+                  </li>
+                  <li>
+                     <a href="#"><i className="fab fa-linkedin-in"></i></a>
+                  </li>
+                  <li>
+                     <a href="#"><i className="fab fa-youtube"></i></a>
+                  </li>
+                  <li>
+                     <a href="#"><i className="fab fa-instagram"></i></a>
+                  </li>
+                  <li className="has-dropdown">
+                     <a href="#"><i className="icon-user"></i></a>
+                        <ul className="user-option">
+                           {!auth.token
+                           ?
+                              <>
+                                 <li><Link href={"/register"}>Register</Link></li>
+                                 <li><Link href={"/login"}>Login</Link></li>
+                              </>
+                           :
+                           <>
+                              <li><Link href={"/logout"}> Logout</Link></li>
+                              </>
+                           }
+                        </ul>
+                  </li>
+               </ul>
              </div>
            </div>
          </div>
@@ -56,7 +85,19 @@ function Header() {
                      </div>
                      <div className="nav">
                         <nav>
-                           <ul id="menu-main-menu" className="menu"><li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="index.html" aria-current="page">Home</a>
+                           <ul id="menu-main-menu" className="menu">
+            {  auth.token && auth.user.role === "ADMIN" &&          
+                           <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
+                              <a href={"/users"} aria-current="page">Managment</a>
+<ul className="sub-menu">
+	<li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href={"/users"} aria-current="page">Users</a></li>
+	<li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">other</a></li>
+	<li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">other</a></li>
+	<li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">other</a></li>
+</ul>
+</li>
+}
+                              <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="index.html" aria-current="page">Home</a>
 <ul className="sub-menu">
 	<li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li>
 	<li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="home-2/index.html">Home Page Two</a></li>
