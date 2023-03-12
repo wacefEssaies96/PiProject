@@ -13,8 +13,6 @@ require('dotenv').config();
 var mealRouter = require('./routes/Meals/mealRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 // routes SportTypes - SubTypes
 var sportTypeRouter = require('./routes/Sports/sportTypeRoutes');
 var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
@@ -24,12 +22,14 @@ var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
+//send email route 
+var resetPassword = require('./routes/resetPasswordRoute')
 
 var app = express();
 
 app.use(cors());
 app.enable('trust proxy');
-app.use(bodyParser.json({type: '*/*'}));
+app.use(bodyParser.json({ type: '*/*' }));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -38,7 +38,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
-app.use('/', indexRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
@@ -49,15 +48,16 @@ app.use('/api/admin/categories', categoryRouter);
 app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
+app.use('/api', resetPassword);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
 mongoose.connect(
-    process.env.MONGODB_URI,
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }
+  process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
 ).then(() => {
   console.log("Connected to the database! ");
 }).catch(err => {
@@ -72,7 +72,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  res.status(500).send({error: err})
+  res.status(500).send({ error: err })
 });
 
 module.exports = app;
