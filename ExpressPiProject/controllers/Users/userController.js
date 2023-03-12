@@ -42,6 +42,7 @@ exports.createUser = (req, res) => {
           phone : req.body.phone,
           address : req.body.address,
           disease : req.body.disease,
+          image: req.file.path,
         });
         // Save user in the database
         u.save()
