@@ -26,4 +26,20 @@ router.get(
 		res.redirect("http://localhost:3000?token=" + token + '&name=' + user.name + '&email=' + user.email);
 	}
 );
+
+require('../services/linkedinpassport');
+
+router.get(
+	"/auth/linkedin",
+	passport.authenticate("linkedin", { scope: ["r_emailaddress", "r_liteprofile"] })
+);
+
+router.get(
+	"/auth/linkedin/callback",
+	passport.authenticate("linkedin", { failureRedirect: "/", session: false }),
+	async function (req, res) {
+		const token = req.user.token
+		res.redirect("http://localhost:3000?token="+ token + '&name=' + req.user.name );
+	}
+);
 module.exports = router;

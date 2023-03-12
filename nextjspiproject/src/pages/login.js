@@ -63,6 +63,12 @@ export default function login(props) {
       "_self"
     );
   };
+  const linkedInAuth = () => {
+    window.open(
+      `${process.env.backurl}/auth/linkedin`,
+      "_self"
+    );
+  };
 
 
   return (
@@ -89,7 +95,9 @@ export default function login(props) {
           <button onClick={googleAuth}>
             <span>Sing in with Google</span>
           </button>
-          {/* <a href="/auth/google">google</a> */}
+          <button onClick={linkedInAuth}>
+            <span>Sing in with LinkedIn</span>
+          </button>
         </>
       )}
 

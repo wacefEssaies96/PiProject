@@ -24,7 +24,7 @@ var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
 
-const googleAuthRouter = require("./routes/googleauth");
+const otherAppsAuthRouter = require("./routes/otherappsauth");
 
 
 var app = express();
@@ -41,7 +41,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 // app.use(passport.session());
 
-app.use("/", googleAuthRouter);
+// app.use("/li", linkedInAuthRouter);
+app.use("/", otherAppsAuthRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
