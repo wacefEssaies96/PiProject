@@ -2,6 +2,10 @@ import { loginService } from '@/services/auth';
 import { Inter } from '@next/font/google'
 import { useRouter } from 'next/router';
 import Navigation from '../components/Navigation'
+import Header from '@/components/UserTemplate/Header'
+import HomeUser from '@/components/UserTemplate/HomeUser'
+import Footer from '@/components/UserTemplate/Footer'
+import Login from '@/components/UserTemplate/Login'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +28,9 @@ export default function Home() {
 
   return (
     <>
-      <Navigation />
+		<Header/>
+		<HomeUser/>
+		<Footer/>
     </>
   )
 }
