@@ -4,12 +4,15 @@ import { loginService } from '../services/auth'
 import { useRouter } from "next/router";
 import { useState } from "react"
 import { Button, Container, Form, Stack } from "react-bootstrap"
+import Link from 'next/link';
 
 export default function login(props) {
 
   const router = useRouter()
 
   const cookies = new Cookies()
+
+  const [validInput, setValidInput] = useState(false)
 
   const [auth, setAuth] = useState({
     token: cookies.get('token') || null,
@@ -20,6 +23,9 @@ export default function login(props) {
   const onLoginClick = async (e) => {
     /* eslint-disable no-console */
     e.preventDefault()
+
+    const form = e.currentTarget;
+
     auth.email = e.target.email.value
     auth.password = e.target.password.value
     try {
@@ -70,39 +76,41 @@ export default function login(props) {
     );
   };
 
+    if (form.checkValidity() === true) {
+      setValidInput(true)
+      console.log('form valid')
+    }
+ 
 
   return (
     <Container>
-
       <h3>Login</h3>
-
       {!auth.token && (
-        <>
-          <form onSubmit={onLoginClick}>
-            <Stack gap={4}>
-              <Form.Group>
-                <Form.Label htmlFor="email">Email</Form.Label>
-                <Form.Control defaultValue={auth.email} placeholder="user@esprit.tn" type="text" id="email" name="email" required></Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label htmlFor="password">Password</Form.Label>
-                <Form.Control defaultValue={auth.password} type="password" id="password" name="password" required></Form.Control>
-              </Form.Group>
-            </Stack>
-            <Button variant="success" type="submit">Login</Button>
-            <p>{auth.error && `Error: ${auth.error}`}</p>
-          </form>
-          <button onClick={googleAuth}>
-            <span>Sing in with Google</span>
-          </button>
-          <button onClick={linkedInAuth}>
-            <span>Sing in with LinkedIn</span>
-          </button>
-        </>
+        <Form onSubmit={onLoginClick}>
+          <Stack gap={4}>
+            <Form.Group>
+              <Form.Label htmlFor="email">Email</Form.Label>
+              <Form.Control defaultValue={auth.email} placeholder="user@esprit.tn" type="text" id="email" name="email" required isInvalid={validInput}></Form.Control>
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please enter a correct email
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label htmlFor="password">Password</Form.Label>
+              <Form.Control defaultValue={auth.password} type="password" id="password" name="password" required isInvalid={validInput}></Form.Control>
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please enter your password
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Stack>
+          <Button variant="success" type="submit">Login</Button>
+          <p>{auth.error && `Error: ${auth.error}`}</p>
+          <p className='text-right'>Forgotten password ? <Link href={"/forgottenPassword"}>Reset it</Link></p>
+        </Form>
       )}
-
       {auth.token && <p>Token: {auth.token}</p>}
-
     </Container>
   )
 }

@@ -23,6 +23,8 @@ var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
+//send email route 
+var resetPassword = require('./routes/resetPasswordRoute')
 
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 
@@ -53,15 +55,16 @@ app.use('/api/admin/categories', categoryRouter);
 app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
+app.use('/api', resetPassword);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
 mongoose.connect(
-    process.env.MONGODB_URI,
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }
+  process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
 ).then(() => {
   console.log("Connected to the database! ");
 }).catch(err => {
@@ -76,7 +79,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  res.status(500).send({error: err})
+  res.status(500).send({ error: err })
 });
 
 module.exports = app;

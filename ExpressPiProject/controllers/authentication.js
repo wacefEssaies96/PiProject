@@ -32,7 +32,7 @@ exports.signup = function (req, res, next) {
     fullname : req.body.fullname,
     email : req.body.email,
     password : req.body.password,
-    role : req.body.role,
+    role : "USER",
     height : req.body.height,
     weight : req.body.weight,
   });

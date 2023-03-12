@@ -1,7 +1,7 @@
 const Footer = () => {
     return (
         <footer>
-            Copyright 2023 Sport types List
+            Copyright 2023 Health SpotLight
         </footer>
     );
 }
