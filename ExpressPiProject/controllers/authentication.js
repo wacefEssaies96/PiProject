@@ -1,15 +1,6 @@
 const jwt = require('jwt-simple');
 const User = require('../models/Users/user');
-const { Vonage } = require('@vonage/server-sdk')
-
-const vonage = new Vonage({
-  apiKey: "20bbd0c0",
-  apiSecret: "cW4fFfWv7jnKNL1g"
-})
-
-//const {TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN}=process.env;
-//const client = require('twilio')(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN, {lazyLoading: true});
-
+const { secret } = require('../config');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -19,7 +10,7 @@ function tokenForUser(user) {
 
 
 exports.signin = function (req, res) {
-  
+
   User.find({email: req.body.email})
       .then(data => {
         if (!data)
@@ -38,26 +29,23 @@ exports.signin = function (req, res) {
 
 };
 
-exports.signup = async function (req, res, next) {
+exports.signup = function (req, res, next) {
   var user = new User({
     fullname : req.body.fullname,
     email : req.body.email,
     password : req.body.password,
-    role : "USER",
+    role : req.body.role,
     height : req.body.height,
     weight : req.body.weight,
-    phone:req.body.phone,
-    
-    
   });
   const email = user.email;
   const password = user.password;
 
- /* if (!email || !password) {
+  if (!email || !password) {
     return res.status(422).send({ error: 'Email and password must be provided' });
-  }*/
+  }
 
-   User.findOne({ email: email }, function (err, existingUser) {
+  User.findOne({ email: email }, function (err, existingUser) {
     if (err) {
       return next(err);
     }
@@ -71,17 +59,14 @@ exports.signup = async function (req, res, next) {
       if (err) {
         return next(err);
       }
-  
-      // res.json({ token: tokenForUser(user) });
-
+      res.json({ token: tokenForUser(user) });
     });
-    
   });
+}
 
-
-};
-exports.requireRole = function requireRole(role) {
-  return (req, res, next) => {
+  exports.requireRole = function(role) {
+    return (req, res, next) => {
+      
     var user = null
     User.findOne({ email: req.body.email, role : role})
     .then(data => {
@@ -98,7 +83,7 @@ exports.requireRole = function requireRole(role) {
         .status(500)
         .send({ message: "Error retrieving user with email=" + req.body.email+" and role =" + role });
     });
-    
+
   };
 }
 
@@ -300,4 +285,3 @@ async function sendSMS(id,email) {
 
 
   
-
