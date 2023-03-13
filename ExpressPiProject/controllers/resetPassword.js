@@ -90,11 +90,13 @@ exports.resetPassword = async (req, res) => {
 
   const updatedUser = await User.findById(req.params.id)
     .then(u => {
-      u.email = req.body.email;
-      u.password = req.body.password;
-
       const salt = bcrypt.genSalt(10)
-      console.log(req.body.email, req.body.password)
+      const hash = bcrypt.hashSync(req.body.password, salt)
+      
+      u.email = req.body.email;
+      u.password = hash;
+
+      // console.log(req.body.email, req.body.password)
 
       u.save()
         .then(() => res.json('Password reseted syccessfully!'))

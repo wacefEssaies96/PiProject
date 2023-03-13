@@ -16,18 +16,22 @@ export default function resetPass(props) {
         e.preventDefault()
         const form = e.currentTarget
         setValidated(true)
-        console.log(userId, token)
+        // console.log(userId, token)
         const password1 = e.target.password1.value
-        const password2 = e.target.password2.value
-    
-        if (password1 !== password2) {
-            setPassConfirmMsg("Passwords Don't Match")
-        } else {
-            setPassConfirmMsg("")
-            await resetPassword(e)
-        }
-        if (form.checkValidity() === true) {
-            router.push("/")
+        // const password2 = e.target.password2.value
+        if (password1.length!=0){
+            // if (password1 !== password2) {
+            //     setPassConfirmMsg("Passwords Don't Match")
+            //     console.log(passConfirmMsg)
+            // } else {
+            //     // setPassConfirmMsg("")
+            //     // await resetPassword(e)
+            // }
+            if (form.checkValidity() === true) {
+                console.log("working")
+                await resetPassword(e,userId,token)
+                // router.push("/")
+            }
         }
     }
 
@@ -51,7 +55,7 @@ export default function resetPass(props) {
                             Please enter your new password, Password minLength is 8
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group>
+                    {/* <Form.Group>
                         <Form.Label htmlFor="password">Confirm Password</Form.Label>
                         <Form.Control placeholder="Confirm new password" type="password" name="password2" required minLength={8}></Form.Control>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -59,7 +63,7 @@ export default function resetPass(props) {
                             Please confirm your new password, Password minLength is 8
                             {passConfirmMsg}
                         </Form.Control.Feedback>
-                    </Form.Group>
+                    </Form.Group> */}
                 </Stack><br/>
                 <Button type="submit" className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button">Submit</Button>
             </Form><br/>
