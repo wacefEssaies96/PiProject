@@ -59,6 +59,7 @@ function Header() {
                               <>
                                  <li><Link href={"/register"}>Register</Link></li>
                                  <li><Link href={"/login"}>Login</Link></li>
+                                 <li><Link href={"/resister-doctor-or-user"}>Resigter2</Link></li>
                               </>
                            :
                            <>

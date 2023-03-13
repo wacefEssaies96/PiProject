@@ -4,13 +4,15 @@ import axios from 'axios'
 import { loginService } from '../../services/auth'
 import { useRouter } from "next/router";
 import { useState } from "react"
-import { Button, Container, Form, Stack } from "react-bootstrap"
+import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
 
 function Login() {
   const router = useRouter()
 
   const [validInput, setValidInput] = useState(false)
+  const [show, setShow] = useState(false)
+
 
   const cookies = new Cookies()
 
@@ -106,8 +108,8 @@ function Login() {
         <div className="container">
           <div className="inner_intro text-center">
             <h1>
-              Login         
-              </h1>
+              Login
+            </h1>
             <div className="breadcrumb">
               <ul className="pagination-inner"><li className="breadcrumb-item"><a href="../index.html">Home</a></li><li className="breadcrumb-item active" aria-current="page">Login</li></ul>
             </div>
@@ -127,6 +129,9 @@ function Login() {
                         href="../register/index.html"> Signup here!</a>
                       </p>
                     </div>
+                    {show && <Alert variant="success" onClose={() => setShow(false)} dismissible>
+                      <Alert.Heading>An email is sent to you with an access link, please check your inbox!</Alert.Heading>
+                    </Alert>}
                     <Form id="login" onSubmit={onLoginClick}>
                       <Form.Group className="form-label-group">
                         <Form.Label htmlFor="email">Email</Form.Label>
@@ -149,35 +154,35 @@ function Login() {
                                     <label className="custom-control-label"
                                            htmlFor="customCheck1">Remember Password</label>
                                 </div> */}
-                                {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
-                                {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
-{/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                      {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
+                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
                       {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
                       <Button
                         className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
                         type="submit" value="Login"
                         name="submit">Sign In</Button>
-                              </Form>
-                                <Button  
-                                className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                                         value="Login google" onClick={googleAuth} >Sign In with google</Button>
-                                <Button  
-                                className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                                        value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
-                                        <p>{auth.error && `Error: ${auth.error}`}</p>
-                                        <div className="text-center">
-                                            <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
-                                        </div>
-                                        
-                        </div>
+                    </Form>
+                    <Button
+                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                      value="Login google" onClick={googleAuth} >Sign In with google</Button>
+                    <Button
+                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                      value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
+                    <p>{auth.error && `Error: ${auth.error}`}</p>
+                    <div className="text-center">
+                      <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
+                    </div>
 
-                                
-                            )}
+                  </div>
 
-                            {auth.token && <p>Login success Token: {auth.token}</p>}
-                            
-                <DeleteConfirmation showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
-                </div>
+
+                )}
+
+                {auth.token && <p>Login success Token: {auth.token}</p>}
+
+                <DeleteConfirmation alertEmail={()=>setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
+              </div>
             </div>
           </div>
         </div>
