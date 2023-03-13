@@ -12,12 +12,7 @@ const mealSchema =new mongoose.Schema(
     serving_size_portion : String, 
     calories_portion  : String,
     serving_size_oz  : String,
-    calories_oz    : String ,
-    userId: 
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
+    calories_oz    : String
   },
   { timestamps: true }
 )

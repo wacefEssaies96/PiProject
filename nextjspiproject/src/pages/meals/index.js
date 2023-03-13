@@ -23,7 +23,7 @@ export default function Index({ meals }) {
       setshowServing_oz(true)
   }
 
-  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/meal`))
+  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/meal/findAll`))
   const deleteOneMeal = async (id) => deleteData(`${process.env.backurl}/api/meal/${id}`).then(refresh)
 
   return (
@@ -89,7 +89,7 @@ export default function Index({ meals }) {
 }
 
 export async function getServerSideProps() {
-  const data = await fetchData(`${process.env.backurl}/api/meal`);
+  const data = await fetchData(`${process.env.backurl}/api/meal/findAll`);
   return {
     props: {
       meals: data

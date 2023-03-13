@@ -13,7 +13,7 @@ export default function EditMeal({ meal }) {
 }
 
 export async function getServerSideProps(context) {
-    const data = await fetchData(`${process.env.backurl}/api/meal/${context.query.id}`);
+    const data = await fetchData(`${process.env.backurl}/api/meal/findOne/${context.query.id}`);
     return {
         props: {
             meal: data

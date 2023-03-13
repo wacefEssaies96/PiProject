@@ -10,11 +10,13 @@ export const submitArticle = async (data, operationMode, content) => {
     formData.append('subcategory', JSON.stringify({ title: data.target.subcategory.value }));
     if (data.target.thumbnail.files[0] !== undefined)
         formData.append('thumbnail', data.target.thumbnail.files[0]);
-    operationMode === 'Create'
-        ? axios.post(`${process.env.backurl}/api/admin/articles/create`, formData)
-            .then(res => success(res.data.message))
-            .catch(err => errorAlert(err.response.data.message))
-        : axios.put(`${process.env.backurl}/api/admin/articles/update/${data.target.id.value}`, formData)
-            .then((res) => success(res.data.message))
-            .catch(err => errorAlert(err.response.data.message))
+    try {
+        const response =
+            operationMode === 'Create'
+                ? await axios.post(`${process.env.backurl}/api/admin/articles/create`, formData)
+                : await axios.put(`${process.env.backurl}/api/admin/articles/update/${data.target.id.value}`, formData)
+        success(response.message)
+    } catch (error) {
+        errorAlert("Oops! An error has occured. Please try again later.")
+    }
 }

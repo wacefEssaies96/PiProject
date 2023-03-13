@@ -1,23 +1,26 @@
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
-    
-const userSchema =new mongoose.Schema(
+
+const userSchema = new mongoose.Schema(
   {
-    fullname : String,
-    email : {
+    fullname: String,
+    email: {
       type: String,
       unique: true,
       lowercase: true,
-      
     },
     password : String,
     role : String,
-    height : Number,
-    weight : Number,
-    gender   : Number,
+    gender   : String,
     phone : Number,
     address : String,
+    height : Number,
+    weight : Number,
     disease : String,
+    image: String,
+    account_Verified:Boolean,
+    speciality:String,
+
     meals: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Meal'

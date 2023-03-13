@@ -18,11 +18,10 @@ export default function Navigation() {
         token: cookies.get('token'),
         user: cookies.get('user')
       })
-  },[])
+  }, [])
 
 
   return (
-    // <></>
     <>
       <h2>Pages:</h2>
       <br />
@@ -40,6 +39,11 @@ export default function Navigation() {
                 Login page
               </Link>
             </li>
+            <li>
+              <Link href={"/register"}>
+                Register page
+              </Link>
+            </li>
           </>
           :
           <>
@@ -55,13 +59,13 @@ export default function Navigation() {
             </li>
             {auth.user.role === "ADMIN"
               ?
-              
+
               <li>
                 <Link href={"/admin"}>
                   Admin page
                 </Link>
               </li>
-              :<></>
+              : <></>
             }
             {auth.user.role === "USER"
               ?
@@ -70,7 +74,7 @@ export default function Navigation() {
                   User page
                 </Link>
               </li>
-            :<></>
+              : <></>
             }
             <li>
               <Link href={"/logout"}>
@@ -80,7 +84,7 @@ export default function Navigation() {
           </>
         }
       </ul>
-      
+
     </>
   )
 
