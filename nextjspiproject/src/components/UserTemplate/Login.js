@@ -149,22 +149,35 @@ function Login() {
                                     <label className="custom-control-label"
                                            htmlFor="customCheck1">Remember Password</label>
                                 </div> */}
-                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                                {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                                {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
+{/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
                       {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
                       <Button
                         className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
                         type="submit" value="Login"
                         name="submit">Sign In</Button>
-                      <p>{auth.error && `Error: ${auth.error}`}</p>
-                      <div className="text-center">
-                        <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
-                      </div>
-                    </Form>
-                  </div>
-                )}
-                {auth.token && <p>Login success Token: {auth.token}</p>}
+                              </Form>
+                                <Button  
+                                className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                                         value="Login google" onClick={googleAuth} >Sign In with google</Button>
+                                <Button  
+                                className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                                        value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
+                                        <p>{auth.error && `Error: ${auth.error}`}</p>
+                                        <div className="text-center">
+                                            <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
+                                        </div>
+                                        
+                        </div>
+
+                                
+                            )}
+
+                            {auth.token && <p>Login success Token: {auth.token}</p>}
+                            
                 <DeleteConfirmation showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
-              </div>
+                </div>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ export const resetPassword = async (data, id, token) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            password: data.target.password.value,
+            password: data.target.password1.value,
         }),
     }
 

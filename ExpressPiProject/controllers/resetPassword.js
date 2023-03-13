@@ -1,12 +1,17 @@
 const sgMail = require('@sendgrid/mail')
 API_KEY = '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'
 const User = require('../models/Users/user')
-const jwt = require("jsonwebtoken")
+const jwt = require('jwt-simple');
 const { secret } = require('../config')
-const bcrypt = require("bcrypt")
+// const bcrypt = require("bcrypt")
 
 sgMail.setApiKey(API_KEY)
 
+function tokenForUser(user) {
+  const timestamp = new Date().getTime();
+  const token = jwt.encode({ sub: user.id, iat: timestamp }, secret);
+  return token;
+}
 const sendEmail = async (receiver, source, subject, content) => {
   // msg object
   const message = {
@@ -35,8 +40,10 @@ exports.sendResetLink = async (req, res) => {
       email: user.email,
       id: user._id
     }
-    const token = jwt.sign(payload, secretForUser, { expiresIn: '10m' })
-
+    const timestamp = new Date().getTime();
+    // const token = jwt.sign(payload, secretForUser, { expiresIn: '10m' })
+    const token = jwt.encode({ sub: user.id, iat: timestamp }, secret);
+ 
     const link = `${req.protocol}://localhost:3000/resetPassword?userId=${user._id}&token=${token}`
 
     await sendEmail(
@@ -90,13 +97,11 @@ exports.resetPassword = async (req, res) => {
 
   const updatedUser = await User.findById(req.params.id)
     .then(u => {
-      const salt = bcrypt.genSalt(10)
-      const hash = bcrypt.hashSync(req.body.password, salt)
-      
       u.email = req.body.email;
-      u.password = hash;
+      u.password = req.body.password;
 
-      // console.log(req.body.email, req.body.password)
+      // const salt = bcrypt.genSalt(10)
+      console.log(req.body.email, req.body.password)
 
       u.save()
         .then(() => res.json('Password reseted syccessfully!'))
