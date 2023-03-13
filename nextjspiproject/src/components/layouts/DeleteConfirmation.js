@@ -44,7 +44,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { Modal, Button, Form, Stack } from "react-bootstrap";
 
-const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, type, message }) => {
+const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, type, message , alertEmail}) => {
 
   const [email, setEmail] = useState(null)
   const router = useRouter()
@@ -61,8 +61,8 @@ const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, type, mess
           email: email
         }),
       })
-      console.log('an email is sent to you ! check it please')
-      router.push("/resetPassword")
+      hideModal()
+      alertEmail()
     }
   }
   return (

@@ -97,7 +97,6 @@ exports.resetPassword = async (req, res) => {
 
   const updatedUser = await User.findById(req.params.id)
     .then(u => {
-      u.email = req.body.email;
       u.password = req.body.password;
 
       // const salt = bcrypt.genSalt(10)

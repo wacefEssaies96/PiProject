@@ -2,7 +2,7 @@ import Success from "@/components/layouts/SuccessMsg"
 import { resetPassword } from "@/services/resetPasswordService"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Button, Container, Form, Stack } from "react-bootstrap"
+import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 
 export default function resetPass(props) {
 
@@ -10,7 +10,7 @@ export default function resetPass(props) {
     const router = useRouter()
     const [validated, setValidated] = useState(false)
     const { userId, token } = router.query
-    const [ passConfirmMsg, setPassConfirmMsg] = useState('')
+    // const [passConfirmMsg, setPassConfirmMsg] = useState('')
 
     const handleResetPassword = async (e) => {
         e.preventDefault()
@@ -19,7 +19,7 @@ export default function resetPass(props) {
         // console.log(userId, token)
         const password1 = e.target.password1.value
         // const password2 = e.target.password2.value
-        if (password1.length!=0){
+        if (password1.length != 0) {
             // if (password1 !== password2) {
             //     setPassConfirmMsg("Passwords Don't Match")
             //     console.log(passConfirmMsg)
@@ -29,7 +29,7 @@ export default function resetPass(props) {
             // }
             if (form.checkValidity() === true) {
                 console.log("working")
-                await resetPassword(e,userId,token)
+                await resetPassword(e, userId, token)
                 // router.push("/")
             }
         }
@@ -43,6 +43,8 @@ export default function resetPass(props) {
 
     return (
         <Container>
+
+            {/* <Success message={'An email is sent to you with an access link, please check your inbox!'}></Success> */}
             {showAlert && (<Success message={'Password reseted succsefully!'}></Success>)}
             <h3>Change Password</h3>
             <Form noValidate validated={validated} onSubmit={handleResetPassword}>
@@ -64,9 +66,9 @@ export default function resetPass(props) {
                             {passConfirmMsg}
                         </Form.Control.Feedback>
                     </Form.Group> */}
-                </Stack><br/>
+                </Stack><br />
                 <Button type="submit" className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button">Submit</Button>
-            </Form><br/>
+            </Form><br />
         </Container>
     )
 }
