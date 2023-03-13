@@ -37,7 +37,7 @@ exports.sendResetLink = async (req, res) => {
     }
     const token = jwt.sign(payload, secretForUser, { expiresIn: '10m' })
 
-    const link = `${req.protocol}://localhost:3030/api/reset_password/${user._id}/${token}`
+    const link = `${req.protocol}://localhost:3000/resetPassword?userId=${user._id}&token=${token}`
 
     await sendEmail(
       email,

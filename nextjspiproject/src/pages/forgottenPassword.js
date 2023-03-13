@@ -1,35 +1,25 @@
 import { Button, Container, Form, Stack } from "react-bootstrap"
-import { useState } from "react";
-// import { useRouter } from "next/router";
+import { useState } from "react"
 
 export default function forgottenPassword() {
 
   const [email, setEmail] = useState(null)
-  // const [otp, setOTP] = useState()
-
-  // const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (email) {
-      // const OTP = Math.floor(Math.random() * 9000 + 1000);
-      // console.log(OTP);
-      // setOTP(OTP);
-
       await fetch(`${process.env.backurl}/api/send_recovery_email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          recipient_email: email,
-          // OPT: opt
+          recipient_email: email
         }),
       })
 
       console.log('an email is sent to you ! check it please')
     }
-    // router.push('/OTPInput')
   }
   return (
     <Container>
