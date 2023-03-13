@@ -23,6 +23,10 @@ var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
+// routes e-commerce
+const productRouter = require('./routes/e-commerce/e-commerce');
+const cartRouter=require('./routes/e-commerce/Cart');
+
 //send email route 
 var resetPassword = require('./routes/resetPasswordRoute')
 
@@ -36,12 +40,19 @@ app.enable('trust proxy');
 // app.use(bodyParser.json({type: '*/*'}));
 
 app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 // app.use(passport.session());
+
+
+
+//Routes
+app.use('/api/admin/products', productRouter);
+app.use('/api/admin/carts', cartRouter);
 
 // app.use("/li", linkedInAuthRouter);
 app.use("/", otherAppsAuthRouter);
