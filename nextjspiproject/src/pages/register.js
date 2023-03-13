@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Register from '../components/registerComponent'
+import withAuth  from '@/components/Withauth'
 
-export default function RegistrationPage() {
 
+
+function RegistrationPage() {
+  console.log(withAuth);
   return (
     <div className='container'>
         <Head>
@@ -12,3 +15,4 @@ export default function RegistrationPage() {
     </div>
   )
 }
+export default withAuth(RegistrationPage);

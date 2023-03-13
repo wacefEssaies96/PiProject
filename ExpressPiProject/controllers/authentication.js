@@ -23,7 +23,7 @@ exports.signin = function (req, res) {
   User.find({email: req.body.email})
       .then(data => {
         if (!data)
-          res.status(404).send({ message: "Not found user with email " + email });
+          res.status(404).send({ message: "Not found user with email " + req.body.email });
         else {
           var user = data;
           res.send({ token: tokenForUser(req.user), "user" : user });
