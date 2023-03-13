@@ -22,8 +22,9 @@ var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
-// routes Products
+// routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
+const cartRouter=require('./routes/e-commerce/Cart');
 
 var app = express();
 
@@ -42,6 +43,8 @@ app.use(cors())
 
 //Routes
 app.use('/api/admin/products', productRouter);
+app.use('/api/admin/carts', cartRouter);
+
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
