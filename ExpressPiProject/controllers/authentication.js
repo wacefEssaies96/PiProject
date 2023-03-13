@@ -11,32 +11,38 @@ function tokenForUser(user) {
 
 exports.signin = function (req, res) {
 
-  User.find({email: req.body.email})
-      .then(data => {
-        if (!data)
-          res.status(404).send({ message: "Not found user with email " + email });
-        else {
-          var user = data;
-           sendSMS(user._id,req.body.email);
-          res.send({ token: tokenForUser(req.user), "user" : user });
-        }
-      })
-      .catch(err => {
-        res
-          .status(500)
-          .send({ message: "Error retrieving user with email=" + email });
-      });
+  User.find({ email: req.body.email })
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found user with email " + email });
+      else {
+        var user = data;
+        let x = Math.floor((Math.random() * 1000000) + 1)
+        const from = "Vonage APIs"
+        const to = user.phone
+        const text = " A text message sent using the Vonage SMS API " + x
+        //  await vonage.sms.send({to,from,text})
+        // .then(resp => { console.log('Message sent successfully'); console.log(resp); })
+        // .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
+        res.send({ token: tokenForUser(req.user), "user": user, 'code': x });
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving user with email=" + email });
+    });
 
 };
 
 exports.signup = function (req, res, next) {
   var user = new User({
-    fullname : req.body.fullname,
-    email : req.body.email,
-    password : req.body.password,
-    role : req.body.role,
-    height : req.body.height,
-    weight : req.body.weight,
+    fullname: req.body.fullname,
+    email: req.body.email,
+    password: req.body.password,
+    role: req.body.role,
+    height: req.body.height,
+    weight: req.body.weight,
   });
   const email = user.email;
   const password = user.password;
@@ -64,12 +70,12 @@ exports.signup = function (req, res, next) {
   });
 }
 
-  exports.requireRole = function(role) {
-    return (req, res, next) => {
-      
+exports.requireRole = function (role) {
+  return (req, res, next) => {
+
     var user = null
-    User.findOne({ email: req.body.email, role : role})
-    .then(data => {
+    User.findOne({ email: req.body.email, role: role })
+      .then(data => {
         user = data
         if (user) {
           req.user = user;
@@ -77,12 +83,12 @@ exports.signup = function (req, res, next) {
         } else {
           return res.status(403).json({ message: 'Forbidden' });
         }
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving user with email=" + req.body.email+" and role =" + role });
-    });
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .send({ message: "Error retrieving user with email=" + req.body.email + " and role =" + role });
+      });
 
   };
 }
@@ -232,56 +238,55 @@ exports.tfa=function(req,res,next){
 
   }*/
 
-  //function sendOTP  (phoneNumber,countryCode,email) {}
-  
-    //const {countryCode, phoneNumber}=req.body;
-     /* User.find({email: email})
-    .then(data=>{
-      if(!data){
-        res.status(404).send({message:'Not found user with email'+email})
-      }else {
-        const otpResponse = client.verify.v2
-        .services(TWILIO_ACCOUNT_SID)
-      .verifications.create({
-        to: `${countryCode}${phoneNumber}`, 
-        channel: "sms"});
-        console.log(otpResponse);
-        //res.status(200).send(`OTP send successfully !: ${JSON.stringify(otpResponse)}`);
-         
+//function sendOTP  (phoneNumber,countryCode,email) {}
 
-      }
-    }).catch(err=>{/*res.status(err?.status || 400).send(err?.message || 'Something went wrong!');
-  console.log(err);})
-   */
-  
-    /*client.messages
-      .create({
-        body: message,
-        from: '55434280',
-        to: to
-      })
-      .then(message => console.log(message.sid))
-      .catch(err => console.error(err));*/
+//const {countryCode, phoneNumber}=req.body;
+/* User.find({email: email})
+.then(data=>{
+ if(!data){
+   res.status(404).send({message:'Not found user with email'+email})
+ }else {
+   const otpResponse = client.verify.v2
+   .services(TWILIO_ACCOUNT_SID)
+ .verifications.create({
+   to: `${countryCode}${phoneNumber}`, 
+   channel: "sms"});
+   console.log(otpResponse);
+   //res.status(200).send(`OTP send successfully !: ${JSON.stringify(otpResponse)}`);
+    
+
+ }
+}).catch(err=>{/*res.status(err?.status || 400).send(err?.message || 'Something went wrong!');
+console.log(err);})
+*/
+
+/*client.messages
+  .create({
+    body: message,
+    from: '55434280',
+    to: to
+  })
+  .then(message => console.log(message.sid))
+  .catch(err => console.error(err));*/
 
 
 
-async function sendSMS(id,email) {
-  let x=Math.floor((Math.random() * 1000000) + 1)
+async function sendSMS(user) {
+  let x = Math.floor((Math.random() * 1000000) + 1)
   const from = "Vonage APIs"
-  const to = "21650048691"
-  const text =" A text message sent using the Vonage SMS API " + x
-  const user = await User.findById(id)
-  user.code= x;
-  await user.save()
-  console.log(user)
-  //await User.findByIdAndUpdate(user.email, {code:x}, { useFindAndModify: false })
-    /* await vonage.sms.send({to,from,text})
-        .then(resp => { console.log('Message sent successfully'); console.log(resp); })
-        .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });*/
-        
+  const to = user.phone
+  const text = " A text message sent using the Vonage SMS API " + x
+
+
+  /* await vonage.sms.send({to,from,text})
+      .then(resp => { console.log('Message sent successfully'); console.log(resp); })
+      .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });*/
+
+
+
 }
 
 
 
 
-  
+
