@@ -3,6 +3,7 @@ API_KEY = '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
 const User = require('../models/Users/user')
 const jwt = require("jsonwebtoken")
 const { secret } = require('../config')
+const bcrypt = require("bcrypt")
 
 sgMail.setApiKey(API_KEY)
 
@@ -24,7 +25,7 @@ const sendEmail = async (receiver, source, subject, content) => {
 exports.sendResetLink = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email : req.body.email})
+    const user = await User.findOne({ email: req.body.email })
     if (!user) {
       return res.status(404).send({ error: 'User email not found !' })
     }
@@ -71,20 +72,35 @@ exports.resetPassword = async (req, res) => {
   const secretForUser = secret + userEmail.password
 
   //find user with the payload email and id and then update the user
-  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
-  .then(data => {
-    if (data) {
-      res.send({ message: "user was updated successfully." });
-    } else {
-      res.status(404).send({
-        message: `Cannot update user with id=${id}. Maybe user was not found!`
-      });
-    }
-  }).catch(err => {
-    res.status(500).send({
-      message: "Error updating user with id=" + id
-    });
-  });
+  // const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
+  // .then((res)=> console.log(res))
+  // .then(data => {
+  //   if (data) {
+  //     res.send({ message: "user was updated successfully." });
+  //   } else {
+  //     res.status(404).send({
+  //       message: `Cannot update user with id=${id}. Maybe user was not found!`
+  //     });
+  //   }
+  // }).catch(err => {
+  //   res.status(500).send({
+  //     message: "Error updating user with id=" + id
+  //   });
+  // });
+
+  const updatedUser = await User.findById(req.params.id)
+    .then(u => {
+      u.email = req.body.email;
+      u.password = req.body.password;
+
+      const salt = bcrypt.genSalt(10)
+      console.log(req.body.email, req.body.password)
+
+      u.save()
+        .then(() => res.json('Password reseted syccessfully!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
 
   console.log(updatedUser)
   try {

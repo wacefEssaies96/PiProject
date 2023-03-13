@@ -4,7 +4,7 @@ import { loginService } from '../services/auth'
 import { useRouter } from "next/router";
 import { useState } from "react"
 import { Button, Container, Form, Stack } from "react-bootstrap"
-import Link from 'next/link';
+import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
 
 export default function login(props) {
 
@@ -25,6 +25,10 @@ export default function login(props) {
     e.preventDefault()
 
     const form = e.currentTarget;
+    if (form.checkValidity() === true) {
+      setValidInput(true)
+      console.log('form valid')
+    }
 
     auth.email = e.target.email.value
     auth.password = e.target.password.value
@@ -63,6 +67,22 @@ export default function login(props) {
     }
   }
 
+  const [displayResetPwdModal, setDisplayResetPwdModal] = useState(false)
+  const [resetPwdMsg, setResetPwdMsg] = useState(null)
+
+  const showResetPwdModal = async () => {
+    setResetPwdMsg('To reset your password, please enter your email address here')
+    setDisplayResetPwdModal(true)
+  }
+
+  const hideResetPwdModal = () => {
+    setDisplayResetPwdModal(false)
+  }
+
+  const SUBMIT = () => {
+    console.log('working')
+  }
+
   const googleAuth = () => {
     window.open(
       `${process.env.backurl}/auth/google`,
@@ -75,12 +95,6 @@ export default function login(props) {
       "_self"
     );
   };
-
-    if (form.checkValidity() === true) {
-      setValidInput(true)
-      console.log('form valid')
-    }
- 
 
   return (
     <Container>
@@ -107,10 +121,11 @@ export default function login(props) {
           </Stack>
           <Button variant="success" type="submit">Login</Button>
           <p>{auth.error && `Error: ${auth.error}`}</p>
-          <p className='text-right'>Forgotten password ? <Link href={"/forgottenPassword"}>Reset it</Link></p>
+          <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
         </Form>
       )}
       {auth.token && <p>Token: {auth.token}</p>}
+      <DeleteConfirmation showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg}/>
     </Container>
   )
 }

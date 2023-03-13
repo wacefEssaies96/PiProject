@@ -21,7 +21,7 @@ export const registerUser = async (data, operationMode) => {
     const res =
         operationMode === 'Add'
             ? await fetch(`${process.env.backurl}/api/auth/register`, options)
-            : await fetch(`${process.env.backurl}/api/users/${data.target.id.value}`, options)
+            : await fetch(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
     console.log(data.target.id.value)
     
     const result = await res.json()
