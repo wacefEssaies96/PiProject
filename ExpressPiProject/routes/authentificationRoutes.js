@@ -24,11 +24,14 @@ router.get('/validate', requireAuth, function(req, res) {
   });
 });
 
+
 // Login user
 router.post('/login', requireSignIn, Authentication.signin);
 
 // Register user
 router.post('/register', Authentication.signup);
 
-
+router.get('/test',Authentication.requireRole("USER"), (req, res) => {
+  res.json({ message: 'Hello Admin '+req.user });
+});
 module.exports = router;

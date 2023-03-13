@@ -61,3 +61,24 @@ exports.signup = function (req, res, next) {
     });
   });
 };
+exports.requireRole = function requireRole(role) {
+  return (req, res, next) => {
+    var user = null
+    User.findOne({ email: req.body.email, role : role})
+    .then(data => {
+        user = data
+        if (user) {
+          req.user = user;
+          next();
+        } else {
+          return res.status(403).json({ message: 'Forbidden' });
+        }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving user with email=" + req.body.email+" and role =" + role });
+    });
+    
+  };
+}
