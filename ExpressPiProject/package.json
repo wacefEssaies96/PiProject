@@ -10,6 +10,7 @@
     "bcrypt-nodejs": "^0.0.3",
     "@sendgrid/mail": "^7.7.0",
     "bcryptjs": "^2.4.3",
+    "@vonage/server-sdk": "^3.2.0",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.12",
     "cookie-parser": "~1.4.4",
@@ -17,7 +18,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
-    "express": "~4.16.1",
+    "express": "^4.16.4",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.0",
     "jwt-simple": "^0.5.6",
@@ -33,7 +34,10 @@
     "passport-linkedin-oauth2": "^2.0.0",
     "passport-local": "^1.0.0",
     "request": "^2.88.2",
+    "routes": "^2.1.0",
     "slug": "^8.2.2",
+    "speakeasy": "^2.0.0",
+    "twilio": "^4.8.0",
     "uuid": "^9.0.0"
   }
 }

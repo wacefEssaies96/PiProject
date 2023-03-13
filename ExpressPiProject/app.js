@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require("passport");
+require('dotenv').config();
 
 var mongoose = require('mongoose')
 var cors = require('cors')

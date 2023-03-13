@@ -34,4 +34,12 @@ router.post('/register', Authentication.signup);
 router.get('/test',Authentication.requireRole("USER"), (req, res) => {
   res.json({ message: 'Hello Admin '+req.user });
 });
+//two factor authentication
+//router.post('/send-otp',Authentication.sendOTP);
+//router.post('/verify-otp',Authentication.verifyOTP);
+
+
+
+
+
 module.exports = router;

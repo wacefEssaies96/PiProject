@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
     image: String,
     account_Verified:Boolean,
     speciality:String,
+    code : Number,
+    
 
     meals: [{
       type: mongoose.Schema.Types.ObjectId,

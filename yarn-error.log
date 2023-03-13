@@ -1,0 +1,31 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\rafra\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add next-auth everify
+
+PATH: 
+  C:\Program Files\Common Files\Oracle\Java\javapath;C:\oraclexe\app\oracle\product\10.2.0\server\bin;C:\Program Files (x86)\VMware\VMware Workstation\bin\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files\Java\jdk-11.0.11\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Python\Python311\;C:\Python\Python311\Scripts;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Users\rafra\Local\Microsoft\WindowsApps;C:\flutter\bin;C:\Users\rafra\AppData\Local\Programs\Microsoft VS Code;C:\Users\rafra\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\rafra\AppData\Local\Microsoft\WindowsApps;C:\Users\rafra\AppData\Roaming\npm;C:\Program Files\MongoDB\Server\4.0\bin;C:\Users\rafra\AppData\Local\GitHubDesktop\bin;C:\Users\rafra\.dotnet\tools
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.17.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  SyntaxError: C:\Users\rafra\Desktop\pi\PiProject\package.json: Unexpected end of JSON input
+      at JSON.parse (<anonymous>)
+      at C:\Users\rafra\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\rafra\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\rafra\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
+
+npm manifest: 
+  
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

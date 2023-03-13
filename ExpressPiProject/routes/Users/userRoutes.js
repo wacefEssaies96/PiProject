@@ -18,4 +18,4 @@ router.put("/Update/:id", upload.single('image'), user.updateUser);
 // Delete a User with id
 router.delete("/:id", user.deleteUser);
 
-module.exports = router;
+module.exports = router; 
