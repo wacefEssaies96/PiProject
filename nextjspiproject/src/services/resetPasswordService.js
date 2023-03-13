@@ -1,4 +1,4 @@
-export const resetPassword = async (data) => {
+export const resetPassword = async (data, id, token) => {
 
     const options = {
         method: 'POST',
