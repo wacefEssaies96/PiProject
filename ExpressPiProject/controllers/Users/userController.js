@@ -42,6 +42,7 @@ exports.createUser = (req, res) => {
           phone : req.body.phone,
           address : req.body.address,
           disease : req.body.disease,
+          
         });
         // Save user in the database
         u.save()
@@ -159,3 +160,6 @@ exports.deleteUser = (req, res) => {
         });
       });
 };
+
+
+

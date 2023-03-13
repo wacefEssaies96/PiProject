@@ -18,6 +18,9 @@ const userSchema =new mongoose.Schema(
     phone : Number,
     address : String,
     disease : String,
+    code : Number,
+    
+
     meals: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Meal'

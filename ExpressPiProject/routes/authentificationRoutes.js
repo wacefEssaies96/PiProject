@@ -30,5 +30,12 @@ router.post('/login', requireSignIn, Authentication.signin);
 // Register user
 router.post('/register', Authentication.signup);
 
+//two factor authentication
+//router.post('/send-otp',Authentication.sendOTP);
+//router.post('/verify-otp',Authentication.verifyOTP);
+
+
+
+
 
 module.exports = router;
