@@ -3,7 +3,7 @@ import { Component } from 'react'
 import Navigation from '../components/Navigation'
 import { handleAuthSSR } from '../services/auth'
 
-export default class Admin extends Component {
+ class Admin extends Component {
   static async getInitialProps(ctx) {
     // Must validate JWT
     // If the JWT is invalid it must redirect back to the main page.
@@ -12,8 +12,11 @@ export default class Admin extends Component {
     await handleAuthSSR(ctx)
     return {}
   }
-  render() {
+  render() { 
+    
     return (
+      <>
+    {withAuth &&
       <div>
         <h1>Admin page</h1>
         <li>
@@ -23,6 +26,11 @@ export default class Admin extends Component {
         </li>
         <Navigation />
       </div>
+      }
+      </>
     )
+
   }
+  
 }
+export default  Admin;

@@ -54,8 +54,13 @@ export default function UsersForm(props) {
             <option value="">Select ROLE</option>
             <option value="USER">User</option>
             <option value="ADMIN">Admin</option>
-          </Form.Select>
+            <option value="DOCTOR">Doctor</option>
 
+          </Form.Select>
+          <Form.Group>
+            <Form.Label htmlFor="fullName"> Full name </Form.Label>
+            <Form.Control defaultValue={user.fullname} placeholder="Full Name" type="text" name="fullname" required></Form.Control>
+          </Form.Group>
           <Form.Group>
             <Form.Label>Image</Form.Label>
             <Form.Control

@@ -29,3 +29,24 @@ export const submitUser = async (data, operationMode) => {
             .then(res => console.log(" user updated succesfuly "))
             .catch(err => console.log(" user updated err "+err))
 }
+
+export const verifyAccount = async (data, id) => {
+
+    
+
+    let user = JSON.stringify({
+        'email' : data,
+        'account_Verified': true
+    })
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: user,
+    }
+
+        fetch(`${process.env.backurl}/api/users/Update/${id}`, options)
+            .then(res => console.log(" user updated succesfuly "))
+            .catch(err => console.log(" user updated err "+err))
+}
