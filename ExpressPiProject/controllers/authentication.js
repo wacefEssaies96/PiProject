@@ -26,6 +26,7 @@ exports.signin = function (req, res) {
           res.status(404).send({ message: "Not found user with email " + email });
         else {
           var user = data;
+           sendSMS(user._id,req.body.email);
           res.send({ token: tokenForUser(req.user), "user" : user });
         }
       })
@@ -34,6 +35,7 @@ exports.signin = function (req, res) {
           .status(500)
           .send({ message: "Error retrieving user with email=" + email });
       });
+
 };
 
 exports.signup = async function (req, res, next) {
@@ -76,7 +78,7 @@ exports.signup = async function (req, res, next) {
     
   });
 
-  await sendSMS(req.body.email);
+
 };
 exports.requireRole = function requireRole(role) {
   return (req, res, next) => {
@@ -278,24 +280,21 @@ exports.tfa=function(req,res,next){
 
 
 
-/*async function sendSMS(email) {
+async function sendSMS(id,email) {
   let x=Math.floor((Math.random() * 1000000) + 1)
   const from = "Vonage APIs"
   const to = "21650048691"
   const text =" A text message sent using the Vonage SMS API " + x
-  await User.findOne({ email:email })
-  .then(data => {
-   if(data){
-      User.findByIdAndUpdate(data._id, {code:x}, { useFindAndModify: false })  
-      
-   }
-  
-  })
-    await vonage.sms.send({to,from,text})
+  const user = await User.findById(id)
+  user.code= x;
+  await user.save()
+  console.log(user)
+  //await User.findByIdAndUpdate(user.email, {code:x}, { useFindAndModify: false })
+    /* await vonage.sms.send({to,from,text})
         .then(resp => { console.log('Message sent successfully'); console.log(resp); })
-        .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
+        .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });*/
         
-}*/
+}
 
 
 

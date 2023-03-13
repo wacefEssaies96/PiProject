@@ -1,3 +1,4 @@
+import DoctorsForm from '@/components/users/doctorform'
 import Link from 'next/link'
 import { Component } from 'react'
 import Navigation from '../components/Navigation'
@@ -16,7 +17,10 @@ export default class Doctor extends Component {
     return (
       <div>
         <h1>Doctor page</h1>
-        <Navigation />
+        <Link href={"/doctor"}>
+            Doctor page
+          </Link>
+        <DoctorsForm operationMode="Add" />
       </div>
     )
   }
