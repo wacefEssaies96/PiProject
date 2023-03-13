@@ -70,12 +70,12 @@ export default function Index({ meals }) {
                 <><td key={meal.serving_size_portion}>{meal.serving_size_portion}</td>
                 <td key={meal.calories_portion}>{meal.calories_portion}</td></>
                 :
-                showServing_oz ? 
+                showServing_oz &&
                 <><td key={meal.serving_size_oz}>{meal.serving_size_oz}</td>
                 <td key={meal.calories_oz}>{meal.calories_oz}</td></>
-                :<><td>-</td><td>-</td></>  }
+                }
 
-                  <td key={meal._id}>
+                <td key={meal._id}>
                   <Link className="btn btn-outline-secondary me-3 ms-3" href={`/meals/admin/edit/${meal._id}`}>Edit</Link>
                   <Button onClick={() => deleteOneMeal(meal._id)} variant="outline-danger">Delete</Button>
                 </td>

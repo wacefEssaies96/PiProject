@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container, Table, Button } from "react-bootstrap";
 import { useState } from "react";
-import { fetchData } from "@/services/mix";
+import { deleteData,fetchData } from "@/services/mix";
 
 
 export default function Index({ users }) {
@@ -22,6 +22,9 @@ export default function Index({ users }) {
     if(filter == "client")
         setClient(true)
   }
+
+  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/users/findAll`))
+  const deleteOneUser = async (id) => deleteData(`${process.env.backurl}/api/users/${id}`).then(refresh)
 
   return (
     <Container>
@@ -65,6 +68,7 @@ export default function Index({ users }) {
                     <td key={user.gender}>{user.gender}</td>
                     <td key={user._id}>
                       <Link className="btn btn-outline-secondary me-3 ms-3" href={`/users/admin/edit/${user._id}`}>Edit</Link>
+                      <Button onClick={() => deleteOneUser(user._id)} variant="outline-danger">Delete</Button>
                     </td>
                   </tr>
                 )

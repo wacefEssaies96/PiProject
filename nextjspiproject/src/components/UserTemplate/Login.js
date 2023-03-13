@@ -139,7 +139,8 @@ function Login() {
                                 {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
                                 {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
 
-                                <Button  className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                                <Button  
+                                className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
                                         type="submit" value="Login"
                                         name="submit">Sign In</Button>
                                 <p>{auth.error && `Error: ${auth.error}`}</p>
