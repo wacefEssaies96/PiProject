@@ -68,7 +68,7 @@ export default function MealsForm(props) {
             </Form.Group>
 
         </Stack>
-        <Button variant="success" type="submit">Submit</Button>
+        <Button variant="success" type="submit">Add Meal</Button>
       </Form>
     </Container >
     

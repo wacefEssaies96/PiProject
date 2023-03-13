@@ -51,7 +51,7 @@ export const submitMeal = async (data, operationMode) => {
         'calories_portion' : calories_portion,
         'serving_size_oz' : data.target.serving_size_oz.value,
         'calories_oz' : calories_oz,
-        'userId': cookies.get('user')
+        'userId': cookies.get('user')["_id"]
     }
 
     operationMode === 'Create'
