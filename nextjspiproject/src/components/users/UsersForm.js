@@ -28,12 +28,12 @@ export default function UsersForm(props) {
 
   const getRole = async (event) => {
     console.log(event.target.value)
-    setUser({ 'role': event.target.value })
+    setUser({ ...props.user,'role': event.target.value })
   }
 
   const getGender = async (event) => {
     console.log(event.target.value)
-    setUser({ 'gender': event.target.value })
+    setUser({...props.user, 'gender': event.target.value })
   }
 
   useEffect(() => {
@@ -67,12 +67,12 @@ export default function UsersForm(props) {
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             <Form.Control.Feedback type="invalid">
               Please choose an image of type : png, jpg, jpeg.
-            </Form.Control.Feedback>
+            </Form.Control.Feedback>            
+            <img style={{ height: '15rem' }} src={`${process.env.backurl}/${user.image}`} />
           </Form.Group>
           <Form.Group>
-            <Form.Label htmlFor="height"> Height </Form.Label>
+            <Form.Label htmlFor="email"> Email </Form.Label>
             <Form.Control defaultValue={user.email} placeholder="Email" type="email" name="email" required></Form.Control>
-            <img style={{ height: '15rem' }} src={`${process.env.backurl}/${user.image}`} />
           </Form.Group>
           <Form.Group>
             <Form.Label htmlFor="height"> Height </Form.Label>

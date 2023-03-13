@@ -11,13 +11,15 @@ const userSchema = new mongoose.Schema(
     },
     password : String,
     role : String,
-    height : Number,
-    weight : Number,
     gender   : String,
     phone : Number,
     address : String,
+    height : Number,
+    weight : Number,
     disease : String,
     image: String,
+    account_Verified:Boolean,
+    speciality:String,
 
     meals: [{
       type: mongoose.Schema.Types.ObjectId,

@@ -1,147 +1,141 @@
 const User = require("../../models/Users/user");
 
 // Retrieve all users from the database.
-exports.findAllUsers = (req, res) => {
-  User.find()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving users."
-      });
+exports.findAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.send(users);
+  } catch (err) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving users."
     });
-
+  }
 };
 
 // Create and Save a new user
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
+  try {
+    const existingUser = await User.findOne({ email: req.body.email });
 
-  // Validate request
-  // if (!req.params.fullname || !req.params.email|| !req.params.password|| !req.params.role) {
-  //   res.status(400).send({ message: "User field must be provided !" });
-  // }
-
-  User.find({ email: req.body.email })
-    .then(data => {
-      if (data[0]) {
-        res.status(422).send({
-          message: "User already exist with email " + req.body.email
-        });
-      } else {
-        // Create a user
-        const u = new User({
-          fullname : req.body.fullname,
-          email : req.body.email,
-          password : req.body.password,
-          role : req.body.role,
-          gender : req.body.gender,
-          height : req.body.height,
-          weight : req.body.weight,
-          phone : req.body.phone,
-          address : req.body.address,
-          disease : req.body.disease,
-          image: req.file.path,
-        });
-        // Save user in the database
-        u.save()
-          .then(data1 => {
-            res.status(200).send(data1);
-          })
-          .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while creating the user."
-            });
-          });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving users."
+    if (existingUser) {
+      return res.status(422).send({
+        message: "User already exists with email " + req.body.email
       });
+    }
+
+    const newUser = new User({
+      fullname : req.body.fullname,
+      email : req.body.email,
+      password : req.body.password,
+      role : req.body.role,
+      gender : req.body.gender,
+      phone : req.body.phone,
+      address : req.body.address,
+      height : req.body.height,
+      weight : req.body.weight,
+      disease : req.body.disease,
+      image: req.file.path,
+      account_Verified:req.body.account_Verified,
+      speciality:req.body.speciality,
     });
+
+    const savedUser = await newUser.save();
+
+    res.status(200).send(savedUser);
+  } catch (err) {
+    res.status(500).send({
+      message:
+         "Some error occurred while creating the user."
+    });
+  }
 };
 
 
 // Find a single user with an Email
-exports.findUserByEmail = (req, res) => {
+exports.findUserByEmail = async (req, res) => {
   const email = req.params.email;
 
-  User.find({ email: email })
-    .then(data => {
-      if (!data[0])
-        res.status(404).send({ message: "Not found user with email " + email });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving user with email=" + email });
-    });
+  try {
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).send({ message: "Not found user with email " + email });
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(500).send({ message: "Error retrieving user with email=" + email });
+  }
 };
 
 // Find a single user with an id
-exports.findUserById = (req, res) => {
+exports.findUserById = async (req, res) => {
   const id = req.params.id;
 
-  User.findById(id)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found user with id " + id });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving user with id=" + id });
-    });
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(500).send({ message: "Internal server error" });
+  }
 };
 
 // Update a user by the id in the request
-exports.updateUser = (req, res) => {
+exports.updateUser = async (req, res) => {
   if (!req.body) {
     return res.status(400).send({
       message: "Data to update can not be empty!"
     });
   }
   const id = req.params.id;
-  User.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(data => {
-      if (data) {
-        res.send({ message: "user was updated successfully." });
-      } else {
-        res.status(404).send({
-          message: `Cannot update user with id=${id}. Maybe user was not found!`
-        });
+  const email = req.body.email;
+
+  const SameUser = await User.findOne({ _id: id, email: email });
+  if(SameUser){
+    try {
+      const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
+      if (updatedUser) {
+        return res.send({ message: "User was updated successfully." });
       }
-    }).catch(err => {
+      res.status(404).send({
+        message: `Cannot update user with id=${id}. Maybe user was not found!`
+      });
+    } catch (err) {
       res.status(500).send({
         message: "Error updating user with id=" + id
       });
+    }
+  }else{
+    res.status(422).send({
+      message: `Email Exist ${email} !`
     });
-}
-// Delete a user with the specified id in the request
-exports.deleteUser = (req, res) => {
-  const id = req.params.id;
+  }
+};
 
-  User.findByIdAndRemove(id)
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete user with id=${id}. Maybe user was not found!`
-        });
-      } else {
-        res.send({
-          message: " user deleted successfully!"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete user with id=" + id
+// Delete a user with the specified id in the request
+exports.deleteUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await User.findByIdAndRemove(id);
+
+    if (!data) {
+      res.status(404).send({
+        message: `Cannot delete user with id=${id}. Maybe user was not found!`
       });
+    } else {
+      res.send({
+        message: "User deleted successfully!"
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Could not delete user with id=" + id
     });
+  }
 };
