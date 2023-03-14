@@ -286,3 +286,29 @@ body, .sidebar .widget-posts .widget-post .post-content .post-title{}.navbar.nav
 /* #rs-plugin-settings-inline-css */
 #rev_slider_15_1_wrapper .hermes.tp-bullets{}#rev_slider_15_1_wrapper .hermes .tp-bullet{overflow:hidden;  border-radius:50%;  width:16px;  height:16px;  background-color:rgba(0,0,0,0);  box-shadow:inset 0 0 0 2px #ffffff;  -webkit-transition:background 0.3s ease;  transition:background 0.3s ease;  position:absolute}#rev_slider_15_1_wrapper .hermes .tp-bullet.rs-touchhover{background-color:rgba(0,0,0,0.21)}#rev_slider_15_1_wrapper .hermes .tp-bullet:after{content:' '; position:absolute; bottom:0; height:0; left:0; width:100%; background-color:#ffffff; box-shadow:0 0 1px #ffffff; -webkit-transition:height 0.3s ease; transition:height 0.3s ease}#rev_slider_15_1_wrapper .hermes .tp-bullet.selected:after{height:100%}
 #rev_slider_15_1[data-slideactive="rs-32"] .hermes .tp-bullet{width:16px !important;height:16px !important}#rev_slider_15_1[data-slideactive="rs-33"] .hermes .tp-bullet{width:16px !important;height:16px !important}
+
+#link-register{
+  border: solid;
+  border-radius: 20px;
+  border-color: #dd9933;
+  padding: 7px;
+}
+
+#link-register:hover{
+  background-color: #dd9933;
+  color: white;
+}
+
+#invalid-email:invalid{
+  background-color: ivory;
+  border: none;
+  outline: 2px solid #b22222;
+  border-radius: 5px;
+}
+
+/* #background-image {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(assets/images/weefly/blog-bg.png);
+  background-size: cover;
+} */
