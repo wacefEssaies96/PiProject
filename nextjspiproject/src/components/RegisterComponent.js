@@ -89,7 +89,7 @@ export default function Register(props) {
                                     <Form.Control defaultValue={registerData._id} name="id" type="hidden"></Form.Control>
                                     <Form.Group className="mb-3">
                                         <Form.Label>FullName</Form.Label>
-                                        <Form.Control id="vb_name" defaultValue={registerData.fullname} name="fullName" type="text" placeholder="FullName" required minLength={4} maxLength={15} />
+                                        <Form.Control id="vb_name" defaultValue={registerData.fullName} name="fullName" type="text" placeholder="FullName" required minLength={4} maxLength={15} />
                                         <Form.Control.Feedback type='invalid'>
                                             {'Please enter your fullname, fullname length must be at least 4 caracteres and at most 15 caracters'}
                                         </Form.Control.Feedback>
@@ -99,7 +99,7 @@ export default function Register(props) {
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Email address</Form.Label>
-                                        <Form.Control defaultValue={registerData.email} name="email" type="email" placeholder="name@example.com" required pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+.[a-z]{2,8}' />
+                                        <Form.Control defaultValue={registerData.email} name="email" type="email" placeholder="name@example.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
                                         <Form.Control.Feedback type="valid">
                                             You did it!
                                         </Form.Control.Feedback>

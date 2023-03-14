@@ -10,7 +10,6 @@ function HomeUser() {
       <div className="wpb_column vc_column_container vc_col-sm-12">
         <div className="vc_column-inner">
           <div className="wpb_wrapper">
-            {/* START home_slider_1 REVOLUTION SLIDER 6.5.25 */}
             <p className="rs-p-wp-fix" />
             <rs-module-wrap
               id="rev_slider_15_1_wrapper"
@@ -64,9 +63,6 @@ function HomeUser() {
                       Since the first days of operation of Weelfy, our team has
                       been focused on building a high-quality medical service.
                     </rs-layer>
-                    {/*
-
-							*/}
                     <h1
                       id="slider-15-slide-32-layer-1"
                       className="rs-layer"
@@ -82,9 +78,6 @@ function HomeUser() {
                     >
                       <span>Marijuana Is The Dried</span> Leaves &amp; Flowers
                     </h1>
-                    {/*
-
-							*/}
                     <rs-layer
                       id="slider-15-slide-32-layer-3"
                       className="rev-btn"

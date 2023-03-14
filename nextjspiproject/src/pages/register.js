@@ -1,8 +1,6 @@
 import Head from 'next/head'
 import Register from '../components/registerComponent'
 
-
-
 function RegistrationPage() {
   return (
     <div className='container'>
@@ -13,4 +11,4 @@ function RegistrationPage() {
     </div>
   )
 }
-export default RegistrationPage
+export default RegistrationPage;

@@ -7,6 +7,7 @@ import { useState } from "react"
 import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
 import ReCAPTCHA from "react-google-recaptcha";
+import { AiFillGoogleCircle, AiFillLinkedin } from 'react-icons/ai'
 
 function Login() {
   const router = useRouter()
@@ -14,7 +15,6 @@ function Login() {
   const [validInput, setValidInput] = useState(false)
   const [show, setShow] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(false);
-
 
   const cookies = new Cookies()
 
@@ -51,7 +51,6 @@ function Login() {
       })
       const token = response.data.token
       const user = response.data.user[0]
-      // console.log(" in login "+token+" user : "+user.id+" user email : "+user.email)
       await loginService({ token, user })
       setAuth({
         token,
@@ -104,19 +103,19 @@ function Login() {
   }
 
   const SUBMIT = () => {
-    console.log('working')
+    console.log('alert to do')
   }
 
   return (
     <>
-      <div id="inner_header" className="inner-page-banner">
+      <div className="inner-page-banner">
         <div className="container">
           <div className="inner_intro text-center">
             <h1>
               Login
             </h1>
             <div className="breadcrumb">
-              <ul className="pagination-inner"><li className="breadcrumb-item"><a href="../index.html">Home</a></li><li className="breadcrumb-item active" aria-current="page">Login</li></ul>
+              <ul className="pagination-inner"><li className="breadcrumb-item"><a href="/">Home</a></li><li className="breadcrumb-item active" aria-current="page">Login</li></ul>
             </div>
           </div>
         </div>
@@ -129,9 +128,9 @@ function Login() {
                 {!auth.token && (
                   <div className="offset-lg-3 col-lg-6  mx-auto d-block login-page">
                     <div className="login-page">
-                      <p className="sub_title">Need a weefly account?<a
+                      <p className="sub_title">Need a Health SpotLight account?<a
                         className="color-litegreen"
-                        href="../register/index.html"> Signup here!</a>
+                        href="/resister-doctor-or-user"> Signup here!</a>
                       </p>
                     </div>
                     {show && <Alert variant="success" onClose={() => setShow(false)} dismissible>
@@ -158,34 +157,31 @@ function Login() {
                         sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                         onChange={onCaptchaChange}
                       />
-                      <div className="custom-control custom-checkbox mb-3">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label"
-                          htmlFor="customCheck1">Remember Password</label>
+
+                      <div className="d-flex justify-content-center">
+                        <Button
+                          className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ borderRadius: "8000px", margin:"15px" }}
+                          type="submit" value="Login"
+                          name="submit" disabled={!captchaToken}>Sign In</Button>
+                        <Button
+                          className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ borderRadius: "8000px", margin:"15px" }}
+                          value="Login google" onClick={googleAuth} ><AiFillGoogleCircle size={20}></AiFillGoogleCircle>Google</Button>
+                        <Button
+                          className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ borderRadius: "8000px", margin:"15px" }}
+                          value="Login linkedIn" onClick={linkedInAuth} ><AiFillLinkedin size={20}></AiFillLinkedin>LinkedIn</Button>
                       </div>
-                      <Button
-                        className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                        type="submit" value="Login" disabled={!captchaToken}
-                        name="submit">Sign In</Button>
                     </Form>
-                    <Button
-                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                      value="Login google" onClick={googleAuth} >Sign In with google</Button>
-                    <Button
-                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                      value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
                     <p>{auth.error && `Error: ${auth.error}`}</p>
-                    <div className="text-center">
-                      <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
+                    <div className="d-flex justify-content-center">
+                      <p>Forgotten password ?
+                      <Button className='btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' style={{ borderRadius: "8000px", margin:"15px" }} onClick={showResetPwdModal}>
+                        Reset it
+                      </Button>
+                      </p>
                     </div>
-
                   </div>
-
-
                 )}
-
                 {auth.token && <p>Login success Token: {auth.token}</p>}
-
                 <DeleteConfirmation alertEmail={() => setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
               </div>
             </div>
