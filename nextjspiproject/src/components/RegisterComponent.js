@@ -8,7 +8,7 @@ import Success from './layouts/SuccessMsg'
 export default function Register(props) {
 
     const [registerData, setRegisterData] = useState({
-        fullName: '',
+        fullname: '',
         email: '',
         password: '',
         phone: 0,
@@ -89,7 +89,7 @@ export default function Register(props) {
                                     <Form.Control defaultValue={registerData._id} name="id" type="hidden"></Form.Control>
                                     <Form.Group className="mb-3">
                                         <Form.Label>FullName</Form.Label>
-                                        <Form.Control id="vb_name" defaultValue={registerData.fullName} name="fullName" type="text" placeholder="FullName" required minLength={4} maxLength={15} />
+                                        <Form.Control id="vb_name" defaultValue={registerData.fullname} name="fullname" type="text" placeholder="FullName" required minLength={4} maxLength={15} />
                                         <Form.Control.Feedback type='invalid'>
                                             {'Please enter your fullname, fullname length must be at least 4 caracteres and at most 15 caracters'}
                                         </Form.Control.Feedback>
@@ -106,6 +106,20 @@ export default function Register(props) {
                                         <Form.Control.Feedback type='invalid'>
                                             {'Please enter your email address'}
                                         </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Image</Form.Label>
+                                        <Form.Control
+                                            type="file"
+                                            accept=".png, .jpg, .jpeg"
+                                            name="image"
+                                            required
+                                        />
+                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please choose an image of type : png, jpg, jpeg.
+                                        </Form.Control.Feedback>
+                                        {registerData.image && <img style={{ height: '15rem' }} src={`${process.env.backurl}/${doctor.image}`} />}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Password</Form.Label>
@@ -170,7 +184,7 @@ export default function Register(props) {
                                     <Form.Group className="mb-3">
                                         <Form.Label>Gender</Form.Label>
                                         <div className="mb-3">
-                                            <Form.Select className="form-control" defaultValue={registerData.gender} name="gender" aria-label="Default select example" required>
+                                            <Form.Select className="form-control" value={registerData.gender} name="gender" aria-label="Default select example" required>
                                                 <option value="">Select your gender</option>
                                                 <option value="1">Female</option>
                                                 <option value="2">Male</option>

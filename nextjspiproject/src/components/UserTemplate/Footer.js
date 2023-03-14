@@ -10,18 +10,22 @@ function Footer() {
               <div className="col-lg-4 top_widget">
                 <div className="wd-footer_logo">
                   <a href="index.html">
-                    <img src="/logocarre.png" alt="Health SpotLight"/>
+                    <img src="/logocarre.png" alt="Health SpotLight" />
                   </a>
                 </div>
               </div>
               <div className="col-lg-4 top_widget news-letter">
                 <div className="newsletter">
                   <div id="custom_html-2" className="widget_text widget widget_custom_html"><div className="textwidget custom-html-widget">
+
                     <form id="mc4wp-form-1" className="mc4wp-form mc4wp-form-468" method="post" data-id="468" data-name="Subscribe" ><div className="mc4wp-form-fields"><div className="email_input">
+
                       <input type="email" name="EMAIL" placeholder="Your email address" required />
                     </div>
-                      <button type="button" value="Sign up">Submit <i className="fa fa-caret-right"></i></button>
-                    </div><label style={{ display: "none !important;" }}>Leave this field empty if you're human: <input type="text" name="_mc4wp_honeypot" value="" tabIndex="-1" autoComplete="off" /></label><input type="hidden" name="_mc4wp_timestamp" value="1678243228" /><input type="hidden" name="_mc4wp_form_id" value="468" /><input type="hidden" name="_mc4wp_form_element_id" value="mc4wp-form-1" /><div className="mc4wp-response"></div></form>
+                      <button type="button" defaultValue="Sign up">Submit <i className="fa fa-caret-right"></i></button>
+
+
+                    </div><label style={{ display: "none !important;" }}>Leave this field empty if you're human: <input type="text" name="_mc4wp_honeypot" defaultValue="" tabIndex="-1" autoComplete="off" /></label><input type="hidden" name="_mc4wp_timestamp" defaultValue="1678243228" /><input type="hidden" name="_mc4wp_form_id" defaultValue="468" /><input type="hidden" name="_mc4wp_form_element_id" defaultValue="mc4wp-form-1" /><div className="mc4wp-response"></div></form>
                   </div></div>            </div>
               </div>
               <div className="col-lg-4 top_widget">
@@ -54,8 +58,8 @@ function Footer() {
               <div className="widget_inner">
                 <div id="custom_html-3" className="widget_text widget widget_custom_html"><h4 className="widget-title">Contact Us</h4><div className="textwidget custom-html-widget"><p>Our Address</p>
                   <p>E: <a href="#">health.spotLight@gmail.com</a></p>
-                  <p>P: +216</p></div></div>          </div>
-            </div>
+                  <p>P: +216</p></div></div>          </div >
+            </div >
             <div className="col-lg-4 footer_widget">
               <div className="widget_inner">
                 <div id="nav_menu-1" className="widget widget_nav_menu"><h4 className="widget-title">Useful Links</h4><div className="menu-footer-menu-1-container"><ul id="menu-footer-menu-1" className="menu"><li id="menu-item-1718" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1718"><a href="#">Shop</a></li>
@@ -73,17 +77,17 @@ function Footer() {
                   <li id="menu-item-1765" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1765"><a href="/register">Register</a></li>
                 </ul></div></div>          </div>
             </div>
-          </div>
-        </div>
+          </div >
+        </div >
         <div className="wd-footer_bottom">
           <div className="container">
             <div className="row">
               <div className="col-lg-5">
                 <div className="footer-copyright-text">
                   <p>
-                    © 2023 Health SpotLight All Rights Reserved            </p>
-                </div>
-              </div>
+                    © 2023 Health SpotLight All Rights Reserved            </p >
+                </div >
+              </div >
               <div className="col-lg-2">
                 <div id="back-top" className="back-top" style={{ display: " block;" }}>
                   <a href="#top"><i className="fa fa-angle-up" aria-hidden="true"></i> </a>
@@ -98,12 +102,12 @@ function Footer() {
                   </ul>
                   </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+                </div >
+              </div >
+            </div >
+          </div >
+        </div >
+      </footer >
     </>
   )
 }

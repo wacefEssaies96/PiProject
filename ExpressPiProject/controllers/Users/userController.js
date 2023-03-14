@@ -104,6 +104,7 @@ exports.updateUser = async (req, res) => {
 
   if(SameUser || (!existingUser) ){
     try {
+      req.body.image = req.file.path
       const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
       if (updatedUser) {
         return res.send({ message: "User was updated successfully." });
