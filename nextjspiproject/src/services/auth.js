@@ -61,5 +61,5 @@ export const loginService = async ({ token, user }) => {
 export const logout = () => {
   cookies.remove('token')
   cookies.remove('user')
-  Router.push('/')
+  window.location = "/"
 }

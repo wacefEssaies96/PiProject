@@ -77,7 +77,22 @@ export default function Index({ users }) {
             if ((allRoles) || (admin && user.role == "ADMIN") || (client && user.role == "USER") || (doctor && user.role == "DOCTOR")) {
               return (
                 <tr key={index}>
-                  <td key={user.image}>{user.image}</td>
+                  <td key={user.image}>
+                    <div className="designation-profile-img">
+                        { !(user.image)
+                          ?
+                          <img  style={{ height: '10 rem',width: '10 rem' }} 
+                          src={`${process.env.backurl}/uploads/User/altUser.png`}
+                          alt="no img altUser.png"
+                          />
+                          :
+                          <img  style={{ height: '10 rem',width: '10 rem' }} 
+                          src={`${process.env.backurl}/${user.image}`}
+                          alt="verifiy img"
+                          />
+                        }
+                    </div>
+                    </td>
                   <td key={user.fullname}>{user.fullname}</td>
                   <td key={user.email}>{user.email}</td>
                   <td key={user.role}>{user.role}</td>

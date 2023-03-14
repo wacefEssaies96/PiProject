@@ -52,6 +52,7 @@ function Login() {
         token,
         error: null,
       })
+      /*
       if (user['role' == "ADMIN"]) {
         router.push('/admin')
       }
@@ -63,7 +64,8 @@ function Login() {
       }
       else {
         router.push('/')
-      }
+      }*/
+      window.location = "/"
     } catch (error) {
       console.error(
         'You have an error in your code or there are Network issues.',
@@ -111,7 +113,7 @@ function Login() {
               Login
             </h1>
             <div className="breadcrumb">
-              <ul className="pagination-inner"><li className="breadcrumb-item"><a href="../index.html">Home</a></li><li className="breadcrumb-item active" aria-current="page">Login</li></ul>
+              <ul className="pagination-inner"><li className="breadcrumb-item"><a href={"/"}>Home</a></li><li className="breadcrumb-item active" aria-current="page">Login</li></ul>
             </div>
           </div>
         </div>

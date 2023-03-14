@@ -52,7 +52,23 @@ function Header() {
                      <a href="#"><i className="fab fa-instagram"></i></a>
                   </li>
                   <li className="has-dropdown">
-                     <a href="#"><i className="icon-user"></i></a>
+                     <a href="#">
+                        
+                           <div c>
+                                 { (!auth.user || !auth.user.image)
+                                 ?
+                                 <img  style={{ height: '2rem',width: '2rem' }} 
+                                 src={`${process.env.backurl}/uploads/User/altUser.png`}
+                                 alt="no img altUser.png"
+                                 />
+                                 :
+                                 <img  style={{ height: '2rem',width: '2rem' }} 
+                                 src={`${process.env.backurl}/${auth.user.image}`}
+                                 alt="verifiy img"
+                                 />
+                                 }
+                           </div>
+                        </a>
                         <ul className="user-option">
                            {!auth.token
                            ?
