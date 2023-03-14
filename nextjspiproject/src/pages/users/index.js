@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Container, Table, Button } from "react-bootstrap";
 import { useState } from "react";
 import { deleteData, fetchData } from "@/services/mix";
-import { Router, useRouter } from "next/router";
 import { verifyAccount } from "@/services/user";
 
 
@@ -63,10 +62,11 @@ export default function Index({ users }) {
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
+            <th>Picture</th>
+            <th>Full Name</th>
             <th>Email</th>
             <th>Role</th>
-            <th>Height</th>
-            <th>Weight</th>
+            <th>Phone</th>
             <th>Gender</th>
             <th>Actions</th>
           </tr>
@@ -77,10 +77,11 @@ export default function Index({ users }) {
             if ((allRoles) || (admin && user.role == "ADMIN") || (client && user.role == "USER") || (doctor && user.role == "DOCTOR")) {
               return (
                 <tr key={index}>
+                  <td key={user.image}>{user.image}</td>
+                  <td key={user.fullname}>{user.fullname}</td>
                   <td key={user.email}>{user.email}</td>
                   <td key={user.role}>{user.role}</td>
-                  <td key={user.height}>{user.height}</td>
-                  <td key={user.weight}>{user.weight}</td>
+                  <td key={user.phone}>{user.phone}</td>
                   <td key={user.gender}>{user.gender}</td>
                   <td key={user._id}>
                     <Link className="btn btn-outline-secondary me-3 ms-3" href={`/users/admin/edit/${user._id}`}>Edit</Link>

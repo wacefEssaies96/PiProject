@@ -42,7 +42,10 @@ exports.createUser = async (req, res) => {
 
     const savedUser = await newUser.save();
 
-    res.status(200).send(savedUser);
+    res.status(200).send({
+      message:
+         "User created succssfuly."
+    });
   } catch (err) {
     res.status(500).send({
       message:
@@ -97,7 +100,9 @@ exports.updateUser = async (req, res) => {
   const email = req.body.email;
 
   const SameUser = await User.findOne({ _id: id, email: email });
-  if(SameUser){
+ const existingUser = await User.findOne({ email: req.body.email });
+
+  if(SameUser || (!existingUser) ){
     try {
       const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
       if (updatedUser) {
