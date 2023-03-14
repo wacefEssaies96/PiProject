@@ -97,7 +97,9 @@ exports.updateUser = async (req, res) => {
   const email = req.body.email;
 
   const SameUser = await User.findOne({ _id: id, email: email });
-  if(SameUser){
+  const existingUser = await User.findOne({ email: req.body.email });
+
+  if(SameUser || (!existingUser) ){
     try {
       const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
       if (updatedUser) {
