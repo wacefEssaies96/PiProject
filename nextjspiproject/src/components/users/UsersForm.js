@@ -24,16 +24,7 @@ export default function UsersForm(props) {
     setValidated(true);
 
     if (form.checkValidity() === true) {
-      // var x =
       await submitUser(event, operationMode)
-      // setValidatedSSRresponce(x);
-      // console.log(" ***************** ")
-      // console.log(" resssr "+x)
-      // console.log(" validated "+validated)
-      // console.log(" validatedSSRresponce "+validatedSSRresponce)
-      // if(validatedSSRresponce){
-      //   router.push('/users')
-      // }
     }
   }
 
@@ -117,7 +108,32 @@ export default function UsersForm(props) {
               </Form.Group>
             </Col>
             <Col md={4}>
-              <img style={{ height: '15rem' }} src={`${process.env.backurl}/${user.image}`} />
+              <div className="designation-profile-img">
+                  { !(user.image)
+                    ?
+                    <>
+                    <img  style={{ height: '15rem',width: '15rem' }} 
+                    src={`${process.env.backurl}/uploads/User/altUser.png`}
+                    alt="no img altUser.png"
+                    />
+                    <hr/>
+                    <div className="desig-content">
+                        <p>{`/uploads/User/altUser.png`}</p>
+                    </div>
+                    </>
+                    :
+                    <>
+                    <img  style={{ height: '15rem',width: '15rem' }} 
+                    src={`${process.env.backurl}/${user.image}`}
+                    alt="verifiy img"
+                    />
+                    <hr/>
+                    <div className="desig-content">
+                        <p>{user.image}</p>
+                    </div>
+                    </>
+                  }
+              </div>
             </Col>
           </Row>
 

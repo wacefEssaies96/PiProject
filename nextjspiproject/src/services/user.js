@@ -18,7 +18,7 @@ export const submitUser = async (data, operationMode) => {
     .then((data)=> {if(data.data) {success(data.data.message ); window.location = "/users"}})
     .catch((error)=> {if(error.response){errorAlert(error.response.data.message )}})
     : axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
-    .then((data2)=> {if(data2.data) {success(data2.data.message );Router.push("/users")}})
+    .then((data2)=> {if(data2.data) {success(data2.data.message );window.location = "/users"}})
     .catch((error2)=> {if(error2.response){errorAlert(error2.response.data.message)}})
     // return valueReturn
 
