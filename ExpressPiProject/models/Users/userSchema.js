@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     account_Verified:Boolean,
     speciality:String,
     code : Number,
+    two_factor: Boolean,
     
 
     meals: [{
