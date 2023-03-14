@@ -3,6 +3,7 @@ import axios from "axios";
 export const submitUser = async (data, operationMode) => {
 
     let formData = new FormData();
+    formData.append('fullname', data.target.fullname.value);
     formData.append('email', data.target.email.value);
     formData.append('role', data.target.role.value);
     formData.append('height', data.target.height.value);

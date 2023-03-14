@@ -99,6 +99,7 @@ exports.updateUser = async (req, res) => {
   const SameUser = await User.findOne({ _id: id, email: email });
   if(SameUser){
     try {
+      req.body.image = req.file.path
       const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
       if (updatedUser) {
         return res.send({ message: "User was updated successfully." });

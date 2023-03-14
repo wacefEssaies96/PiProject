@@ -41,8 +41,15 @@ exports.signup = function (req, res, next) {
     email: req.body.email,
     password: req.body.password,
     role: req.body.role,
+    gender: req.body.gender,
+    phone: req.body.phone,
+    address: req.body.address,
     height: req.body.height,
     weight: req.body.weight,
+    disease: req.body.disease,
+    image: req.file.path,
+    account_Verified: req.body.account_Verified,
+    speciality: req.body.speciality,
   });
   const email = user.email;
   const password = user.password;

@@ -3,6 +3,8 @@ var router = express.Router();
 const Authentication = require('../controllers/authentication');
 const passport = require('passport');
 require('../services/passport');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 const requireAuth = passport.authenticate('jwt', {
   session: false
@@ -18,7 +20,7 @@ router.get('/api', function (req, res) {
 });
 
 // Validate user
-router.get('/validate', requireAuth, function(req, res) {
+router.get('/validate', requireAuth, function (req, res) {
   res.send({
     user: req.user.email
   });
@@ -29,10 +31,10 @@ router.get('/validate', requireAuth, function(req, res) {
 router.post('/login', requireSignIn, Authentication.signin);
 
 // Register user
-router.post('/register', Authentication.signup);
+router.post('/register', upload.single('image'), Authentication.signup);
 
-router.get('/test',Authentication.requireRole("USER"), (req, res) => {
-  res.json({ message: 'Hello Admin '+req.user });
+router.get('/test', Authentication.requireRole("USER"), (req, res) => {
+  res.json({ message: 'Hello Admin ' + req.user });
 });
 //two factor authentication
 //router.post('/send-otp',Authentication.sendOTP);

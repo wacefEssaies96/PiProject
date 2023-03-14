@@ -1,29 +1,23 @@
-export const registerUser = async (data, operationMode) => {
+import axios from "axios"
 
-    const method = operationMode === 'Add' ? 'POST' : 'PUT'
-    const options = {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            fullname: data.target.fullName.value,
-            email: data.target.email.value,
-            password : data.target.password.value,
-            height: data.target.height.value,
-            weight: data.target.weight.value,
-            gender: data.target.gender.value,
-            phone: data.target.phone.value,
-            address: data.target.address.value,
-            disease: data.target.disease.value,
-        }),
-    }
+export const registerUser = async (data, operationMode) => {
+    let options = new FormData()
+    options.append('fullname', data.target.fullname.value)
+    options.append('email', data.target.email.value)
+    options.append('password', data.target.password.value)
+    options.append('height', data.target.height.value)
+    options.append('weight', data.target.weight.value)
+    options.append('disease', data.target.disease.value)
+    options.append('gender', data.target.gender.value)
+    options.append('phone', data.target.phone.value)
+    options.append('address', data.target.address.value)
+    options.append('role', 'USER')
+    options.append('image', data.target.image.files[0]);
+        
     const res =
         operationMode === 'Add'
-            ? await fetch(`${process.env.backurl}/api/auth/register`, options)
-            : await fetch(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
-    console.log(data.target.id.value)
-    
-    const result = await res.json()
-    return result
+            ? await axios.post(`${process.env.backurl}/api/auth/register`, options)
+            : await axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
+
+    return res
 }

@@ -55,7 +55,6 @@ app.use(passport.initialize());
 app.use('/api/admin/products', productRouter);
 app.use('/api/admin/carts', cartRouter);
 
-// app.use("/li", linkedInAuthRouter);
 app.use("/", otherAppsAuthRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
