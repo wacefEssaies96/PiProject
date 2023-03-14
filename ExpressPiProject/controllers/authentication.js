@@ -1,5 +1,6 @@
 const jwt = require('jwt-simple');
 const User = require('../models/Users/user');
+const { vonage } = require('@vonage/server-sdk');
 const { secret } = require('../config');
 
 function tokenForUser(user) {
@@ -13,24 +14,25 @@ exports.signin = function (req, res) {
 
   User.find({ email: req.body.email })
     .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found user with email " + email });
+      if (data.length === 0)
+        res.status(404).send({ message: "Not found user with email " + req.body.email });
       else {
-        var user = data;
         let x = Math.floor((Math.random() * 1000000) + 1)
         const from = "Vonage APIs"
-        const to = user.phone
+        const to = data[0].phone
         const text = " A text message sent using the Vonage SMS API " + x
-        //  await vonage.sms.send({to,from,text})
-        // .then(resp => { console.log('Message sent successfully'); console.log(resp); })
-        // .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
-        res.send({ token: tokenForUser(req.user), "user": user, 'code': x });
+        vonage.sms.send({ to, from, text })
+          .then(resp => { console.log('Message sent successfully'); console.log(resp); })
+          .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
+        res.send({ token: tokenForUser(req.user), user: data, code: x });
+
+
       }
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving user with email=" + email });
+        .send({ message: "Error retrieving user with email=" + err });
     });
 
 };

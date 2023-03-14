@@ -6,12 +6,17 @@ import { useRouter } from "next/router";
 import { useState } from "react"
 import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
+import VerifySms from '../VerifySms';
 
 function Login() {
   const router = useRouter()
 
   const [validInput, setValidInput] = useState(false)
   const [show, setShow] = useState(false)
+  const [showSmsVerify, setShowSmsVerify] = useState(false)
+  const [code, setCode] = useState(0)
+  const [user, setUser] = useState({})
+  const [token, setToken] = useState('')
 
 
   const cookies = new Cookies()
@@ -46,24 +51,34 @@ function Login() {
       })
       const token = response.data.token
       const user = response.data.user[0]
-      // console.log(" in login "+token+" user : "+user.id+" user email : "+user.email)
-      await loginService({ token, user })
-      setAuth({
-        token,
-        error: null,
-      })
-      if (user['role' == "ADMIN"]) {
-        router.push('/admin')
-      }
-      else if (user['role' == "User"]) {
-        router.push('/user')
-      }
-      else if (user['role' == "DOCTOR"]) {
-        router.push('/doctor')
+      setUser(response.data.user[0])
+      setToken(response.data.token)
+      setCode(response.data.code)
+      if (user.two_factor === true) {
+        setShowSmsVerify(true)
       }
       else {
-        router.push('/')
+        console.log(" in login " + token + " user : " + user.id + " user email : " + user.email)
+        await loginService({ token, user })
+        setAuth({
+          token,
+          error: null,
+        })
+        if (user['role' == "ADMIN"]) {
+          router.push('/admin')
+        }
+        else if (user['role' == "User"]) {
+          router.push('/user')
+        }
+        else if (user['role' == "DOCTOR"]) {
+          router.push('/doctor')
+        }
+        else {
+          router.push('/')
+        }
       }
+
+
     } catch (error) {
       console.error(
         'You have an error in your code or there are Network issues.',
@@ -129,50 +144,56 @@ function Login() {
                         href="../register/index.html"> Signup here!</a>
                       </p>
                     </div>
-                    {show && <Alert variant="success" onClose={() => setShow(false)} dismissible>
-                      <Alert.Heading>An email is sent to you with an access link, please check your inbox!</Alert.Heading>
-                    </Alert>}
-                    <Form id="login" onSubmit={onLoginClick}>
-                      <Form.Group className="form-label-group">
-                        <Form.Label htmlFor="email">Email</Form.Label>
-                        <Form.Control defaultValue={auth.email} placeholder="user@esprit.tn" className="form-control" type="text" id="email" name="email" required isInvalid={validInput}></Form.Control>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        <Form.Control.Feedback type="invalid">
-                          Please enter a correct email
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                      <Form.Group className="form-label-group">
-                        <Form.Label htmlFor="password">Password</Form.Label>
-                        <Form.Control defaultValue={auth.password} className="form-control" type="password" id="password" name="password" required isInvalid={validInput}></Form.Control>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        <Form.Control.Feedback type="invalid">
-                          Please enter a correct password
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                      {/* <div className="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" className="custom-control-input" id="customCheck1"/>
-                                    <label className="custom-control-label"
-                                           htmlFor="customCheck1">Remember Password</label>
-                                </div> */}
-                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
-                      {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
-                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
-                      {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
-                      <Button
-                        className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                        type="submit" value="Login"
-                        name="submit">Sign In</Button>
-                    </Form>
-                    <Button
-                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                      value="Login google" onClick={googleAuth} >Sign In with google</Button>
-                    <Button
-                      className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                      value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
-                    <p>{auth.error && `Error: ${auth.error}`}</p>
-                    <div className="text-center">
-                      <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
-                    </div>
+                    {!showSmsVerify
+                      ? <>{show && <Alert variant="success" onClose={() => setShow(false)} dismissible>
+                        <Alert.Heading>An email is sent to you with an access link, please check your inbox!</Alert.Heading>
+                      </Alert>}
+                        <Form id="login" onSubmit={onLoginClick}>
+                          <Form.Group className="form-label-group">
+                            <Form.Label htmlFor="email">Email</Form.Label>
+                            <Form.Control defaultValue={auth.email} placeholder="user@esprit.tn" className="form-control" type="text" id="email" name="email" required isInvalid={validInput}></Form.Control>
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                              Please enter a correct email
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                          <Form.Group className="form-label-group">
+                            <Form.Label htmlFor="password">Password</Form.Label>
+                            <Form.Control defaultValue={auth.password} className="form-control" type="password" id="password" name="password" required isInvalid={validInput}></Form.Control>
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                              Please enter a correct password
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                          {/* <div className="custom-control custom-checkbox mb-3">
+                                  <input type="checkbox" className="custom-control-input" id="customCheck1"/>
+                                  <label className="custom-control-label"
+                                         htmlFor="customCheck1">Remember Password</label>
+                              </div> */}
+                          {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                          {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
+                          {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
+                          {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
+                          <Button
+                            className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                            type="submit" value="Login"
+                            name="submit">Sign In</Button>
+                        </Form>
+                        <Button
+                          className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                          value="Login google" onClick={googleAuth} >Sign In with google</Button>
+                        <Button
+                          className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
+                          value="Login linkedIn" onClick={linkedInAuth} >Sign In with linkedIn</Button>
+                        <p>{auth.error && `Error: ${auth.error}`}</p>
+                        <div className="text-center">
+                          <p className='text-right'>Forgotten password ? <Button variant='warning' onClick={showResetPwdModal}>Reset it</Button></p>
+                        </div>
+                      </>
+                      : <>
+                        <VerifySms code={code} token={token} user={user}></VerifySms>
+                      </>
+                    }
 
                   </div>
 
@@ -181,7 +202,7 @@ function Login() {
 
                 {auth.token && <p>Login success Token: {auth.token}</p>}
 
-                <DeleteConfirmation alertEmail={()=>setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
+                <DeleteConfirmation alertEmail={() => setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
               </div>
             </div>
           </div>

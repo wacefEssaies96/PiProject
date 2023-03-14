@@ -15,4 +15,5 @@ function RegistrationPage() {
     </div>
   )
 }
-export default withAuth(RegistrationPage);
+export default RegistrationPage;
+// export default withAuth(RegistrationPage);
