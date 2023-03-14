@@ -1,18 +1,19 @@
 import { submitUser } from "@/services/user";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react"
-import { Button, Container, Form, Stack } from "react-bootstrap"
+import { Button, Container, Form, Row,Col , Stack } from "react-bootstrap"
 
 export default function UsersForm(props) {
   const router = useRouter()
 
   const [operationMode, setOperationMode] = useState('Create')
   const [user, setUser] = useState({
+    image : "",
+    fullname : "",
     email : "",
     role: "",
-    height: "",
-    weight: "",
-    gender: ""
+    phone: "",
+    speciality: "",
   })
   const [validated, setValidated] = useState(false);
 
@@ -21,6 +22,7 @@ export default function UsersForm(props) {
     const form = event.currentTarget;
     setValidated(true);
     await submitUser(event, operationMode)
+
     if (form.checkValidity() === true) {
       router.push('/users')
     }
@@ -29,11 +31,6 @@ export default function UsersForm(props) {
   const getRole = async (event) => {
     console.log(event.target.value)
     setUser({ ...props.user,'role': event.target.value })
-  }
-
-  const getGender = async (event) => {
-    console.log(event.target.value)
-    setUser({...props.user, 'gender': event.target.value })
   }
 
   useEffect(() => {
@@ -45,58 +42,77 @@ export default function UsersForm(props) {
   }, [])
 
   return (
-    <Container>
+    <Container className="py-5">
       <h3>{operationMode} User </h3>
       <Form noValidate validated={validated} onSubmit={handleSubmit} encType='multipart/form-data'>
         <Stack gap={4}>
           <input type="hidden" name="id" defaultValue={user._id}></input>
-          <Form.Select required value={user.role} name="role" onChange={getRole} >
-            <option value="">Select ROLE</option>
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-            <option value="DOCTOR">Doctor</option>
-
-          </Form.Select>
-          <Form.Group>
-            <Form.Label htmlFor="fullName"> Full name </Form.Label>
-            <Form.Control defaultValue={user.fullname} placeholder="Full Name" type="text" name="fullname" required></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              type="file"
-              accept=".png, .jpg, .jpeg"
-              name="image"
-              required
-            />
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            <Form.Control.Feedback type="invalid">
-              Please choose an image of type : png, jpg, jpeg.
-            </Form.Control.Feedback>            
-            <img style={{ height: '15rem' }} src={`${process.env.backurl}/${user.image}`} />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label htmlFor="email"> Email </Form.Label>
-            <Form.Control defaultValue={user.email} placeholder="Email" type="email" name="email" required></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label htmlFor="height"> Height </Form.Label>
-            <Form.Control defaultValue={user.height} placeholder="160" type="text" id="height" name="height" required></Form.Control>
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Label htmlFor="weight">Weight </Form.Label>
-            <Form.Control defaultValue={user.weight} placeholder="50" type="text" id="weight" name="weight" required></Form.Control>
-          </Form.Group>
-
-          <Form.Select required value={user.gender} name="gender" onChange={getGender} >
-            <option value="">Select Gender</option>
-            <option value="Man">Man</option>
-            <option value="Women">Women</option>
-          </Form.Select>
+          
+          <Row>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label htmlFor="fullName"> Full Name </Form.Label>
+                <Form.Control defaultValue={user.fullname} placeholder="Full Name" type="text" name="fullname" required minLength={4} maxLength={20}  />
+                <Form.Control.Feedback type='invalid'>
+                  {'Please enter your fullname, length must be between 4  and 20 caracters'}
+              </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label htmlFor="email"> Email </Form.Label>
+                <Form.Control defaultValue={user.email} placeholder="Email" type="email" name="email" required pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+.[a-z]{2,8}' />
+                <Form.Control.Feedback type='invalid'>
+                  {'Please enter your email address'}
+              </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+            <Form.Group>
+              <Form.Label htmlFor="role"> Role </Form.Label>
+                <Form.Select required value={user.role} name="role" onChange={getRole} >
+                  <option value="">Select ROLE</option>
+                  <option value="USER">User</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="DOCTOR">Doctor</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label htmlFor="phone"> Phone </Form.Label>
+                <Form.Control defaultValue={user.phone} placeholder="12345678"  type="text" pattern="^[0-9]{8}$" id="phone" name="phone" required  />
+                <Form.Control.Feedback type='invalid'>
+                    {'Please enter your phone with 8 number'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Picture</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept=".png, .jpg, .jpeg"
+                  name="image"
+                  required
+                />
+                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {'Please choose an image of type : png, jpg, jpeg.'}
+                </Form.Control.Feedback>            
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <img style={{ height: '15rem' }} src={`${process.env.backurl}/${user.image}`} />
+            </Col>
+          </Row>
 
         </Stack>
-        <Button variant="success" type="submit">Submit</Button>
+        <Button className="btn btn-md btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" type="submit">{operationMode} User</Button>
       </Form>
     </Container >
 

@@ -149,16 +149,12 @@ function Login() {
                           Please enter a correct password
                         </Form.Control.Feedback>
                       </Form.Group>
-                      {/* <div className="custom-control custom-checkbox mb-3">
+                      <div className="custom-control custom-checkbox mb-3">
                                     <input type="checkbox" className="custom-control-input" id="customCheck1"/>
                                     <label className="custom-control-label"
                                            htmlFor="customCheck1">Remember Password</label>
-                                </div> */}
-                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
-                      {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
-                      {/* <input type="hidden" id="security" name="security" value="70515a4dc6" /> */}
-                      {/* <input type="hidden" name="_wp_http_referer" value="/themes/wp/weefly/login/" />                                */}
-                      <Button
+                                </div>
+                          <Button
                         className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
                         type="submit" value="Login"
                         name="submit">Sign In</Button>
