@@ -80,9 +80,9 @@ function Header() {
                <div className="col-md-12">
                   <div className="main-navigation">
                      <div className="logo">
-                        <a href="index.html">
-                                                <img src="wp-content/themes/weefly/assets/images/weefly/logo.png" alt="Weefly"/>
-                                             </a>
+                        <a href={"/"}>
+                           <img src="wp-content/themes/weefly/assets/images/weefly/logo.png" alt="Weefly"/>
+                        </a>
                      </div>
                      <div className="nav">
                         <nav>

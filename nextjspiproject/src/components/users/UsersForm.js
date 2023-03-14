@@ -16,19 +16,29 @@ export default function UsersForm(props) {
     speciality: "",
   })
   const [validated, setValidated] = useState(false);
+  // const [validatedSSRresponce, setValidatedSSRresponce] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     setValidated(true);
-    await submitUser(event, operationMode)
 
     if (form.checkValidity() === true) {
-      router.push('/users')
+      // var x =
+      await submitUser(event, operationMode)
+      // setValidatedSSRresponce(x);
+      // console.log(" ***************** ")
+      // console.log(" resssr "+x)
+      // console.log(" validated "+validated)
+      // console.log(" validatedSSRresponce "+validatedSSRresponce)
+      // if(validatedSSRresponce){
+      //   router.push('/users')
+      // }
     }
   }
 
   const getRole = async (event) => {
+    if(event.target)
     console.log(event.target.value)
     setUser({ ...props.user,'role': event.target.value })
   }
