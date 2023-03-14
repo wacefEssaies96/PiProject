@@ -6,16 +6,21 @@ import { useRouter } from "next/router";
 import { useState } from "react"
 import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Login() {
   const router = useRouter()
 
   const [validInput, setValidInput] = useState(false)
   const [show, setShow] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState(false);
 
 
   const cookies = new Cookies()
 
+  const onCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
   const [auth, setAuth] = useState({
     token: cookies.get('token') || null,
     error: '',
@@ -149,14 +154,18 @@ function Login() {
                           Please enter a correct password
                         </Form.Control.Feedback>
                       </Form.Group>
+                      <ReCAPTCHA
+                        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                        onChange={onCaptchaChange}
+                      />
                       <div className="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" className="custom-control-input" id="customCheck1"/>
-                                    <label className="custom-control-label"
-                                           htmlFor="customCheck1">Remember Password</label>
-                                </div>
-                          <Button
+                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
+                        <label className="custom-control-label"
+                          htmlFor="customCheck1">Remember Password</label>
+                      </div>
+                      <Button
                         className="btn btn-lg btn-block wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button"
-                        type="submit" value="Login"
+                        type="submit" value="Login" disabled={!captchaToken}
                         name="submit">Sign In</Button>
                     </Form>
                     <Button
@@ -177,7 +186,7 @@ function Login() {
 
                 {auth.token && <p>Login success Token: {auth.token}</p>}
 
-                <DeleteConfirmation alertEmail={()=>setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
+                <DeleteConfirmation alertEmail={() => setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
               </div>
             </div>
           </div>
