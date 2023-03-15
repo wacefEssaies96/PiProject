@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Container, Table, Button } from "react-bootstrap";
+import { Container, Table, Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { deleteData, fetchData } from "@/services/mix";
 import { verifyAccount } from "@/services/user";
+import withAuth from "@/components/Withauth";
 
 
-export default function Index({ users }) {
+function Index({ users }) {
 
   const [list, setList] = useState(users)
   const [allRoles, setAllRoles] = useState(true)
@@ -27,8 +28,9 @@ export default function Index({ users }) {
       setDoctor(true)
   }
 
-  const approve = async (user) =>{
-    await verifyAccount(user.email, user._id)
+  const approve = async (e) => {
+    e.preventDefault()
+    await verifyAccount(e.target.email.value, e.target.id.value)
     await refresh()
   }
 
@@ -79,20 +81,20 @@ export default function Index({ users }) {
                 <tr key={index}>
                   <td key={user.image}>
                     <div className="designation-profile-img">
-                        { !(user.image)
-                          ?
-                          <img  style={{ height: '10 rem',width: '10 rem' }} 
+                      {!(user.image)
+                        ?
+                        <img style={{ height: '10 rem', width: '10 rem' }}
                           src={`${process.env.backurl}/uploads/User/altUser.png`}
                           alt="no img altUser.png"
-                          />
-                          :
-                          <img  style={{ height: '10 rem',width: '10 rem' }} 
+                        />
+                        :
+                        <img style={{ height: '10 rem', width: '10 rem' }}
                           src={`${process.env.backurl}/${user.image}`}
                           alt="verifiy img"
-                          />
-                        }
+                        />
+                      }
                     </div>
-                    </td>
+                  </td>
                   <td key={user.fullname}>{user.fullname}</td>
                   <td key={user.email}>{user.email}</td>
                   <td key={user.role}>{user.role}</td>
@@ -102,9 +104,13 @@ export default function Index({ users }) {
                     <Link className="btn btn-outline-secondary me-3 ms-3" href={`/users/admin/edit/${user._id}`}>Edit</Link>
                     <Button onClick={() => deleteOneUser(user._id)} variant="outline-danger">Delete</Button>
                     &nbsp;      &nbsp;
-
-
-                    {user.role == "DOCTOR" && <Button disabled={user.account_Verified } onClick={()=> approve(user)}>approve</Button>}
+                    {user.role == "DOCTOR" &&
+                      <Form onSubmit={approve} encType='multipart/form-data'>
+                        <input type="hidden" name="id" defaultValue={user._id}></input>
+                        <input type="hidden" name="email" defaultValue={user.email}></input>
+                        <Button type="submit" disabled={user.account_Verified}>approve</Button>
+                      </Form>
+                    }
                   </td>
                 </tr>
               )
@@ -125,3 +131,5 @@ export async function getServerSideProps() {
     }
   }
 }
+
+export default withAuth(Index)

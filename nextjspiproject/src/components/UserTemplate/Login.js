@@ -2,7 +2,7 @@ import React from 'react'
 import { Cookies } from 'react-cookie'
 import axios from 'axios'
 import { loginService } from '../../services/auth'
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import { useState } from "react"
 import { Alert, Button, Container, Form, Stack } from "react-bootstrap"
 import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
@@ -64,23 +64,22 @@ function Login() {
         setShowSmsVerify(true)
       }
       else {
-        console.log(" in login " + token + " user : " + user.id + " user email : " + user.email)
         await loginService({ token, user })
         setAuth({
           token,
           error: null,
         })
-        if (user['role' == "ADMIN"]) {
-          router.push('/admin')
+        if (user['role'] == "ADMIN") {
+          window.location = '/users'
         }
-        else if (user['role' == "User"]) {
-          router.push('/user')
+        else if (user['role'] == "USER") {
+          window.location = '/'
         }
-        else if (user['role' == "DOCTOR"]) {
-          router.push('/doctor')
+        else if (user['role'] == "DOCTOR") {
+          window.location = '/doctor'
         }
         else {
-          router.push('/')
+          window.location = '/'
         }
       }
 
@@ -147,7 +146,7 @@ function Login() {
                     <div className="login-page">
                       <p className="sub_title">Need a Health SpotLight account?<a
                         className="color-litegreen"
-                        href="/resister-doctor-or-user"> Signup here!</a>
+                        href="/doctor-or-user"> Signup here!</a>
                       </p>
                     </div>
                     {
@@ -206,8 +205,6 @@ function Login() {
                     }
                   </div >
                 )}
-                {auth.token && <p>Login success Token: {auth.token}</p>}
-
                 <DeleteConfirmation alertEmail={() => setShow(true)} showModal={displayResetPwdModal} confirmModal={SUBMIT} hideModal={hideResetPwdModal} id={null} message={resetPwdMsg} />
               </div >
             </div >

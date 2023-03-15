@@ -1,7 +1,13 @@
 const jwt = require('jwt-simple');
 const User = require('../models/Users/user');
-const { vonage } = require('@vonage/server-sdk');
+// const { vonage } = require('@vonage/server-sdk');
 const { secret } = require('../config');
+const { Vonage } = require('@vonage/server-sdk')
+
+const vonage = new Vonage({
+  apiKey: "20bbd0c0",
+  apiSecret: "cW4fFfWv7jnKNL1g"
+})
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -19,12 +25,13 @@ exports.signin = function (req, res) {
       else {
         let x = Math.floor((Math.random() * 1000000) + 1)
         const from = "Vonage APIs"
-        const to = data[0].phone
+        const to = '21650048691'
         const text = " A text message sent using the Vonage SMS API " + x
         vonage.sms.send({ to, from, text })
           .then(resp => { console.log('Message sent successfully'); console.log(resp); })
           .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
         res.send({ token: tokenForUser(req.user), user: data, code: x });
+        // '216'+data[0].phone
 
 
       }

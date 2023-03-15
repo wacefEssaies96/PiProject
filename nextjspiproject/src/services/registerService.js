@@ -13,7 +13,6 @@ export const registerUser = async (data, operationMode) => {
     options.append('address', data.target.address.value)
     options.append('role', 'USER')
     options.append('image', data.target.image.files[0]);
-        
     const res =
         operationMode === 'Add'
             ? await axios.post(`${process.env.backurl}/api/auth/register`, options)

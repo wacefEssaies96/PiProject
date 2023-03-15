@@ -12,10 +12,11 @@ export const registerDoctor = async (data, operationMode) => {
     options.append('address', data.target.address.value)
     options.append('role', 'DOCTOR')
     options.append('image', data.target.image.files[0]);
-
+ 
     const res =
         operationMode === 'Add'
             ? await axios.post(`${process.env.backurl}/api/auth/register`, options)
             : await axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
+
     return res
 }

@@ -1,11 +1,12 @@
-import {  Suspense,lazy } from 'react'
+import withAuth from '@/components/Withauth'
+import { lazy } from 'react'
 
 const UsersForm = lazy(() => import('@/components/users/UsersForm'))
 
-export default function Create() {
+function Create() {
     return (
-        <Suspense> 
-            <UsersForm></UsersForm>
-        </Suspense>
+        <UsersForm></UsersForm>
     )
 }
+
+export default withAuth(Create)

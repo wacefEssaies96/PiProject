@@ -1,32 +1,26 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { Cookies } from 'react-cookie';
 
-// Function to check if the user is authenticated
-function checkAuth(cookieString) {
-  // Parse the cookie string into an object
-  const cookieObj = cookieString
-    .split(';')
-    .reduce((acc, cookie) => {
-      const [name, value] = cookie.trim().split('=');
-      return { ...acc, [name]: value };
-    }, {});
-
-  // Check if the authentication cookie exists and is not expired
-  const authToken = cookieObj.authToken;
-  const expiry = parseInt(cookieObj.authExpiry);
-  return authToken && expiry && expiry > Date.now();
-}
+const cookies = new Cookies();
 
 function withAuth(WrappedComponent) {
   return (props) => {
     const router = useRouter();
- console.log("22");
     useEffect(() => {
-      // Check if the user is authenticated
-      const authenticated = checkAuth(document.cookie);
-      // Redirect to the login page if not authenticated
-      if (!authenticated) {
+      if (!cookies.get('user')) {
         router.push('/login');
+      }
+      else {
+        if (window.location.pathname.includes('users') && cookies.get('user').role !== 'ADMIN') {
+          window.location = '/'
+        }
+        if (window.location.pathname.includes('doctor') && cookies.get('user').role !== 'DOCTOR') {
+          window.location = '/'
+        }
+        if (window.location.pathname.includes('editProfile') && cookies.get('user').role === 'DOCTOR') {
+          window.location = '/'
+        }
       }
     }, []);
 

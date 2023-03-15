@@ -19,7 +19,7 @@ export default function Home() {
       const token = router.query.token
       const mode = 'google'
       loginService({ token, user, mode })
-      router.push('/user')
+      router.push('/')
     }
 
   return (

@@ -1,10 +1,9 @@
 import Head from 'next/head'
 import Register from '../components/RegisterComponent'
 import nextCookie from 'next-cookies'
-import { useEffect } from 'react'
+import withAuth from '@/components/Withauth'
 
-export default function EditProfilePage({ user }) {
-
+function EditProfilePage({ user }) {
   return (
     <div className='container'>
       <Head>
@@ -17,9 +16,31 @@ export default function EditProfilePage({ user }) {
 
 export async function getServerSideProps(ctx) {
   const { user } = nextCookie(ctx)
-  return {
-    props: {
-      user: user
+  if (user) {
+    const id = user._id
+    const res = await fetch(`${process.env.backurl}/api/users/findOne/${id}`)
+    const u = await res.json()
+    return {
+      props: {
+        user: u
+      }
     }
   }
+  return {
+    props: {
+      user: {
+        _id:'',
+        fullname: "",
+        email: "",
+        role: "",
+        gender: "",
+        phone: 0,
+        address: "",
+        speciality: "",
+    }
+    }
+  }
+
 }
+
+export default withAuth(EditProfilePage)

@@ -2,22 +2,39 @@ import React from 'react'
 import { Cookies } from 'react-cookie'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 
 function Header() {
 
    const cookies = new Cookies()
-
+   const router = useRouter()
    const [auth, setAuth] = useState({
       token: null,
       user: null,
    })
+   const logout = () => {
+      cookies.remove('token')
+      cookies.remove('user')
+      router.reload()
+   }
+   const getUser = async () => {
+      if (cookies.get('user')){
+         let res = await fetch(`${process.env.backurl}/api/users/findOne/${cookies.get('user')._id}`)
+         let data = await res.json()
+         auth.user = data
+         console.log(auth)
+      }
+
+   }
    useEffect(() => {
+      getUser()
       setAuth(
          {
             token: cookies.get('token'),
             user: cookies.get('user')
          })
+         console.log(auth)
    }, [])
 
    return (
@@ -50,18 +67,38 @@ function Header() {
                               <a href="#"><i className="fab fa-instagram"></i></a>
                            </li>
                            <li className="has-dropdown">
-                              <a href="#"><i className="icon-user"></i></a>
+                              <a href="#">
+                                 <div>
+                                    {(!auth.user || !auth.user.image)
+                                       ?
+                                       <img style={{ height: '2rem', width: '2rem' }}
+                                          src={`${process.env.backurl}/uploads/User/altUser.png`}
+                                          alt="no img altUser.png"
+                                       />
+                                       :
+                                       <img style={{ height: '2rem', width: '2rem' }}
+                                          src={`${process.env.backurl}/${auth.user.image}`}
+                                          alt="verifiy img"
+                                       />
+                                    }
+                                 </div>
+                              </a>
                               <ul className="user-option">
                                  {!auth.token
                                     ?
                                     <>
-                                       <li><Link href={"/register"}>Register</Link></li>
+                                       <li><Link href={"/doctor-or-user"}>Register</Link></li>
                                        <li><Link href={"/login"}>Login</Link></li>
-                                       <li><Link href={"/doctor-or-user"}>Resigter2</Link></li>
+                                       {/* <li><Link href={"/doctor-or-user"}>Resigter2</Link></li> */}
                                     </>
                                     :
                                     <>
-                                       <li><Link href={"/logout"}> Logout</Link></li>
+                                       {auth.user.role == 'DOCTOR'
+                                          ? <li><Link href="#" onClick={() => { router.push('/doctor') }}> Profile</Link></li>
+                                          : <li><Link href="#" onClick={() => { router.push('/editProfile') }}> Profile</Link></li>
+                                       }
+
+                                       <li><Link href="#" onClick={() => { logout() }}> Logout</Link></li>
                                     </>
                                  }
                               </ul>
@@ -79,7 +116,7 @@ function Header() {
                      <div className="main-navigation">
                         <div className="logo">
                            <a href="#">
-                              <img src="/logo.png" alt="HealthSpotLight"/>
+                              <img src="/logo.png" alt="HealthSpotLight" />
                            </a>
                         </div>
                         <div className="nav">

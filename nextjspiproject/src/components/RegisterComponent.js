@@ -3,10 +3,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
+import { Cookies } from 'react-cookie'
 import Success from './layouts/SuccessMsg'
 
 export default function Register(props) {
-
+    const cookies = new Cookies()
     const [registerData, setRegisterData] = useState({
         fullname: '',
         email: '',
@@ -29,8 +30,16 @@ export default function Register(props) {
         setValidated(true)
         await registerUser(e, operationMode)
         if (form.checkValidity() === true) {
-            router.push("/")
+            if (!cookies.get('user'))
+                window.location = "/login"
+            window.location = "/"
         }
+    }
+
+    const getGender = async (event) => {
+        // if(event.target)
+        console.log(event.target.value)
+        setRegisterData({ ...registerData, 'gender': event.target.value })
     }
 
     useEffect(() => {
@@ -84,7 +93,7 @@ export default function Register(props) {
                                         </Link>
                                     </p>
                                 </div>
-                                <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form">
+                                <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form" encType='multipart/form-data'>
                                     {operationMode === 'Add' ? <h2>Sign up</h2> : <h2>Edit Profile</h2>}
                                     <Form.Control defaultValue={registerData._id} name="id" type="hidden"></Form.Control>
                                     <Form.Group className="mb-3">
@@ -119,7 +128,7 @@ export default function Register(props) {
                                         <Form.Control.Feedback type="invalid">
                                             Please choose an image of type : png, jpg, jpeg.
                                         </Form.Control.Feedback>
-                                        {registerData.image && <img style={{ height: '15rem' }} src={`${process.env.backurl}/${doctor.image}`} />}
+                                        {registerData.image && <img style={{ height: '15rem' }} src={`${process.env.backurl}/${registerData.image}`} />}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Password</Form.Label>
@@ -184,10 +193,10 @@ export default function Register(props) {
                                     <Form.Group className="mb-3">
                                         <Form.Label>Gender</Form.Label>
                                         <div className="mb-3">
-                                            <Form.Select className="form-control" value={registerData.gender} name="gender" aria-label="Default select example" required>
+                                            <Form.Select onChange={getGender} value={registerData.gender} name="gender" required>
                                                 <option value="">Select your gender</option>
-                                                <option value="1">Female</option>
-                                                <option value="2">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
                                             </Form.Select>
                                         </div>
                                         <Form.Control.Feedback type="valid">

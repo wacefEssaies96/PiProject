@@ -1,14 +1,16 @@
 import "bootstrap/dist/css/bootstrap.css"
 import '@/styles/globals.css'
 import Layout from "@/components/layouts/Layout";
-import Script from "next/script";
+import { Suspense } from "react";
 
 export default function App({ Component, pageProps }) {
   return (
     <>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Suspense fallback={<p>Loading...</p>}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Suspense>
     </>
   )
 }

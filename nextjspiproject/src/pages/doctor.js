@@ -4,15 +4,14 @@ import { Component, useEffect } from 'react'
 import Navigation from '../components/Navigation'
 import { handleAuthSSR } from '../services/auth'
 import nextCookie from 'next-cookies'
+import withAuth from '@/components/Withauth'
 
-export default function Doctor({ user }) {
-
+ function Doctor({ user }) {
   return (
     <>
       {
         !user ? <DoctorsForm operationMode="Add" />
           : <DoctorsForm operationMode="Update" doctor={user} />
-
       }
 
     </>
@@ -22,15 +21,33 @@ export default function Doctor({ user }) {
 
 
 export async function getServerSideProps(ctx) {
-  // Must validate JWT
-  // If the JWT is invalid it must redirect back to the main page.
-  // You can do that with Router from 'next/router
-  // const cookies = new Cookies()
-  await handleAuthSSR(ctx)
   const { user } = nextCookie(ctx)
+  if (user) {
+    const id = user._id
+    const res = await fetch(`${process.env.backurl}/api/users/findOne/${id}`)
+    const u = await res.json()
+    return {
+      props: {
+        user: u
+      }
+    }
+  }
   return {
     props: {
-      user: user
+      user: {
+        _id: '',
+        fullname: '',
+        email: '',
+        password: '',
+        phone: 0,
+        height: 0,
+        weight: 0,
+        address: '',
+        disease: '',
+        gender: ''
+      }
     }
   }
 }
+
+export default withAuth(Doctor)

@@ -1,9 +1,10 @@
+import withAuth from "@/components/Withauth";
 import { fetchData } from "@/services/mix";
 import {  Suspense,lazy } from 'react'
 
 const UsersForm = lazy(() => import('@/components/users/UsersForm'))
 
-export default function EditMeal({ user }) {
+function EditUser({ user }) {
     return (
 
         <Suspense>
@@ -20,3 +21,5 @@ export async function getServerSideProps(context) {
         }
     }
 }
+
+export default withAuth(EditUser)

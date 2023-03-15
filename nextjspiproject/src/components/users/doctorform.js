@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
+import { Cookies } from 'react-cookie'
 
 export default function DoctorsForm(props) {
+    const cookies = new Cookies()
     const router = useRouter()
     const [operationMode, setOperationMode] = useState('Create')
     const [doctor, setDoctor] = useState({
@@ -24,8 +26,18 @@ export default function DoctorsForm(props) {
         setValidated(true);
         await registerDoctor(event, operationMode)
         if (form.checkValidity() === true) {
-            router.push('/')
+            if (!cookies.get('user'))
+                window.location = "/login"
+            window.location = "/"
         }
+    }
+    const getGender = async (event) => {
+        if (event.target)
+            setDoctor({ ...doctor, 'gender': event.target.value })
+    }
+    const getSpeciality = async (event) => {
+        if (event.target)
+            setDoctor({ ...doctor, 'speciality': event.target.value })
     }
     useEffect(() => {
         if (props.doctor !== undefined) {
@@ -41,7 +53,7 @@ export default function DoctorsForm(props) {
             <div id="inner_header" className="inner-page-banner" style={{}}>
                 <div className="container">
                     <div className="inner_intro text-center">
-                        <h1>Register a doctor </h1>
+                        {operationMode === 'Add' ? <h1>Register a doctor </h1> : <h1>Edit doctor </h1>}
                         <div className="breadcrumb">
                             <ul className="pagination-inner">
                                 <li className="breadcrumb-item">
@@ -145,7 +157,7 @@ export default function DoctorsForm(props) {
                                         <Form.Group className="mb-3">
                                             <Form.Label>Gender</Form.Label>
                                             <div className="mb-3">
-                                                <Form.Select className="form-control" value={doctor.gender} name="gender" aria-label="Default select example" required>
+                                                <Form.Select className="form-control" value={doctor.gender} name="gender" aria-label="Default select example" required onChange={getGender}>
                                                     <option value="">Select Gender</option>
                                                     <option value="Man">Man</option>
                                                     <option value="Women">Women</option>
@@ -161,7 +173,7 @@ export default function DoctorsForm(props) {
                                         <Form.Group className="mb-3">
                                             <Form.Label>speciality</Form.Label>
                                             <div className="mb-3">
-                                                <Form.Select className="form-control" value={doctor.speciality} name="speciality" aria-label="Default select example" required>
+                                                <Form.Select onChange={getSpeciality} className="form-control" value={doctor.speciality} name="speciality" aria-label="Default select example" required>
                                                     <option value="">Select your speciality </option>
                                                     <option value="Family medicine">Family medicine</option>
                                                     <option value="Internal Medicine">Internal Medicine</option>

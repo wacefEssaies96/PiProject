@@ -24,7 +24,7 @@ export const handleAuthSSR = async (ctx) => {
       /* eslint-disable no-console */
       console.log('Redirecting back to main page')
       if (typeof window !== 'undefined') {
-        Router.push('/')
+        window.location('/')
       } else {
         ctx.res.writeHead(302, { Location: '/' })
         ctx.res.end()
@@ -59,8 +59,3 @@ export const loginService = async ({ token, user }) => {
 
 }
 
-export const logout = () => {
-  cookies.remove('token')
-  cookies.remove('user')
-  window.location = "/"
-}

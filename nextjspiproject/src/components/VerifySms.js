@@ -1,19 +1,10 @@
-import DoctorsForm from '@/components/users/doctorform'
-import Link from 'next/link'
-import { Component, useEffect, useState } from 'react'
-import { Form } from 'react-bootstrap'
-import Navigation from '../components/Navigation'
-import { handleAuthSSR, loginService } from '../services/auth'
+import { useEffect, useState } from 'react'
+import { loginService } from '../services/auth'
 import { BsFillShieldLockFill, } from "react-icons/bs"
 import OtpInput from 'react18-input-otp'
 import { CgSpinner } from "react-icons/cg"
-import nextCookie from 'next-cookies'
 import { Cookies } from 'react-cookie'
 import { useRouter } from 'next/router'
-
-
-
-
 
 export default function VerifySms(props) {
     const router = useRouter()
@@ -40,17 +31,18 @@ export default function VerifySms(props) {
                 token,
                 error: null,
             })
-            if (user['role' == "ADMIN"]) {
-                router.push('/admin')
+            console.log();
+            if (user['role']== "ADMIN") {
+                window.location = '/users'
             }
-            else if (user['role' == "User"]) {
-                router.push('/user')
+            else if (user['role'] == "USER") {
+                window.location = '/'
             }
-            else if (user['role' == "DOCTOR"]) {
-                router.push('/doctor')
+            else if (user['role']== "DOCTOR") {
+                window.location = '/doctor'
             }
             else {
-                router.push('/')
+                window.location = '/'
             }
         }
 

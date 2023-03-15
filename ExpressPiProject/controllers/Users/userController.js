@@ -1,5 +1,4 @@
 const User = require("../../models/Users/user");
-
 // Retrieve all users from the database.
 exports.findAllUsers = async (req, res) => {
   try {
@@ -25,36 +24,47 @@ exports.createUser = async (req, res) => {
     }
 
     const newUser = new User({
-      fullname : req.body.fullname,
-      email : req.body.email,
-      password : req.body.password,
-      role : req.body.role,
-      gender : req.body.gender,
-      phone : req.body.phone,
-      address : req.body.address,
-      height : req.body.height,
-      weight : req.body.weight,
-      disease : req.body.disease,
+      fullname: req.body.fullname,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role,
+      gender: req.body.gender,
+      phone: req.body.phone,
+      address: req.body.address,
+      height: req.body.height,
+      weight: req.body.weight,
+      disease: req.body.disease,
       image: req.file.path,
-      account_Verified:req.body.account_Verified,
-      speciality:req.body.speciality,
+      account_Verified: req.body.account_Verified,
+      speciality: req.body.speciality,
     });
 
     const savedUser = await newUser.save();
 
     res.status(200).send({
       message:
-         "User created succssfuly."
+        "User created succssfuly."
     });
   } catch (err) {
     res.status(500).send({
       message:
-         "Some error occurred while creating the user."
+        "Some error occurred while creating the user."
     });
   }
 };
 
-
+// SameUser.fullname = req.body.fullname
+//       SameUser.email = req.body.email
+//       SameUser.password = req.body.password
+//       SameUser.role = req.body.role
+//       SameUser.gender = req.body.gender
+//       SameUser.phone = req.body.phone
+//       SameUser.address = req.body.address
+//       SameUser.height = req.body.height
+//       SameUser.weight = req.body.weight
+//       SameUser.disease = req.body.disease
+//       SameUser.account_Verified = req.body.account_Verified
+//       SameUser.speciality = req.body.speciality
 // Find a single user with an Email
 exports.findUserByEmail = async (req, res) => {
   const email = req.params.email;
@@ -100,14 +110,15 @@ exports.updateUser = async (req, res) => {
   const email = req.body.email;
 
   const SameUser = await User.findOne({ _id: id, email: email });
- const existingUser = await User.findOne({ email: req.body.email });
+  const existingUser = await User.findOne({ email: req.body.email });
 
-  if(SameUser || (!existingUser) ){
+  if (SameUser || (!existingUser)) {
     try {
-      req.body.image = req.file.path
+      if (req.file)
+        req.body.image = req.file.path
       const updatedUser = await User.findByIdAndUpdate(id, req.body, { useFindAndModify: false });
       if (updatedUser) {
-        return res.send({ message: "User was updated successfully." });
+        return res.send({ message: "User was updated successfully.", user: updatedUser });
       }
       res.status(404).send({
         message: `Cannot update user with id=${id}. Maybe user was not found!`
@@ -117,7 +128,7 @@ exports.updateUser = async (req, res) => {
         message: "Error updating user with id=" + id
       });
     }
-  }else{
+  } else {
     res.status(422).send({
       message: `Email Exist ${email} !`
     });
