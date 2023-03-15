@@ -78,14 +78,14 @@ export default function DoctorsForm(props) {
                         <div className="register py-5">
                             <div className="row">
                                 <div className="offset-lg-3 col-lg-6  mx-auto d-block login-page">
-                                    <div className="register_form_heading">
+                                    {/* <div className="register_form_heading">
                                         <p className="sub_title">
                                             Already have an account?
                                             <Link className="color-litegreen" href="/login">
                                                 Login here!
                                             </Link>
                                         </p>
-                                    </div>
+                                    </div> */}
                                     <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form" encType='multipart/form-data'>
                                         {operationMode === 'Add' ? <h2>Sign up</h2> : <h2>Edit Profile</h2>}
                                         <Form.Control defaultValue={doctor._id} name="id" type="hidden"></Form.Control>

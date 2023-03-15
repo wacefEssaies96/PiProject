@@ -178,8 +178,8 @@ function Login() {
                           />
 
                           <div className="d-flex justify-content-center">
-                            <Button
-                              className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ borderRadius: "8000px", margin: "15px" }}
+                            <Button id="btn-disable-login"
+                              className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button btn-light" style={{ borderRadius: "8000px", margin: "15px" }}
                               type="submit" value="Login"
                               name="submit" disabled={!captchaToken}>Sign In</Button>
                             <Button

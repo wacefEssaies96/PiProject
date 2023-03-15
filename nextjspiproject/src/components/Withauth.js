@@ -15,9 +15,9 @@ function withAuth(WrappedComponent) {
         if (window.location.pathname.includes('users') && cookies.get('user').role !== 'ADMIN') {
           window.location = '/'
         }
-        if (window.location.pathname.includes('doctor') && cookies.get('user').role !== 'DOCTOR') {
-          window.location = '/'
-        }
+        // if (window.location.pathname.includes('doctor') && cookies.get('user').role !== 'DOCTOR') {
+        //   window.location = '/'
+        // }
         if (window.location.pathname.includes('editProfile') && cookies.get('user').role === 'DOCTOR') {
           window.location = '/'
         }

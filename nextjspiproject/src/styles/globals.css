@@ -306,9 +306,6 @@ body, .sidebar .widget-posts .widget-post .post-content .post-title{}.navbar.nav
   border-radius: 5px;
 }
 
-/* #background-image {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-image: url(assets/images/weefly/blog-bg.png);
-  background-size: cover;
-} */
+#btn-disable-login :disabled{
+  background-color: #595A5A !important;
+}

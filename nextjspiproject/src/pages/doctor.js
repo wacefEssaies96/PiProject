@@ -10,7 +10,7 @@ import withAuth from '@/components/Withauth'
   return (
     <>
       {
-        !user ? <DoctorsForm operationMode="Add" />
+        user._id === "" ? <DoctorsForm operationMode="Add" />
           : <DoctorsForm operationMode="Update" doctor={user} />
       }
 
@@ -50,4 +50,4 @@ export async function getServerSideProps(ctx) {
   }
 }
 
-export default withAuth(Doctor)
+export default Doctor
