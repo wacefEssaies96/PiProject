@@ -2,8 +2,7 @@ import Head from 'next/head'
 import { BiPlus, BiEdit, BiTrashAlt } from 'react-icons/bi'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-// import Success from '@/components/layouts/SuccessMsg'
-import { fetchSubTypeData } from '@/services/SportSubTypeServices'
+import { deleteSportSubType, fetchSubTypeData } from '@/services/SportSubTypeServices'
 import styles from '../../../styles/Home.module.css'
 import { Alert, Table } from 'react-bootstrap'
 import CustomModal from '@/components/layouts/CustomModal'
@@ -27,34 +26,25 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
     setDisplayConfirmationModal(false)
   }
 
-  const searchTitle = async (id) => {
-    return await sportSubTypes.find((x) => x._id === id).title
-  }
-
   const submitDelete = async (id) => {
-    setSportSubTypeMessage(`The sport subtype '${await searchTitle(id)}' was deleted successfully.`)
-    setListSportSubTypes(sportSubTypes.filter((x) => x._id !== id))
+    await deleteSportSubType(id)
+    const listAfterDelete = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
+    setSportSubTypeMessage(`The sport sub-type '${sportSubTypes.find((x) => x._id === id).title}' was deleted successfully.`)
+    const resList = await listAfterDelete.json()
+    setListSportSubTypes(resList)
     setDisplayConfirmationModal(false)
+    setShowAlert(true)
   }
-
-  // const deleteSubType = async (sportSubTypeId) => {
-  //   deleteSportSubType(sportSubTypeId)
-  //   const l = await fetchSubTypeData(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
-  //   setListSportSubTypes(l)
-  //   if (!showAlert) {
-  //     setShowAlert(true)
-  //   }
-  // }
 
   useEffect(() => {
     setTimeout(() => {
       setShowAlert(false)
-    }, 2000);
+    }, 3000);
   }, [showAlert])
 
   const searchTitleDynamic = async (title) => {
     return await sportSubTypes.filter((x) => {
-      let t = x.title.includes(title)
+      let t = x.title.toLowerCase().includes(title.toLowerCase())
       if(t) {
         return x
       }
@@ -66,7 +56,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
   }
 
   const handleChange = async (e) => {
-    console.log(await newList(e))
     setListSportSubTypes(await newList(e))
   }
 
@@ -87,7 +76,7 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
           <input onChange={handleChange} className="form-control mx-5" style={{ width: "280px" }} type="search" placeholder="Search for sport subtype by Title" aria-label="Search" />
         </form><br /><br />
 
-        {sportSubTypeMessage && <Alert variant="success">{sportSubTypeMessage}</Alert>}
+        {showAlert && <Alert variant="success">{sportSubTypeMessage}</Alert>}
         <Table striped bordered hover size="sm">
           <thead>
             <tr className='text-center'>
@@ -110,7 +99,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
                     <Link href={`/admin/sport-sub-type/edit/${subType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
                     </Link>
-                    {/* onClick={() => deleteSubType(subType._id)} */}
                     <button className="btn" type="button" onClick={() => showDeleteModal(subType._id)}>
                       <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                     </button>
@@ -120,7 +108,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
             })}
           </tbody>
         </Table>
-        {/* {showAlert && (<Success message={"Sport SubType Deleted Successfully !"}></Success>)} */}
         <CustomModal showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
       </div>
     </div>
