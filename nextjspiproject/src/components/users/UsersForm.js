@@ -124,6 +124,7 @@ export default function UsersForm(props) {
                   <>
                     <img style={{ height: '15rem', width: '15rem' }}
                       src={`${process.env.backurl}/uploads/User/altUser.png`}
+                      onError={(e)=>{e.target.src = `${process.env.backurl}/uploads/User/altUser.png`}}
                       alt="no img altUser.png"
                     />
                     <hr />

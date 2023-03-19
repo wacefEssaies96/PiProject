@@ -1,7 +1,7 @@
 import { fetchData } from "@/services/mix";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Modal, Button, Table } from "react-bootstrap";
-import { confirmDelete } from "../layouts/Alerts";
+import { confirmDelete } from "../../services/alerts";
 import SpinnerLoading from "../layouts/SpinnerLoading";
 
 const CategoriesAndSubCatForm = lazy(() => import('./CatAndSubCatForm'))

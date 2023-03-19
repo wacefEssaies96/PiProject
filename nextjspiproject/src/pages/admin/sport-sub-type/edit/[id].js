@@ -1,4 +1,4 @@
-import SportSubTypesForm from "@/components/SportsSubTypesSharedComponents/SubTypeForm"
+import SportSubTypesForm from "@/components/sub-sport-types/SubTypeForm"
 import { fetchSubTypeData } from "@/services/SportSubTypeServices"
 
 export default function UpdateSportSubType({ sportSubType }) {

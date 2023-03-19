@@ -1,4 +1,4 @@
-import SportSubTypesForm from '@/components/SportsSubTypesSharedComponents/SubTypeForm'
+import SportSubTypesForm from '@/components/sub-sport-types/SubTypeForm'
 import Head from 'next/head'
 
 export default function SportSubTypesAdminHomePage() {

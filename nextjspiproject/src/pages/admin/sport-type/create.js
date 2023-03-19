@@ -1,4 +1,4 @@
-import SportTypeForm from "@/components/SportsSharedComponents/SportTypeForm";
+import SportTypeForm from "@/components/sport_types/SportTypeForm";
 
 export default function Create() {
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { loginService } from '../services/auth'
+import { loginService } from '@/services/auth'
 import { BsFillShieldLockFill, } from "react-icons/bs"
 import OtpInput from 'react18-input-otp'
 import { CgSpinner } from "react-icons/cg"
@@ -22,24 +22,23 @@ export default function VerifySms(props) {
         console.log(props.code)
     })
     const handleClick = async () => {
-        console.log(props.code , codeVerif)
+        console.log(props.code, codeVerif)
         const token = props.token
         const user = props.user
         if (props.code === parseInt(codeVerif)) {
-            await loginService( props.token, props.user )
+            await loginService(props.token, props.user)
             setAuth({
                 token,
                 error: null,
             })
-            console.log();
-            if (user['role']== "ADMIN") {
-                window.location = '/users'
+            if (user['role'] == "ADMIN") {
+                window.location = '/admin/users'
             }
             else if (user['role'] == "USER") {
                 window.location = '/'
             }
-            else if (user['role']== "DOCTOR") {
-                window.location = '/doctor'
+            else if (user['role'] == "DOCTOR") {
+                window.location = '/user/doctor'
             }
             else {
                 window.location = '/'

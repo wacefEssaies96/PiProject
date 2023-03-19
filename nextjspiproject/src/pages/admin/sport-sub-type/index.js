@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { fetchSubTypeData } from '@/services/SportSubTypeServices'
 import styles from '../../../styles/Home.module.css'
 import { Alert, Table } from 'react-bootstrap'
-import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
+import CustomModal from '@/components/layouts/CustomModal'
 
 export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
 
@@ -31,7 +31,7 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
     return await sportSubTypes.find((x) => x._id === id).title
   }
 
-  const submitDelete = async () => {
+  const submitDelete = async (id) => {
     setSportSubTypeMessage(`The sport subtype '${await searchTitle(id)}' was deleted successfully.`)
     setListSportSubTypes(sportSubTypes.filter((x) => x._id !== id))
     setDisplayConfirmationModal(false)
@@ -121,7 +121,7 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
           </tbody>
         </Table>
         {/* {showAlert && (<Success message={"Sport SubType Deleted Successfully !"}></Success>)} */}
-        <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
+        <CustomModal showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
       </div>
     </div>
   )

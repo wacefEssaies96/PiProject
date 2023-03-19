@@ -4,8 +4,8 @@ import { BiPlus, BiEdit, BiTrashAlt } from 'react-icons/bi'
 import Link from 'next/link'
 import { getSporTypes } from '@/services/SportTypeService'
 import { useState } from 'react'
-import { Table } from 'react-bootstrap'
-import DeleteConfirmation from '@/components/layouts/DeleteConfirmation'
+import { Alert, Table } from 'react-bootstrap'
+import CustomModal from '@/components/layouts/CustomModal'
 
 export default function SportTypesAdminHomePage({ sportTypes }) {
 
@@ -27,6 +27,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
   }
 
   const submitDelete = (id) => {
+    // console.log(id);
     setSportTypeMessage(`The sport type '${sportTypes.find((x) => x._id === id).title}' was deleted successfully.`);
     setList(sportTypes.filter((x) => x._id !== id));
     setDisplayConfirmationModal(false);
@@ -117,7 +118,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
           </tbody>
         </Table>
       </div>
-      <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage}  />
+      <CustomModal showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage}  />
     </div>
   )
 }

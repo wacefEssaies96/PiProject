@@ -1,4 +1,4 @@
-import { success } from "@/components/layouts/Alerts"
+import { success } from "@/services/alerts"
 
 export const submitCategory = async (event, subcategories, operation) => {
     const JSONdata = JSON.stringify({

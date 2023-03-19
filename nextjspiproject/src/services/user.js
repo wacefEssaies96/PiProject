@@ -1,6 +1,5 @@
-import { success, errorAlert } from "@/components/layouts/Alerts"
+import { success, errorAlert } from "@/services/alerts"
 import axios from "axios";
-import { Router } from "next/router";
 
 export const submitUser = async (data, operationMode) => {
     // let valueReturn = false
@@ -16,10 +15,10 @@ export const submitUser = async (data, operationMode) => {
     operationMode === 'Create'
         ?
         axios.post(`${process.env.backurl}/api/users/Create`, formData)
-            .then((data) => { if (data.data) { success(data.data.message); window.location = "/users" } })
+            .then((data) => { if (data.data) { success(data.data.message); window.location = "/admin/users" } })
             .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } })
         : axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
-            .then((data2) => { if (data2.data) { success(data2.data.message); window.location = "/users" } })
+            .then((data2) => { if (data2.data) { success(data2.data.message); window.location = "/admin/users" } })
             .catch((error2) => { if (error2.response) { errorAlert(error2.response.data.message) } })
     // return valueReturn
 
@@ -32,6 +31,48 @@ export const verifyAccount = async (data, id) => {
     formData.append('account_Verified', true)
 
     axios.put(`${process.env.backurl}/api/users/Update/${id}`, formData)
-        .then(res => window.location = '/users' )
+        .then(res => window.location = '/admin/users')
         .catch(err => console.log(" user updated err " + err))
+}
+
+export const registerDoctor = async (data, operationMode) => {
+
+    let options = new FormData()
+    options.append('fullname', data.target.fullname.value)
+    options.append('email', data.target.email.value)
+    options.append('password', data.target.password.value)
+    options.append('speciality', data.target.speciality.value)
+    options.append('gender', data.target.gender.value)
+    options.append('phone', data.target.phone.value)
+    options.append('address', data.target.address.value)
+    options.append('role', 'DOCTOR')
+    options.append('image', data.target.image.files[0]);
+
+    const res =
+        operationMode === 'Add'
+            ? await axios.post(`${process.env.backurl}/api/auth/register`, options)
+            : await axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
+
+    return res
+}
+
+export const registerUser = async (data, operationMode) => {
+    let options = new FormData()
+    options.append('fullname', data.target.fullname.value)
+    options.append('email', data.target.email.value)
+    options.append('password', data.target.password.value)
+    options.append('height', data.target.height.value)
+    options.append('weight', data.target.weight.value)
+    options.append('disease', data.target.disease.value)
+    options.append('gender', data.target.gender.value)
+    options.append('phone', data.target.phone.value)
+    options.append('address', data.target.address.value)
+    options.append('role', 'USER')
+    options.append('image', data.target.image.files[0]);
+    const res =
+        operationMode === 'Add'
+            ? await axios.post(`${process.env.backurl}/api/auth/register`, options)
+            : await axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, options)
+
+    return res
 }

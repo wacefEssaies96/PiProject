@@ -1,4 +1,4 @@
-import { registerDoctor } from '@/services/registerdoctor'
+import { registerDoctor } from '@/services/user'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ export default function DoctorsForm(props) {
         await registerDoctor(event, operationMode)
         if (form.checkValidity() === true) {
             if (!cookies.get('user'))
-                window.location = "/login"
+                window.location = "/auth/login"
             window.location = "/"
         }
     }
@@ -81,7 +81,7 @@ export default function DoctorsForm(props) {
                                     {/* <div className="register_form_heading">
                                         <p className="sub_title">
                                             Already have an account?
-                                            <Link className="color-litegreen" href="/login">
+                                            <Link className="color-litegreen" href="/auth/login">
                                                 Login here!
                                             </Link>
                                         </p>
@@ -111,7 +111,7 @@ export default function DoctorsForm(props) {
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose an image of type : png, jpg, jpeg.
                                             </Form.Control.Feedback>
-                                            {doctor.image && <img style={{ height: '15rem' }} src={`${process.env.backurl}/${doctor.image}`} />}
+                                            {doctor.image && <img style={{ height: '15rem' }} onError={(e)=>{e.target.src = `${process.env.backurl}/uploads/User/altUser.png`}} src={`${process.env.backurl}/${doctor.image}`} />}
                                         </Form.Group>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Email address</Form.Label>
