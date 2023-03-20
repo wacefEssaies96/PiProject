@@ -16,6 +16,10 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
   const [deleteMessage, setDeleteMessage] = useState(null)
   const [sportSubTypeMessage, setSportSubTypeMessage] = useState(null)
 
+  const searchTitle = async (id) => {
+    return await sportSubTypes.find((x) => x._id === id).title
+  }
+
   const showDeleteModal = async (id) => {
     setId(id)
     setDeleteMessage(`Are you sure you want to delete the sport subtype : '${await searchTitle(id)}'?`)

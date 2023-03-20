@@ -1,6 +1,5 @@
 import { registerUser } from '@/services/user'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { Cookies } from 'react-cookie'
@@ -21,7 +20,6 @@ export default function Register(props) {
     })
     const [operationMode, setOperationMode] = useState('Add')
     const [showAlert, setShowAlert] = useState(false)
-    const router = useRouter()
     const [validated, setValidated] = useState(false)
 
     const handleSubmit = async (e) => {
@@ -37,7 +35,6 @@ export default function Register(props) {
     }
 
     const getGender = async (event) => {
-        // if(event.target)
         console.log(event.target.value)
         setRegisterData({ ...registerData, 'gender': event.target.value })
     }

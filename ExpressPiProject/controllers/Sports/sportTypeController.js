@@ -47,14 +47,8 @@ exports.create = async (req, res) => {
     else {
         res.status(500).json('Error: This sport type title is already existing !')
     }
-};
+}
 
-//get all SportTypes 
-// exports.findAll = (req, res) => {
-//     TypeSport.find()
-//     .then(sportTypes => res.json(sportTypes))
-//     .catch(err => res.status(400).json('Error: '+ err));
-// }
 exports.findAll = async (req, res) => {
     try {
       const r= await TypeSport.find()
