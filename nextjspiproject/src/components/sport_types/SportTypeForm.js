@@ -25,29 +25,40 @@ export default function SportTypeForm({ sportType }) {
         const findBySportTypeByTitle = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${e.target.title.value}`)
         const resFindByTitle = await findBySportTypeByTitle.json()
 
-        if (resFindByTitle === null) {
-            if (form.checkValidity() === true) {
-                const selectedSubTypes = data.map(e => ({ title: e.value }))
-                const subTypesList = selectedSubTypes.map(
-                    async (subTypeTitle) => {
-                        const res = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${subTypeTitle.title}`)
-                        const data = await res.json()
-                        return data
-                    })
-                const sportType = {
-                    title: e.target.title.value,
-                    sportSubType: subTypesList
+        const selectedSubTypes = data.map(e => ({ title: e.value }))
+
+        if (operation === 'Add') {
+            if (resFindByTitle === null) {
+                if (form.checkValidity() === true) {
+                    // const subTypesList = selectedSubTypes.map(
+                    //     async (subTypeTitle) => {
+                    //         const res = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${subTypeTitle.title}`)
+                    //         const data = await res.json()
+                    //         return data
+                    //     })
+                    // const sportType = {
+                    //     title: e.target.title.value,
+                    //     sportSubType: subTypesList
+                    // }
+                    await postSportType(e, operation, selectedSubTypes)
+                    setShowAlert(true)
+                    setTimeout(() => {
+                        setShowAlert(false)
+                        router.push('/admin/sport-type')
+                    }, 3000)
                 }
-                await postSportType(e, operation, selectedSubTypes)
-                setShowAlert(true)
-                setTimeout(() => {
-                    setShowAlert(false)
-                    router.push('/admin/sport-type')
-                }, 3000)
+            } else {
+                setShowAlertError(true)
+                setErrorMsg("This Sport Type title already existes in the database !")
             }
         } else {
-            setShowAlertError(true)
-            setErrorMsg("This Sport Type title already existes in the database !")
+            e.preventDefault()
+            await postSportType(e, operation, selectedSubTypes)
+            setShowAlert(true)
+            setTimeout(() => {
+                setShowAlert(false)
+                router.push('/admin/sport-type')
+            }, 3000)
         }
     }
 
@@ -73,7 +84,7 @@ export default function SportTypeForm({ sportType }) {
 
     return (
         <div className="container" style={{ padding: "5%" }}>
-            {showAlert && <Success message={"Sport Type Added Successfully !"}></Success>}
+            {showAlert && <Success message={`Sport Type ${operation}ed Successfully !`}></Success>}
             <Form noValidate validated={validated} onSubmit={submit}>
                 <Form.Group className="mb-3">
                     <Form.Control defaultValue={sportType._id} name="id" type="hidden" />
