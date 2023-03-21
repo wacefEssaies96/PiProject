@@ -29,7 +29,7 @@ const SportHomePage = ({ sportTypes }) => {
             </form><br /><br />
             <h1>All Sports Types</h1>
             {sportTypes.map(sportType => (
-                <Link href={'/sub-sport-types/details/'} key={sportType._id} legacyBehavior>
+                <Link href={`/sub-sport-types/details/${sportType.title}`} key={sportType._id} legacyBehavior>
                     <a className={styles.single}>
                         <h3>{sportType.title}</h3>
                     </a>

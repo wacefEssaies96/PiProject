@@ -1,5 +1,6 @@
-const SportSubType = require("../../models/Sports/SubTypeSportModel");
+const SportSubType = require("../../models/Sports/SubTypeSportModel")
 const SportType = require("../../models/Sports/SportType")
+const slug = require('slug')
 
 // Create and Save a new SportSubType
 
@@ -13,14 +14,14 @@ exports.create = async (req, res) => {
     // Create a SportSubType
 
     const sportSubTypesList = await SportSubType.find({ title: req.body.title })
-
+    const { file } = req
     if (sportSubTypesList.length == 0) {
         var newSportSubType = new SportSubType({
             title: req.body.title,
-            demoVideo: req.body.demoVideo,
+            demoVideo: (file && file.path) || null,
             advantages: req.body.advantages,
             limits: req.body.limits,
-            slug: req.body.slug,
+            slug: slug(req.body.title),
         })
         newSportSubType.save()
             .then(data => res.send(data))
@@ -65,10 +66,10 @@ exports.updateSportSubType = (req, res) => {
     SportSubType.findById(req.params.id)
         .then(async (sub) => {
             sub.title = req.body.title;
-            sub.demoVideo = req.body.demoVideo;
+            sub.demoVideo = req.file.path; 
             sub.advantages = req.body.advantages;
             sub.limits = req.body.limits;
-            sub.slug = req.body.slug;
+            sub.slug = slug(req.body.title);
 
             sub.save()
                 .then(() => res.json('sport sub type updated!'))

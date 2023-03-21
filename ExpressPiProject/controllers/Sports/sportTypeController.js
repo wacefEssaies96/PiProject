@@ -1,5 +1,6 @@
-const TypeSport = require("../../models/Sports/SportType");
+const TypeSport = require("../../models/Sports/SportType")
 const SubTypeSport = require("../../models/Sports/SubTypeSportModel")
+const slug = require('slug')
 
 // Create and Save a new SportType
 
@@ -32,7 +33,7 @@ exports.create = async (req, res) => {
         var newSportType = new TypeSport({
             title: req.body.title,
             sportSubType : sportSubTypesList,
-            slug: req.body.slug,
+            slug: slug(req.body.title),
         })
 
         newSportType.save()

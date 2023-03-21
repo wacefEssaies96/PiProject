@@ -63,7 +63,7 @@ export default function SportSubTypesForm(props) {
         return (
             <div className="container" style={{ padding: "5%" }}>
                 {showAlert && (<Success message={`Sport SubType ${operationMode}ed Successfully !`}></Success>)}
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Control defaultValue={sportSubType._id} name="id" type="hidden" className="form-control" id="floatingInput" />
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="floatingInput">Sport SubType Title</Form.Label>
@@ -78,7 +78,7 @@ export default function SportSubTypesForm(props) {
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="floatingInput">DemoVideo</Form.Label>
-                        <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="text" className="form-control" id="floatingInput" placeholder="DemoVideo" required />
+                        <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required />
                         <Form.Control.Feedback type="valid">
                             You did it!
                         </Form.Control.Feedback>

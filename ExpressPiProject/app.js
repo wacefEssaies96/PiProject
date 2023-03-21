@@ -49,8 +49,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 // app.use(passport.session());
 
-
-
 //Routes
 app.use('/api/admin/products', productRouter);
 app.use('/api/admin/carts', cartRouter);
@@ -67,6 +65,7 @@ app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
 app.use('/api', resetPassword);
+app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
 
 //connect to mongo database
 mongoose.set('strictQuery', true);
