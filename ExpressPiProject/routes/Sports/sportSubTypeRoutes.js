@@ -31,6 +31,11 @@ router.post("/uploads", upload.single('demoVideo'), (req, res)=> {
         image: req.file.path,
     })
 });
+
+// WebScraping 
+router.get("/sportSubTypesTitle", sportSubTypes.webScrapingSportSubTypesTitle);
+
+//Create
 router.post("/addSportSubType", upload.single('demoVideo'), sportSubTypes.create);
 
 // Retrieve all SubSportTypes

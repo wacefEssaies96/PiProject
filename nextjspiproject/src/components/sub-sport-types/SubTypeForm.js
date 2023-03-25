@@ -36,83 +36,95 @@ export default function SportSubTypesForm(props) {
                 }
             }
         } else {
-            setShowAlertError(true)
-            setErrorMsg("This sport subtype Title is already existing in DB !")
+            if (operationMode === 'Add') {
+                setShowAlertError(true)
+                setErrorMsg("This sport subtype Title is already existing in DB !")
+            }
+            await submitSubTypeForm(e, operationMode)
+            if (!showAlert) {
+                setShowAlert(true)
+                router.push('/admin/sport-sub-type')
+            }
         }
     }
 
-        useEffect(() => {
-            if (props.sportSubType !== undefined) {
-                setSportSubType(props.sportSubType)
-                setOperationMode('Update')
-            }
-        }, [])
+    useEffect(() => {
+        if (props.sportSubType !== undefined) {
+            setSportSubType(props.sportSubType)
+            setOperationMode('Update')
+        }
+    }, [])
 
-        useEffect(() => {
-            setTimeout(() => {
-                setShowAlert(false)
-            }, 2000);
-        }, [showAlert])
+    useEffect(() => {
+        setTimeout(() => {
+            setShowAlert(false)
+        }, 2000);
+    }, [showAlert])
 
-        useEffect(() => {
-            setTimeout(() => {
-                setShowAlertError(false)
-            }, 5000);
-        }, [showAlertError])
+    useEffect(() => {
+        setTimeout(() => {
+            setShowAlertError(false)
+        }, 5000);
+    }, [showAlertError])
 
-        return (
-            <div className="container" style={{ padding: "5%" }}>
-                {showAlert && (<Success message={`Sport SubType ${operationMode}ed Successfully !`}></Success>)}
-                <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Form.Control defaultValue={sportSubType._id} name="id" type="hidden" className="form-control" id="floatingInput" />
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="floatingInput">Sport SubType Title</Form.Label>
-                        <Form.Control defaultValue={sportSubType.title} name="title" type="text" className="form-control" id="floatingInput" placeholder="Title" required />
-                        {!errorMsg && <Form.Control.Feedback type="valid">
-                            You did it!
-                        </Form.Control.Feedback>}
-                        {showAlertError && (<Alert variant="danger">{errorMsg}</Alert>)}
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a sport sub-type title !
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="floatingInput">DemoVideo</Form.Label>
-                        <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required />
-                        <Form.Control.Feedback type="valid">
-                            You did it!
-                        </Form.Control.Feedback>
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a sport sub-type demoVideo !
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
-                        <Form.Control defaultValue={sportSubType.advantages} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
-                        <Form.Control.Feedback type="valid">
-                            You did it!
-                        </Form.Control.Feedback>
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a sport sub-type advantages !
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="floatingInput">Limits</Form.Label>
-                        <Form.Control defaultValue={sportSubType.limits} name="limits" type="text" className="form-control" id="floatingInput" placeholder="Limits" required />
-                        <Form.Control.Feedback type="valid">
-                            You did it!
-                        </Form.Control.Feedback>
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a sport sub-type limits !
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Button variant="success" type="submit">
-                        {operationMode} <BiCheck></BiCheck>
-                    </Button>
-                    <Link href="/admin/sport-sub-type" className="btn btn-light" type="submit">
-                        Cancel <BiBlock></BiBlock>
-                    </Link>
-                </Form>
-            </div>
-        )
-    }
+    return (
+        <div className="container" style={{ padding: "5%" }}>
+            {showAlert && (<Success message={`Sport SubType ${operationMode}ed Successfully !`}></Success>)}
+            <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form.Control defaultValue={sportSubType._id} name="id" type="hidden" className="form-control" id="floatingInput" />
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="floatingInput">Sport SubType Title</Form.Label>
+                    <Form.Control defaultValue={sportSubType.title} name="title" type="text" className="form-control" id="floatingInput" placeholder="Title" required />
+                    {!errorMsg && <Form.Control.Feedback type="valid">
+                        You did it!
+                    </Form.Control.Feedback>}
+                    {showAlertError && (<Alert variant="danger">{errorMsg}</Alert>)}
+                    <Form.Control.Feedback type='invalid'>
+                        Please enter a sport sub-type title !
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="floatingInput">DemoVideo</Form.Label>
+                    <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required />
+                    <Form.Control.Feedback type="valid">
+                        You did it!
+                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>
+                        Please enter a sport sub-type demoVideo !
+                    </Form.Control.Feedback>
+                    {sportSubType.demoVideo &&
+                        <video width="320" height="240" controls>
+                            <source src={`${process.env.backurl}/${sportSubType.demoVideo}`} />
+                            Your browser does not support the video tag.
+                        </video>}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
+                    <Form.Control defaultValue={sportSubType.advantages} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
+                    <Form.Control.Feedback type="valid">
+                        You did it!
+                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>
+                        Please enter a sport sub-type advantages !
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="floatingInput">Limits</Form.Label>
+                    <Form.Control defaultValue={sportSubType.limits} name="limits" type="text" className="form-control" id="floatingInput" placeholder="Limits" required />
+                    <Form.Control.Feedback type="valid">
+                        You did it!
+                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>
+                        Please enter a sport sub-type limits !
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Button variant="success" type="submit">
+                    {operationMode} <BiCheck></BiCheck>
+                </Button>
+                <Link href="/admin/sport-sub-type" className="btn btn-light" type="submit">
+                    Cancel <BiBlock></BiBlock>
+                </Link>
+            </Form>
+        </div>
+    )
+}

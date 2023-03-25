@@ -3,6 +3,21 @@ const sportTypes = require("../../controllers/Sports/sportTypeController");
 var express = require('express');
 var router = express.Router();
 
+// WebScraping 
+router.get("/sportTypesTitle", sportTypes.webScrapingSportTypesTitle);
+
+// WebScraping adv Individual sports
+router.get("/sportTypesAdvIndiv", sportTypes.advIndiv);
+
+// WebScraping adv Partner sports
+router.get("/sportTypesAdvPartner", sportTypes.advPartner);
+
+// WebScraping adv Team sports
+router.get("/sportTypesAdvTeam", sportTypes.advTeam);
+
+// WebScraping adv Extreme sports
+router.get("/sportTypesAdvExtreme", sportTypes.advExtreme);
+
 // Create a new SportType
 router.post("/addSportType", sportTypes.create);
 

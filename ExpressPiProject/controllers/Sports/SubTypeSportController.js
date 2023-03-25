@@ -1,6 +1,47 @@
 const SportSubType = require("../../models/Sports/SubTypeSportModel")
 const SportType = require("../../models/Sports/SportType")
 const slug = require('slug')
+const axios = require("axios");
+const cheerio = require("cheerio");
+
+const url = "https://www.leadershipandsport.com/types-of-sports/";
+
+exports.webScrapingSportSubTypesTitle = async (req, res) => {
+    try {
+        await axios.get(url)
+        .then(urlRes => {
+            const $ = cheerio.load(urlRes.data);
+            const listItems = $(".nv-content-wrap ul li");
+            const sportSubTypes1 = [];
+            const sportSubTypes2 = [];
+            const sportSubTypes3 = [];
+            const sportSubTypes4 = [];
+            listItems.each((idx, el) => {
+                const sportType = $(el).text();
+                if(idx>7 && idx<57){
+                    sportSubTypes1.push(sportType);
+                }
+                if(idx>56 && idx<65){
+                    sportSubTypes2.push(sportType);
+                }
+                if(idx>64 && idx<94){
+                    sportSubTypes3.push(sportType);
+                }
+                if(idx>93 && idx<121){
+                    sportSubTypes4.push(sportType);
+                }
+            });
+            res.send({
+                sportSubTypes1,
+                sportSubTypes2,
+                sportSubTypes3,
+                sportSubTypes4});
+        })
+        .catch(e=>console.log(e))
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 // Create and Save a new SportSubType
 
@@ -63,10 +104,11 @@ exports.deleteSportSubType = async (req, res) => {
 
 //update a SportSubType 
 exports.updateSportSubType = (req, res) => {
+    const { file } = req
     SportSubType.findById(req.params.id)
         .then(async (sub) => {
             sub.title = req.body.title;
-            sub.demoVideo = req.file.path; 
+            sub.demoVideo = (file && file.path) || null; 
             sub.advantages = req.body.advantages;
             sub.limits = req.body.limits;
             sub.slug = slug(req.body.title);
