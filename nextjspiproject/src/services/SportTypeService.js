@@ -20,6 +20,7 @@ export const postSportType = async (data, operationMode, selectedSubTypes) => {
         },
         body : JSON.stringify({
             title : data.target.title.value,
+            advantages : data.target.advantages.value,
             sportSubType : selectedSubTypes
         }),
 

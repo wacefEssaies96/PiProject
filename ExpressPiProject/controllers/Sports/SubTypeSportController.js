@@ -3,44 +3,62 @@ const SportType = require("../../models/Sports/SportType")
 const slug = require('slug')
 const axios = require("axios");
 const cheerio = require("cheerio");
+const usetube = require('usetube')
 
 const url = "https://www.leadershipandsport.com/types-of-sports/";
 
 exports.webScrapingSportSubTypesTitle = async (req, res) => {
     try {
         await axios.get(url)
-        .then(urlRes => {
-            const $ = cheerio.load(urlRes.data);
-            const listItems = $(".nv-content-wrap ul li");
-            const sportSubTypes1 = [];
-            const sportSubTypes2 = [];
-            const sportSubTypes3 = [];
-            const sportSubTypes4 = [];
-            listItems.each((idx, el) => {
-                const sportType = $(el).text();
-                if(idx>7 && idx<57){
-                    sportSubTypes1.push(sportType);
-                }
-                if(idx>56 && idx<65){
-                    sportSubTypes2.push(sportType);
-                }
-                if(idx>64 && idx<94){
-                    sportSubTypes3.push(sportType);
-                }
-                if(idx>93 && idx<121){
-                    sportSubTypes4.push(sportType);
-                }
-            });
-            res.send({
-                sportSubTypes1,
-                sportSubTypes2,
-                sportSubTypes3,
-                sportSubTypes4});
-        })
-        .catch(e=>console.log(e))
+            .then(urlRes => {
+                const $ = cheerio.load(urlRes.data);
+                const listItems = $(".nv-content-wrap ul li");
+                const sportSubTypes1 = [];
+                const sportSubTypes2 = [];
+                const sportSubTypes3 = [];
+                const sportSubTypes4 = [];
+                listItems.each((idx, el) => {
+                    const sportType = $(el).text();
+                    if (idx > 7 && idx < 57) {
+                        sportSubTypes1.push(sportType);
+                    }
+                    if (idx > 56 && idx < 65) {
+                        sportSubTypes2.push(sportType);
+                    }
+                    if (idx > 64 && idx < 94) {
+                        sportSubTypes3.push(sportType);
+                    }
+                    if (idx > 93 && idx < 121) {
+                        sportSubTypes4.push(sportType);
+                    }
+                });
+                res.send({
+                    sportSubTypes1,
+                    sportSubTypes2,
+                    sportSubTypes3,
+                    sportSubTypes4
+                });
+            })
+            .catch(e => console.log(e))
     } catch (err) {
         console.error(err);
     }
+}
+//AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs
+//scraping youtube videos
+exports.youtubeVideos = async (req, res)=> {
+    // const data = await usetube.searchVideo('Coding Shiksha')
+    // console.log(data)
+    await axios.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&key=AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs")
+    .then((result)=>{
+        return result;
+    })
+    .then((data)=>{
+        console.log(data);
+        const videos = data.items
+        console.log(videos)
+        data.items.forEach(video => console.log(video.snippet.title))
+    })
 }
 
 // Create and Save a new SportSubType
@@ -60,7 +78,6 @@ exports.create = async (req, res) => {
         var newSportSubType = new SportSubType({
             title: req.body.title,
             demoVideo: (file && file.path) || null,
-            advantages: req.body.advantages,
             limits: req.body.limits,
             slug: slug(req.body.title),
         })
@@ -108,8 +125,7 @@ exports.updateSportSubType = (req, res) => {
     SportSubType.findById(req.params.id)
         .then(async (sub) => {
             sub.title = req.body.title;
-            sub.demoVideo = (file && file.path) || null; 
-            sub.advantages = req.body.advantages;
+            sub.demoVideo = (file && file.path) || null;
             sub.limits = req.body.limits;
             sub.slug = slug(req.body.title);
 

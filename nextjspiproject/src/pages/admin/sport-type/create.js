@@ -4,7 +4,7 @@ export default function Create() {
 
   return (
     <div className='container'>
-      <SportTypeForm sportType={{_id:"",title: '', sportSubType: []}}/>
+      <SportTypeForm sportType={{_id:"",title: '', advantages:[], sportSubType: []}}/>
     </div>
   )
 }

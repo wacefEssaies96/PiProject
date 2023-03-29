@@ -2,7 +2,7 @@ import { postSportType } from "@/services/SportTypeService"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Alert, Button, Form } from "react-bootstrap"
+import { Alert, Button, Card, Form } from "react-bootstrap"
 import { BiBlock, BiCheck } from "react-icons/bi"
 import Select from "react-select"
 import Success from "../layouts/SuccessMsg"
@@ -16,6 +16,11 @@ export default function SportTypeForm({ sportType }) {
     const [errorMsg, setErrorMsg] = useState(null)
     const [validated, setValidated] = useState(false)
     const [showAlertError, setShowAlertError] = useState(false)
+    const [sportTypeTitle, setSportTypetitle] = useState([])
+    const [sTADV, setSportTypeADV] = useState({})
+    const [subTypesTitles, setSubTypesTitles] = useState({})
+    const [advObj, setADVObj] = useState(sportType.advantages)
+    const [subTArr, setSubTArr] = useState([])
 
     const submit = async (e) => {
         e.preventDefault()
@@ -30,16 +35,6 @@ export default function SportTypeForm({ sportType }) {
         if (operation === 'Add') {
             if (resFindByTitle === null) {
                 if (form.checkValidity() === true) {
-                    // const subTypesList = selectedSubTypes.map(
-                    //     async (subTypeTitle) => {
-                    //         const res = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${subTypeTitle.title}`)
-                    //         const data = await res.json()
-                    //         return data
-                    //     })
-                    // const sportType = {
-                    //     title: e.target.title.value,
-                    //     sportSubType: subTypesList
-                    // }
                     await postSportType(e, operation, selectedSubTypes)
                     setShowAlert(true)
                     setTimeout(() => {
@@ -63,15 +58,71 @@ export default function SportTypeForm({ sportType }) {
     }
 
     const getSubTypes = async () => {
-        const res = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
-        const data = await res.json()
-        let table = data.map(subType => ({ value: subType.title, label: subType.title }))
+        // const res = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
+        // const data = await res.json()
+        // let table = data.map(subType => ({ value: subType.title, label: subType.title }))
+        // setSubTypes(table)
+
+        let table = subTArr.map(subType => ({ value: subType, label: subType }))
         setSubTypes(table)
     }
 
+    //web scraping
+    useEffect(() => {
+        fetch(`${process.env.backurl}/api/sportTypes/sportTypesTitle`)
+            .then((data) => data.json())
+            .then((titles) => {
+                setSportTypetitle(titles)
+            })
+    }, []);
+
+    const sportTypeAdvAndSubType = async (e) => {
+
+        await fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
+            .then((data) => data.json())
+            .then((titles) => {
+                setSubTypesTitles(titles)
+            })
+
+        switch (e.target.value) {
+            case "Individual Sports":
+                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvIndiv`)
+                    .then((data) => data.json())
+                    .then((adv) => {
+                        setSportTypeADV(adv)
+                    })
+                setSubTArr(subTypesTitles.sportSubTypes1)
+                break;
+            case "Partner Sports":
+                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvPartner`)
+                    .then((data) => data.json())
+                    .then((adv) => {
+                        setSportTypeADV(adv)
+                    })
+                setSubTArr(subTypesTitles.sportSubTypes2)
+                break;
+            case "Team Sports":
+                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvTeam`)
+                    .then((data) => data.json())
+                    .then((adv) => {
+                        setSportTypeADV(adv)
+                    })
+                setSubTArr(subTypesTitles.sportSubTypes3)
+                break;
+            case "Extreme Sports":
+                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvExtreme`)
+                    .then((data) => data.json())
+                    .then((adv) => {
+                        setSportTypeADV(adv)
+                    })
+                setSubTArr(subTypesTitles.sportSubTypes4)
+                break;
+        }
+    }
+    
     useEffect(() => {
         getSubTypes()
-        if (sportType.sportSubType.length > 0) {
+        if (sportType.title !== '') {
             setOperationMode('Edit')
         }
     }, [])
@@ -82,14 +133,25 @@ export default function SportTypeForm({ sportType }) {
         }, 5000);
     }, [showAlertError])
 
+    const passADVPara = (parag) => {
+        setADVObj(parag)
+    }
+
+    const passADV = (title) => {
+        setADVObj({ ...advObj, title: title })
+        console.log(advObj)
+    }
+
     return (
         <div className="container" style={{ padding: "5%" }}>
             {showAlert && <Success message={`Sport Type ${operation}ed Successfully !`}></Success>}
             <Form noValidate validated={validated} onSubmit={submit}>
+                <Form.Control defaultValue={sportType._id} name="id" type="hidden" />
                 <Form.Group className="mb-3">
-                    <Form.Control defaultValue={sportType._id} name="id" type="hidden" />
-                    <Form.Label htmlFor="floatingInput">Sport Type Title</Form.Label>
-                    <Form.Control defaultValue={sportType.title} required name="title" type="text" className="form-control" id="floatingInput" placeholder="Title" />
+                    <Form.Label htmlFor="floatingInput">Select Sport Type Title</Form.Label>
+                    <Form.Select onChange={sportTypeAdvAndSubType} required defaultValue={sportType.title} name="title" >
+                        {sportTypeTitle.map((t, i) => <option key={i}>{t}</option>)}
+                    </Form.Select>
                     {!errorMsg && <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>}
@@ -98,6 +160,35 @@ export default function SportTypeForm({ sportType }) {
                         Please enter a sport type title !
                     </Form.Control.Feedback>
                 </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
+                    <Form.Control value={advObj} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
+                    <Form.Control.Feedback type="valid">
+                        You did it!
+                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>
+                        Please enter a sport sub-type advantages !
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
+                    {sTADV.titles && sTADV.titles.map((t, i) =>
+                        <Card key={i} style={{ width: '15rem' }}>
+                            <Card.Body>
+                                <Card.Title>{t}</Card.Title>
+
+                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(t)}>Choose this</Button>
+                            </Card.Body>
+                        </Card>)
+                    }
+                    {sTADV.paragraphes && sTADV.paragraphes.map((p, j) =>
+                        <Card key={j} style={{ width: '15rem' }}>
+                            <Card.Body>
+                                <Card.Text>{p}</Card.Text>
+                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADVPara(p)}>Choose this</Button>
+                            </Card.Body>
+                        </Card>
+                    )}
+                </Form.Group >
                 <Form.Group className="mb-3">
                     <Form.Label>Choose sports subtypes</Form.Label>
                     <Select
@@ -128,7 +219,7 @@ export default function SportTypeForm({ sportType }) {
                 <Link href="/admin/sport-type" className="btn btn-light" type="submit">
                     Cancel <BiBlock></BiBlock>
                 </Link>
-            </Form>
-        </div>
+            </Form >
+        </div >
     )
 }

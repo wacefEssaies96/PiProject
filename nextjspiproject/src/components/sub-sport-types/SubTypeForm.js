@@ -10,7 +10,6 @@ export default function SportSubTypesForm(props) {
     const [sportSubType, setSportSubType] = useState({
         title: '',
         demoVideo: '',
-        advantages: '',
         limits: ''
     })
     const [operationMode, setOperationMode] = useState('Add')
@@ -19,6 +18,42 @@ export default function SportSubTypesForm(props) {
     const [errorMsg, setErrorMsg] = useState(null)
     const [validated, setValidated] = useState(false)
     const [showAlertError, setShowAlertError] = useState(false)
+    const [sportSubTypeTitle, setSportSubTypetitle] = useState({})
+    const [checkSport, setCheckSport] = useState(false);
+    const [arr, setArr] = useState([])
+    const [sportTypeTitle, setSportTypeTitle] = useState('')
+
+    //web scraping
+    useEffect(() => {
+        fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
+            .then((data) => data.json())
+            .then((titles) => {
+                setSportSubTypetitle(titles)
+            })
+    }, []);
+
+    const handleChange = (e) => {
+        setCheckSport(e.target.checked)
+        setSportTypeTitle(`${e.target.name} Sports`)
+        switch (e.target.name) {
+            case "Individual": {
+                setArr(sportSubTypeTitle.sportSubTypes1)
+                break;
+            }
+            case "Partner": {
+                setArr(sportSubTypeTitle.sportSubTypes2)
+                break;
+            }
+            case "Team": {
+                setArr(sportSubTypeTitle.sportSubTypes3)
+                break;
+            }
+            case "Extreme": {
+                setArr(sportSubTypeTitle.sportSubTypes4)
+                break;
+            }
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -67,14 +102,60 @@ export default function SportSubTypesForm(props) {
         }, 5000);
     }, [showAlertError])
 
+    const handleChangeAtt = (e) => {
+        setSportSubType({ ...sportSubType, [e.target.name]: e.target.value })
+    }
+
+    const handleDemoVideo = (e) => {
+        setSportSubType({ ...sportSubType, demoVideo: e.target.files[0] })
+    }
+
     return (
         <div className="container" style={{ padding: "5%" }}>
             {showAlert && (<Success message={`Sport SubType ${operationMode}ed Successfully !`}></Success>)}
+            <h2>{sportTypeTitle}</h2>
             <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Control defaultValue={sportSubType._id} name="id" type="hidden" className="form-control" id="floatingInput" />
+                <div className='d-flex justify-content-evenly' style={{ margin: "5%" }}>
+                    <Form.Check
+                        name="Individual"
+                        type="switch"
+                        id="custom-switch"
+                        label="Individual Sports"
+                        disabled={checkSport}
+                        onChange={handleChange}
+                    />
+                    <Form.Check
+                        name="Partner"
+                        type="switch"
+                        id="custom-switch"
+                        label="Partner Sports"
+                        disabled={checkSport}
+                        onChange={handleChange}
+                    />
+                    <Form.Check
+                        name="Team"
+                        type="switch"
+                        id="custom-switch"
+                        label="Team Sports"
+                        disabled={checkSport}
+                        onChange={handleChange}
+                    />
+                    <Form.Check
+                        name="Extreme"
+                        type="switch"
+                        id="custom-switch"
+                        label="Extreme Sports"
+                        disabled={checkSport}
+                        onChange={handleChange}
+                    />
+                </div>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">Sport SubType Title</Form.Label>
-                    <Form.Control defaultValue={sportSubType.title} name="title" type="text" className="form-control" id="floatingInput" placeholder="Title" required />
+                    <Form.Select required value={sportSubType.title} name="title" onChange={handleChangeAtt}>
+                        <option value="">Select Soprt SubType Title</option>
+                        {arr && arr.map((t, i) => <option value={t} key={i}>{t}</option>)}
+                    </Form.Select>
                     {!errorMsg && <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>}
@@ -85,7 +166,7 @@ export default function SportSubTypesForm(props) {
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">DemoVideo</Form.Label>
-                    <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required />
+                    <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required onChange={handleDemoVideo} />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
@@ -93,24 +174,19 @@ export default function SportSubTypesForm(props) {
                         Please enter a sport sub-type demoVideo !
                     </Form.Control.Feedback>
                     {sportSubType.demoVideo &&
-                        <video width="320" height="240" controls>
-                            <source src={`${process.env.backurl}/${sportSubType.demoVideo}`} />
-                            Your browser does not support the video tag.
-                        </video>}
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
-                    <Form.Control defaultValue={sportSubType.advantages} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
-                    <Form.Control.Feedback type="valid">
-                        You did it!
-                    </Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>
-                        Please enter a sport sub-type advantages !
-                    </Form.Control.Feedback>
+                        <>
+                            <video width="320" height="240" controls>
+                                <source src={`${process.env.backurl}/${sportSubType.demoVideo}`} />
+                                Your browser does not support the video tag.
+                            </video>
+                            {/* <div className="desig-content">
+                                <p>{sportSubType.demoVideo}</p>
+                            </div> */}
+                        </>}
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">Limits</Form.Label>
-                    <Form.Control defaultValue={sportSubType.limits} name="limits" type="text" className="form-control" id="floatingInput" placeholder="Limits" required />
+                    <Form.Control value={sportSubType.limits} name="limits" type="text" className="form-control" id="floatingInput" placeholder="Limits" required onChange={handleChangeAtt} />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>

@@ -82,6 +82,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
           <thead>
             <tr className='text-center'>
               <th><span>Title</span></th>
+              <th><span>Advantages</span></th>
               <th><span>Sub Types</span></th>
               <th><span>Actions</span></th>
             </tr>
@@ -91,6 +92,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
               return (
                 <tr key={sportType._id}>
                   <td key={sportType.title}>{sportType.title}</td>
+                  <td key={sportType.advantages}>{sportType.advantages}</td>
                   <td key={index}>
                     {sportType.sportSubType.map((sportSubType, i) => {
                       return (

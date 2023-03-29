@@ -152,7 +152,7 @@ exports.advExtreme = async (req, res) => {
 
 exports.create = async (req, res) => {
     // Validate request
-    if (!req.body.title || !req.body.sportSubType) {
+    if (!req.body.title || !req.body.sportSubType || !req.body.advantages) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
@@ -174,10 +174,10 @@ exports.create = async (req, res) => {
             let response = await SubTypeSport.findOne({ title: req.body.sportSubType[i].title });
             sportSubTypesList.push(response)
         }
-        console.log(sportSubTypesList)
 
         var newSportType = new TypeSport({
             title: req.body.title,
+            advantages: req.body.advantages,
             sportSubType: sportSubTypesList,
             slug: slug(req.body.title),
         })
@@ -230,8 +230,9 @@ exports.updateSportType = async (req, res) => {
     TypeSport.findById(req.params.id)
         .then(sportType => {
             sportType.title = req.body.title;
+            sportType.advantages = req.body.advantages;
             sportType.sportSubType = sportSubTypesList;
-            sportType.slug = req.body.slug;
+            sportType.slug = slug(req.body.title);
 
             sportType.save()
                 .then(() => res.json('sport type updated!'))
