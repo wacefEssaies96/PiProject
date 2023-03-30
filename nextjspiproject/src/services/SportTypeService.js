@@ -11,7 +11,7 @@ export const deleteSportType = async (id) => {
     return data
 }
 
-export const postSportType = async (data, operationMode, selectedSubTypes) => {
+export const postSportType = async (data, operationMode, advantages,selectedSubTypes) => {
     const method = operationMode === 'Add' ? 'POST' : 'PUT'
     const options = {
         method : method,
@@ -20,7 +20,7 @@ export const postSportType = async (data, operationMode, selectedSubTypes) => {
         },
         body : JSON.stringify({
             title : data.target.title.value,
-            advantages : data.target.advantages.value,
+            advantages : advantages,
             sportSubType : selectedSubTypes
         }),
 

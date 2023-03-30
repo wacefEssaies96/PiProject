@@ -1,25 +1,26 @@
 import Link from 'next/link'
 import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 const SportSubTypesPage = ({ sportSubTypes }) => {
     const [listSportSubTypes, setListSportSubTypes] = useState(sportSubTypes)
 
     const searchTitleDynamic = async (title) => {
         return await sportSubTypes.filter((x) => {
-          let t = x.title.toLowerCase().includes(title.toLowerCase())
-          if(t) {
-            return x
-          }
+            let t = x.title.toLowerCase().includes(title.toLowerCase())
+            if (t) {
+                return x
+            }
         })
-      }
-    
-      const newList = async (e) => {
+    }
+
+    const newList = async (e) => {
         return await searchTitleDynamic(e.target.value)
-      }
-    
-      const handleChange = async (e) => {
+    }
+
+    const handleChange = async (e) => {
         setListSportSubTypes(await newList(e))
-      }
+    }
     return (
         <div>
             <div className="d-flex justify-content-center" style={{ paddingTop: "5%" }}>
@@ -28,11 +29,17 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                     <h3 className="wow fadeIn">All Sport SubTypes</h3>
                 </div>
             </div>
-            <div className='sidebar' style={{ width: "20%", marginLeft:"70%", marginTop:"3%"}}>
+            <div className='d-flex justify-content-evenly' style={{margin:"3%"}}>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Individual Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Partner Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Tram Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Extreme Sports</Button>
+            </div>
+            <div className='sidebar' style={{ width: "20%", marginLeft: "70%", marginTop: "3%" }}>
                 <div id="search-1" className="widget widget_search">
                     <h4 className="widget-title">Search</h4>
                     <form className="relative" role="search">
-                        <input onChange={handleChange} type="search" className="form-control" placeholder="Search by Title ..." required/>
+                        <input onChange={handleChange} type="search" className="form-control" placeholder="Search by Title ..." required />
                         <button className="search_btn"><i className="fa fa-search"></i></button>
                     </form>
                 </div>
@@ -69,7 +76,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                             </div>
                         </div>
                     </div>
-                    {listSportSubTypes.indexOf(sT)+1<listSportSubTypes.length && <div className="d-flex justify-content-center">
+                    {listSportSubTypes.indexOf(sT) + 1 < listSportSubTypes.length && <div className="d-flex justify-content-center">
                         <hr style={{ width: "50%", border: "2px solid #016837", backgroundColor: "#016837" }} />
                     </div>}
                 </>

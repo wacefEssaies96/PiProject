@@ -50,7 +50,13 @@ exports.advIndiv = async (req, res) => {
                         pArr.push(p);
                     }
                 });
-                res.send({ titles: tArr, paragraphes: pArr });
+                i=0
+                let table=[]
+                while(i<tArr.length){
+                    table.push({[tArr[i]]: pArr[i]})
+                    i++
+                }
+                res.send(table)
             })
             .catch(e => console.log(e))
     } catch (err) {
@@ -75,11 +81,25 @@ exports.advPartner = async (req, res) => {
                 });
                 advParag.each((idx, el) => {
                     const p = $(el).text();
-                    if (idx > 0 && idx < 18) {
+                    if (idx > 0 && idx < 17) {
                         pArr.push(p);
                     }
                 });
-                res.send({ titles: tArr, paragraphes: pArr });
+                let table=[]
+                table.push({[tArr[0]]: pArr[0]})
+                table.push({[tArr[0]]: pArr[1]})
+                table.push({[tArr[1]]: pArr[2]})
+                table.push({[tArr[1]]: pArr[3]})
+                table.push({[tArr[2]]: pArr[4]})
+                table.push({[tArr[2]]: pArr[5]})
+                table.push({[tArr[3]]: pArr[6]})
+                table.push({[tArr[3]]: pArr[7]})
+                table.push({[tArr[3]]: pArr[8]})
+                for (let i = 4; i < 8; i++){
+                    table.push({[tArr[i]]: pArr[i]})
+                }
+                table.push({[tArr[8]]: pArr[15]})
+                res.send(table)
             })
             .catch(e => console.log(e))
     } catch (err) {
@@ -110,7 +130,17 @@ exports.advTeam = async (req, res) => {
                         pArr.push(p);
                     }
                 });
-                res.send({ titles: tArr, paragraphes: pArr });
+                let table=[]
+                table.push({[tArr[0]]: pArr[0]})
+                table.push({[tArr[0]]: pArr[1]})
+                table.push({[tArr[1]]: pArr[2]})
+                table.push({[tArr[2]]: pArr[3]})
+                table.push({[tArr[2]]: pArr[4]})
+                table.push({[tArr[3]]: pArr[5]})
+                table.push({[tArr[4]]: pArr[6]})
+                table.push({[tArr[5]]: pArr[7]})
+                table.push({[tArr[5]]: pArr[8]})
+                res.send(table)
             })
             .catch(e => console.log(e))
     } catch (err) {
@@ -131,16 +161,22 @@ exports.advExtreme = async (req, res) => {
                 const pArr = [];
                 advTitle.each((idx, el) => {
                     const t = $(el).text();
-                        tArr.push(t);
+                    tArr.push(t);
                 });
                 advParag.each((idx, el) => {
                     const p = $(el).text();
-                    const i = [0,1,3,4,6,7,9,10,12,13]
+                    const i = [0, 1, 3, 4, 6, 7, 9, 10, 12, 13]
                     if (!i.includes(idx)) {
                         pArr.push(p);
                     }
                 });
-                res.send({ titles: tArr, paragraphes: pArr });
+                i=0
+                let table=[]
+                while(i<tArr.length){
+                    table.push({[tArr[i]]: pArr[i]})
+                    i++
+                }
+                res.send(table)
             })
             .catch(e => console.log(e))
     } catch (err) {

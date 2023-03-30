@@ -17,15 +17,23 @@ export default function SportTypeForm({ sportType }) {
     const [validated, setValidated] = useState(false)
     const [showAlertError, setShowAlertError] = useState(false)
     const [sportTypeTitle, setSportTypetitle] = useState([])
-    const [sTADV, setSportTypeADV] = useState({})
+    const [sTADV, setSportTypeADV] = useState([])
     const [subTypesTitles, setSubTypesTitles] = useState({})
-    const [advObj, setADVObj] = useState(sportType.advantages)
+    const [advObj, setADVObj] = useState({titles:'', paragraphes:''})
     const [subTArr, setSubTArr] = useState([])
 
     const submit = async (e) => {
         e.preventDefault()
         const form = e.currentTarget
         setValidated(true)
+
+        let advantages = []
+        advantages = e.target.advantages.value.split(", ")
+        let parag = advObj.paragraphes.split("., ")
+        for (let index = 0; index < parag.length; index++) {
+            advantages.push(parag[index])
+        }
+        advantages.shift()
 
         const findBySportTypeByTitle = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${e.target.title.value}`)
         const resFindByTitle = await findBySportTypeByTitle.json()
@@ -35,7 +43,7 @@ export default function SportTypeForm({ sportType }) {
         if (operation === 'Add') {
             if (resFindByTitle === null) {
                 if (form.checkValidity() === true) {
-                    await postSportType(e, operation, selectedSubTypes)
+                    await postSportType(e, operation, advantages,selectedSubTypes)
                     setShowAlert(true)
                     setTimeout(() => {
                         setShowAlert(false)
@@ -48,7 +56,7 @@ export default function SportTypeForm({ sportType }) {
             }
         } else {
             e.preventDefault()
-            await postSportType(e, operation, selectedSubTypes)
+            await postSportType(e, operation, advantages,selectedSubTypes)
             setShowAlert(true)
             setTimeout(() => {
                 setShowAlert(false)
@@ -63,8 +71,8 @@ export default function SportTypeForm({ sportType }) {
         // let table = data.map(subType => ({ value: subType.title, label: subType.title }))
         // setSubTypes(table)
 
-        let table = subTArr.map(subType => ({ value: subType, label: subType }))
-        setSubTypes(table)
+        // let table = subTArr.map(subType => ({ value: subType, label: subType }))
+        // setSubTypes(table)
     }
 
     //web scraping
@@ -119,7 +127,7 @@ export default function SportTypeForm({ sportType }) {
                 break;
         }
     }
-    
+
     useEffect(() => {
         getSubTypes()
         if (sportType.title !== '') {
@@ -133,13 +141,12 @@ export default function SportTypeForm({ sportType }) {
         }, 5000);
     }, [showAlertError])
 
-    const passADVPara = (parag) => {
-        setADVObj(parag)
-    }
-
-    const passADV = (title) => {
-        setADVObj({ ...advObj, title: title })
-        console.log(advObj)
+    const passADV = (obj) => {
+        // setADVObj({ title: advObj.title=advObj.title+", "+title })
+        setADVObj({ 
+            titles: advObj.titles=advObj.titles+", "+Object.keys(obj)[0] ,
+            paragraphes:  advObj.paragraphes=advObj.paragraphes+", "+Object.values(obj)[0]
+        })
     }
 
     return (
@@ -162,7 +169,7 @@ export default function SportTypeForm({ sportType }) {
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
-                    <Form.Control value={advObj} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
+                    <Form.Control value={advObj.titles} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
@@ -171,23 +178,15 @@ export default function SportTypeForm({ sportType }) {
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
-                    {sTADV.titles && sTADV.titles.map((t, i) =>
+                    {sTADV && sTADV.map((o, i) =>
                         <Card key={i} style={{ width: '15rem' }}>
                             <Card.Body>
-                                <Card.Title>{t}</Card.Title>
-
-                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(t)}>Choose this</Button>
+                                <Card.Title>{Object.keys(o)[0]}</Card.Title>
+                                <Card.Text>{Object.values(o)[0]}</Card.Text>
+                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
                             </Card.Body>
                         </Card>)
                     }
-                    {sTADV.paragraphes && sTADV.paragraphes.map((p, j) =>
-                        <Card key={j} style={{ width: '15rem' }}>
-                            <Card.Body>
-                                <Card.Text>{p}</Card.Text>
-                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADVPara(p)}>Choose this</Button>
-                            </Card.Body>
-                        </Card>
-                    )}
                 </Form.Group >
                 <Form.Group className="mb-3">
                     <Form.Label>Choose sports subtypes</Form.Label>

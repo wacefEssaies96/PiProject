@@ -92,7 +92,11 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
               return (
                 <tr key={sportType._id}>
                   <td key={sportType.title}>{sportType.title}</td>
-                  <td key={sportType.advantages}>{sportType.advantages}</td>
+                  <td key={sportType.advantages}>{sportType.advantages &&
+                    sportType.advantages.map((a, i) => 
+                        <p key={i}>{a}</p>
+                    )}
+                  </td>
                   <td key={index}>
                     {sportType.sportSubType.map((sportSubType, i) => {
                       return (
