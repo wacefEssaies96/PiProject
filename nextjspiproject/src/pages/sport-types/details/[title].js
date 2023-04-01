@@ -1,30 +1,32 @@
 import { Card } from "react-bootstrap"
 
 const Details = ({ sportTypeByTitle }) => {
+    
+    const arr1 = sportTypeByTitle.advantages.slice(0, sportTypeByTitle.advantages.length / 2)
+    const arr2 = sportTypeByTitle.advantages.slice(sportTypeByTitle.advantages.length / 2)
+
     return (
         <div className="container">
             <h1>All {sportTypeByTitle.title} Details</h1>
             <div className="d-flex justify-content-around">
-                {sportTypeByTitle.sportSubType.map((subType, index) => {
-                    return (
-                        <Card
-                            bg={"info"}
-                            key={index}
-                            style={{ width: '18rem' }}
-                            className="mb-2"
-                        >
-                            <Card.Header> Details </Card.Header>
-                            <Card.Body>
-                                <Card.Title>{subType.title}</Card.Title>
-                                <Card.Text>
-                                    <p>{subType?.demoVideo}</p>
-                                    <p>{subType?.advantages}</p>
-                                    <p>{subType?.limits}</p>
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
-                    )
-                })}
+                <Card bg={"ligth"} className="mb-2">
+                    <Card.Header> {sportTypeByTitle.title} </Card.Header>
+                    <Card.Body>
+                        <Card.Title>Details</Card.Title>
+                        <Card.Text>
+                            {sportTypeByTitle.advantages && arr1.map((a, i) =>
+                                <div key={i}>
+                                    <h4>{arr1[i]}</h4>
+                                    <p>{arr2[i]}</p>
+                                </div>
+                            )}
+                        </Card.Text>
+                        <Card.Text>
+                            {sportTypeByTitle.sportSubType && sportTypeByTitle.sportSubType.map((sub, i) => { sub != null && <p key={i}>{sub.title}</p> }
+                            )}
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
             </div>
         </div>
     );

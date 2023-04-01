@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 
 const SportSubTypesPage = ({ sportSubTypes }) => {
     const [listSportSubTypes, setListSportSubTypes] = useState(sportSubTypes)
+    const [sportSubTypesScraped, setSportSubTypesScraped] = useState({})
 
     const searchTitleDynamic = async (title) => {
         return await sportSubTypes.filter((x) => {
@@ -21,6 +22,73 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
     const handleChange = async (e) => {
         setListSportSubTypes(await newList(e))
     }
+
+    const webScrapingSubTypes = async () => {
+        const res = await fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
+        await res.json()
+            .then(sub => setSportSubTypesScraped(sub))
+    }
+
+    const filterIndividualSubTypes = async () => {
+        await webScrapingSubTypes()
+        let table = []
+        if (sportSubTypesScraped.sportSubTypes1) {
+            for (let i = 0; i < sportSubTypesScraped.sportSubTypes1.length; i++) {
+                for (let j = 0; j < listSportSubTypes.length; j++) {
+                    if (sportSubTypesScraped.sportSubTypes1[i] === listSportSubTypes[j].title) {
+                        table.push(listSportSubTypes[j])
+                    }
+                }
+            }
+            setListSportSubTypes(table)
+        }
+    }
+
+    const filterPartnerSubTypes = async () => {
+        await webScrapingSubTypes()
+        let table = []
+        if (sportSubTypesScraped.sportSubTypes2) {
+            for (let i = 0; i < sportSubTypesScraped.sportSubTypes2.length; i++) {
+                for (let j = 0; j < listSportSubTypes.length; j++) {
+                    if (sportSubTypesScraped.sportSubTypes2[i] === listSportSubTypes[j].title) {
+                        table.push(listSportSubTypes[j])
+                    }
+                }
+            }
+            setListSportSubTypes(table)
+        }
+    }
+
+    const filterTeamSubTypes = async () => {
+        await webScrapingSubTypes()
+        let table = []
+        if (sportSubTypesScraped.sportSubTypes3) {
+            for (let i = 0; i < sportSubTypesScraped.sportSubTypes3.length; i++) {
+                for (let j = 0; j < listSportSubTypes.length; j++) {
+                    if (sportSubTypesScraped.sportSubTypes3[i] === listSportSubTypes[j].title) {
+                        table.push(listSportSubTypes[j])
+                    }
+                }
+            }
+            setListSportSubTypes(table)
+        }
+    }
+
+    const filterExtremeSubTypes = async () => {
+        await webScrapingSubTypes()
+        let table = []
+        if (sportSubTypesScraped.sportSubTypes4) {
+            for (let i = 0; i < sportSubTypesScraped.sportSubTypes4.length; i++) {
+                for (let j = 0; j < listSportSubTypes.length; j++) {
+                    if (sportSubTypesScraped.sportSubTypes4[i] === listSportSubTypes[j].title) {
+                        table.push(listSportSubTypes[j])
+                    }
+                }
+            }
+            setListSportSubTypes(table)
+        }
+    }
+
     return (
         <div>
             <div className="d-flex justify-content-center" style={{ paddingTop: "5%" }}>
@@ -29,11 +97,11 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                     <h3 className="wow fadeIn">All Sport SubTypes</h3>
                 </div>
             </div>
-            <div className='d-flex justify-content-evenly' style={{margin:"3%"}}>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Individual Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Partner Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Tram Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button'>Extreme Sports</Button>
+            <div className='d-flex justify-content-evenly' style={{ margin: "3%" }}>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterIndividualSubTypes}>Individual Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterPartnerSubTypes}>Partner Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterTeamSubTypes}>Tram Sports</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterExtremeSubTypes}>Extreme Sports</Button>
             </div>
             <div className='sidebar' style={{ width: "20%", marginLeft: "70%", marginTop: "3%" }}>
                 <div id="search-1" className="widget widget_search">
@@ -44,9 +112,9 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                     </form>
                 </div>
             </div>
-            {listSportSubTypes.map(sT => (
+            {listSportSubTypes && listSportSubTypes.map((sT, index) => (
                 <>
-                    <div className="vc_row wpb_row vc_row-fluid wd-section">
+                    {sT && <div key={index} className="vc_row wpb_row vc_row-fluid wd-section">
                         <div className="wpb_column vc_column_container vc_col-sm-12 vc_col-lg-6 vc_col-md-6">
                             <div className="vc_column-inner"><div className="wpb_wrapper">
                                 <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
@@ -63,8 +131,6 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                                 <span className="heading-subtitle" style={{ fontSize: "35px" }}>{sT?.title}</span>
                                 <div className="wpb_text_column wpb_content_element  vc_custom_1580296943324" >
                                     <div className="wpb_wrapper">
-                                        <h4>Advantages</h4>
-                                        <p>{sT?.advantages}</p>
                                         <h4>Limits</h4>
                                         <p>{sT?.limits}</p>
                                     </div>
@@ -75,7 +141,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                             </div>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     {listSportSubTypes.indexOf(sT) + 1 < listSportSubTypes.length && <div className="d-flex justify-content-center">
                         <hr style={{ width: "50%", border: "2px solid #016837", backgroundColor: "#016837" }} />
                     </div>}

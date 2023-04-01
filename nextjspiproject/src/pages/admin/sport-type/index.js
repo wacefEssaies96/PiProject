@@ -82,29 +82,34 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
           <thead>
             <tr className='text-center'>
               <th><span>Title</span></th>
-              <th><span>Advantages</span></th>
+              <th width="50%"><span>Advantages</span></th>
               <th><span>Sub Types</span></th>
               <th><span>Actions</span></th>
             </tr>
           </thead>
           {list && <tbody>
             {list.map((sportType, index) => {
+              const arr1 = sportType.advantages.slice(0, sportType.advantages.length / 2)
+              const arr2 = sportType.advantages.slice(sportType.advantages.length / 2)
               return (
                 <tr key={sportType._id}>
-                  <td key={sportType.title}>{sportType.title}</td>
+                  <td style={{textAlign: "center"}} key={sportType.title}>{sportType.title}</td>
                   <td key={sportType.advantages}>{sportType.advantages &&
-                    sportType.advantages.map((a, i) => 
-                        <p key={i}>{a}</p>
+                    arr1.map((a, i) =>
+                      <div key={i}>
+                        <h5>{arr1[i]}</h5>
+                        <p>{arr2[i]}</p>
+                      </div>
                     )}
                   </td>
                   <td key={index}>
-                    {sportType.sportSubType.map((sportSubType, i) => {
+                    {sportType.sportSubType && sportType.sportSubType.map((sub, i) => {
                       return (
-                        <p key={i}>{sportSubType.title}</p>
+                        sub && <p key={i}>{sub.title}</p>
                       )
                     })}
                   </td>
-                  <td key={sportType._id} className='px-16 py-2 flex justify-content-center'>
+                  <td style={{textAlign: "center"}} key={sportType._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/sport-type/edit/${sportType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
                     </Link>

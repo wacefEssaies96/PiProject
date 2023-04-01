@@ -12,15 +12,15 @@ export default function SportTypeForm({ sportType }) {
     const router = useRouter()
     const [data, setData] = useState([])
     const [showAlert, setShowAlert] = useState(false)
-    const [subTypes, setSubTypes] = useState([])
+    const [subTypes, setSubTypes] = useState([{ value: '', label: '' }])
     const [errorMsg, setErrorMsg] = useState(null)
     const [validated, setValidated] = useState(false)
     const [showAlertError, setShowAlertError] = useState(false)
     const [sportTypeTitle, setSportTypetitle] = useState([])
     const [sTADV, setSportTypeADV] = useState([])
     const [subTypesTitles, setSubTypesTitles] = useState({})
-    const [advObj, setADVObj] = useState({titles:'', paragraphes:''})
-    const [subTArr, setSubTArr] = useState([])
+    const [advObj, setADVObj] = useState({ titles: '', paragraphes: '' })
+    // const [subTArr, setSubTArr] = useState([])
 
     const submit = async (e) => {
         e.preventDefault()
@@ -43,7 +43,7 @@ export default function SportTypeForm({ sportType }) {
         if (operation === 'Add') {
             if (resFindByTitle === null) {
                 if (form.checkValidity() === true) {
-                    await postSportType(e, operation, advantages,selectedSubTypes)
+                    await postSportType(e, operation, advantages, selectedSubTypes)
                     setShowAlert(true)
                     setTimeout(() => {
                         setShowAlert(false)
@@ -56,7 +56,7 @@ export default function SportTypeForm({ sportType }) {
             }
         } else {
             e.preventDefault()
-            await postSportType(e, operation, advantages,selectedSubTypes)
+            await postSportType(e, operation, advantages, selectedSubTypes)
             setShowAlert(true)
             setTimeout(() => {
                 setShowAlert(false)
@@ -65,15 +65,12 @@ export default function SportTypeForm({ sportType }) {
         }
     }
 
-    const getSubTypes = async () => {
+    // const getSubTypes = async () => {
         // const res = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
         // const data = await res.json()
         // let table = data.map(subType => ({ value: subType.title, label: subType.title }))
         // setSubTypes(table)
-
-        // let table = subTArr.map(subType => ({ value: subType, label: subType }))
-        // setSubTypes(table)
-    }
+    // }
 
     //web scraping
     useEffect(() => {
@@ -92,44 +89,66 @@ export default function SportTypeForm({ sportType }) {
                 setSubTypesTitles(titles)
             })
 
+        const table1 = subTypesTitles.sportSubTypes1 && subTypesTitles.sportSubTypes1.map(subType => ({ value: subType, label: subType }))
+        const table2 = subTypesTitles.sportSubTypes2 && subTypesTitles.sportSubTypes2.map(subType => ({ value: subType, label: subType }))
+        const table3 = subTypesTitles.sportSubTypes3 && subTypesTitles.sportSubTypes3.map(subType => ({ value: subType, label: subType }))
+        const table4 = subTypesTitles.sportSubTypes4 && subTypesTitles.sportSubTypes4.map(subType => ({ value: subType, label: subType }))
+
+        if (e.target.value === "Individual Sports") {
+            setSubTypes(table1)
+        } else
+        if (e.target.value === "Partner Sports") {
+            setSubTypes(table2)
+        } else
+        if (e.target.value === "Team Sports") {
+            setSubTypes(table3)
+        } else
+        if (e.target.value === "Extreme Sports") {
+            setSubTypes(table4)
+        }
+
         switch (e.target.value) {
             case "Individual Sports":
-                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvIndiv`)
-                    .then((data) => data.json())
-                    .then((adv) => {
-                        setSportTypeADV(adv)
-                    })
-                setSubTArr(subTypesTitles.sportSubTypes1)
-                break;
+                {
+                    await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvIndiv`)
+                        .then((data) => data.json())
+                        .then((adv) => {
+                            setSportTypeADV(adv)
+                        })
+                    break;
+                }
             case "Partner Sports":
-                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvPartner`)
-                    .then((data) => data.json())
-                    .then((adv) => {
-                        setSportTypeADV(adv)
-                    })
-                setSubTArr(subTypesTitles.sportSubTypes2)
-                break;
+                {
+                    await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvPartner`)
+                        .then((data) => data.json())
+                        .then((adv) => {
+                            setSportTypeADV(adv)
+                        })
+                    break;
+                }
             case "Team Sports":
-                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvTeam`)
-                    .then((data) => data.json())
-                    .then((adv) => {
-                        setSportTypeADV(adv)
-                    })
-                setSubTArr(subTypesTitles.sportSubTypes3)
-                break;
+                {
+                    await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvTeam`)
+                        .then((data) => data.json())
+                        .then((adv) => {
+                            setSportTypeADV(adv)
+                        })
+                    break;
+                }
             case "Extreme Sports":
-                await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvExtreme`)
-                    .then((data) => data.json())
-                    .then((adv) => {
-                        setSportTypeADV(adv)
-                    })
-                setSubTArr(subTypesTitles.sportSubTypes4)
-                break;
+                {
+                    await fetch(`${process.env.backurl}/api/sportTypes/sportTypesAdvExtreme`)
+                        .then((data) => data.json())
+                        .then((adv) => {
+                            setSportTypeADV(adv)
+                        })
+                    break;
+                }
         }
     }
 
     useEffect(() => {
-        getSubTypes()
+        // getSubTypes()
         if (sportType.title !== '') {
             setOperationMode('Edit')
         }
@@ -142,12 +161,14 @@ export default function SportTypeForm({ sportType }) {
     }, [showAlertError])
 
     const passADV = (obj) => {
-        // setADVObj({ title: advObj.title=advObj.title+", "+title })
-        setADVObj({ 
-            titles: advObj.titles=advObj.titles+", "+Object.keys(obj)[0] ,
-            paragraphes:  advObj.paragraphes=advObj.paragraphes+", "+Object.values(obj)[0]
+        setADVObj({
+            titles: advObj.titles = advObj.titles + ", " + Object.keys(obj)[0],
+            paragraphes: advObj.paragraphes = advObj.paragraphes + ", " + Object.values(obj)[0]
         })
     }
+
+    // const arr1 = sportType.advantages.slice(0, sportType.advantages.length / 2)
+    // const arr2 = sportType.advantages.slice(sportType.advantages.length / 2)
 
     return (
         <div className="container" style={{ padding: "5%" }}>
@@ -169,7 +190,7 @@ export default function SportTypeForm({ sportType }) {
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
-                    <Form.Control value={advObj.titles} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
+                    <Form.Control as="textarea" defaultValue={sportType.advantages}  value={advObj.titles} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
@@ -193,7 +214,7 @@ export default function SportTypeForm({ sportType }) {
                     <Select
                         defaultValue={() => {
                             return sportType.sportSubType.map((element) => {
-                                return { value: element.title, label: element.title }
+                                return element && { value: element.title, label: element.title }
                             })
                         }}
                         id="selectWarna"
