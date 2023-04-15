@@ -2,20 +2,41 @@ import React from 'react';
 import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { Store } from '@/utils/Store';
 function Header() {
   const cookies = new Cookies();
 
+  const router = useRouter();
   const [auth, setAuth] = useState({
     token: null,
     user: null,
   });
+  const logout = () => {
+    cookies.remove('token');
+    cookies.remove('user');
+    window.location = '/';
+  };
+  const getUser = async () => {
+    if (cookies.get('user')) {
+      let res = await fetch(
+        `${process.env.backurl}/api/users/findOne/${cookies.get('user')._id}`
+      );
+      let data = await res.json();
+      auth.user = data;
+    }
+  };
   useEffect(() => {
+    getUser();
     setAuth({
       token: cookies.get('token'),
       user: cookies.get('user'),
     });
   }, []);
+
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
 
   return (
     <>
@@ -27,13 +48,13 @@ function Header() {
                 <li className="list-inline-item">
                   <a href="#">
                     {' '}
-                    <i className="icon-phone"></i>+012 3456789
+                    <i className="icon-phone"></i>+216{' '}
                   </a>
                 </li>
                 <li className="list-inline-item">
                   <a href="#">
                     {' '}
-                    <i className="icon-envelope"></i> someone@example.com{' '}
+                    <i className="icon-envelope"></i>health.spotLight@gmail.com{' '}
                   </a>
                 </li>
               </ul>
@@ -68,27 +89,68 @@ function Header() {
                   </li>
                   <li className="has-dropdown">
                     <a href="#">
-                      <i className="icon-user"></i>
+                      <div>
+                        {!auth.user || !auth.user.image ? (
+                          <img
+                            style={{ height: '2rem', width: '2rem' }}
+                            src={`${process.env.backurl}/uploads/User/altUser.png`}
+                            alt="no img altUser.png"
+                          />
+                        ) : (
+                          <img
+                            style={{ height: '2rem', width: '2rem' }}
+                            src={`${process.env.backurl}/${auth.user.image}`}
+                            onError={(e) => {
+                              e.target.src = `${process.env.backurl}/uploads/User/altUser.png`;
+                            }}
+                            alt="verifiy img"
+                          />
+                        )}
+                      </div>
                     </a>
                     <ul className="user-option">
                       {!auth.token ? (
                         <>
                           <li>
-                            <Link href={'/register'}>Register</Link>
+                            <Link href={'/user/doctor-or-user'}>Register</Link>
                           </li>
                           <li>
-                            <Link href={'/login'}>Login</Link>
-                          </li>
-                          <li>
-                            <Link href={'/resister-doctor-or-user'}>
-                              Resigter2
-                            </Link>
+                            <Link href={'/auth/login'}>Login</Link>
                           </li>
                         </>
                       ) : (
                         <>
+                          {auth.user.role == 'DOCTOR' ? (
+                            <li>
+                              <Link
+                                href="#"
+                                onClick={() => {
+                                  router.push('/user/doctor');
+                                }}
+                              >
+                                {' '}
+                                Profile
+                              </Link>
+                            </li>
+                          ) : (
+                            <li>
+                              <Link
+                                href="#"
+                                onClick={() => {
+                                  router.push('/user/edit-profile');
+                                }}
+                              >
+                                {' '}
+                                Profile
+                              </Link>
+                            </li>
+                          )}
+
                           <li>
-                            <Link href={'/logout'}> Logout</Link>
+                            <Link href="#" onClick={logout}>
+                              {' '}
+                              Logout
+                            </Link>
                           </li>
                         </>
                       )}
@@ -106,11 +168,8 @@ function Header() {
             <div className="col-md-12">
               <div className="main-navigation">
                 <div className="logo">
-                  <a href="index.html">
-                    <img
-                      src="wp-content/themes/weefly/assets/images/weefly/logo.png"
-                      alt="Weefly"
-                    />
+                  <a href="#">
+                    <img src="/logo.png" alt="HealthSpotLight" />
                   </a>
                 </div>
                 <div className="nav">
@@ -121,7 +180,7 @@ function Header() {
                           id="menu-item-1743"
                           className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"
                         >
-                          <a href={'/users'} aria-current="page">
+                          <a href="/admin/users" aria-current="page">
                             Managment
                           </a>
                           <ul className="sub-menu">
@@ -129,7 +188,13 @@ function Header() {
                               id="menu-item-1754"
                               className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"
                             >
-                              <a href={'/users'} aria-current="page">
+                              <a
+                                href="#"
+                                onClick={() => {
+                                  router.push('/admin/users');
+                                }}
+                                aria-current="page"
+                              >
                                 Users
                               </a>
                             </li>
@@ -174,21 +239,19 @@ function Header() {
                             id="menu-item-1753"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"
                           >
-                            <a href="home-2/index.html">Home Page Two</a>
+                            <a href="#">Home Page Two</a>
                           </li>
                           <li
                             id="menu-item-1768"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"
                           >
-                            <a href="homepage-three/index.html">
-                              Homepage Three
-                            </a>
+                            <a href="#">Homepage Three</a>
                           </li>
                           <li
                             id="menu-item-1769"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"
                           >
-                            <a href="homepage-four/index.html">Homepage Four</a>
+                            <a href="#">Homepage Four</a>
                           </li>
                         </ul>
                       </li>
@@ -202,55 +265,43 @@ function Header() {
                             id="menu-item-1744"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"
                           >
-                            <a href="blog/index.html">Blog Grid</a>
+                            <a href="#">Blog Grid</a>
                           </li>
                           <li
                             id="menu-item-1726"
                             className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1726"
                           >
-                            <a href="grow-cannabis-at-farm-with-weefly-from-the-cannabis/index.html">
-                              Blog Single
-                            </a>
+                            <a href="#">Blog Single</a>
                             <ul className="sub-menu">
                               <li
                                 id="menu-item-1725"
                                 className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1725"
                               >
-                                <a href="grow-cannabis-at-farm-with-weefly-from-the-cannabis/index.html">
-                                  Standard
-                                </a>
+                                <a href="#">Standard</a>
                               </li>
                               <li
                                 id="menu-item-1721"
                                 className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1721"
                               >
-                                <a href="recreational-medical-marijuana-from-the-cannabis/index.html">
-                                  Gallery
-                                </a>
+                                <a href="#">Gallery</a>
                               </li>
                               <li
                                 id="menu-item-1722"
                                 className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1722"
                               >
-                                <a href="weefly-medical-marijuana-shop-from-the-cannabis/index.html">
-                                  Video
-                                </a>
+                                <a href="#">Video</a>
                               </li>
                               <li
                                 id="menu-item-1724"
                                 className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1724"
                               >
-                                <a href="how-we-grow-medically-cannabis-from-the-cannabis/index.html">
-                                  Quote
-                                </a>
+                                <a href="#">Quote</a>
                               </li>
                               <li
                                 id="menu-item-1723"
                                 className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1723"
                               >
-                                <a href="how-to-use-medical-marijuana-from-the-cannabis.html">
-                                  Link
-                                </a>
+                                <a href="#">Link</a>
                               </li>
                             </ul>
                           </li>
@@ -260,7 +311,7 @@ function Header() {
                         id="menu-item-1746"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"
                       >
-                        <a href="about-us/index.html">About Us</a>
+                        <a href="#">About Us</a>
                       </li>
                       <li
                         id="menu-item-1728"
@@ -269,30 +320,40 @@ function Header() {
                         <a href="#">Products</a>
                         <ul className="sub-menu">
                           <li
+                            id="menu-item-1745"
+                            className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1745"
+                          >
+                            <a
+                              onClick={() => {
+                                router.push('/e-commerce');
+                              }}
+                            >
+                              Shop
+                            </a>
+                          </li>
+                          <li
                             id="menu-item-1760"
                             className="menu-item menu-item-type-post_type menu-item-object-product menu-item-1760"
                           >
-                            <a href="product/beach-blast/index.html">
-                              Shop Details
-                            </a>
+                            <a href="#">Shop Details</a>
                           </li>
                           <li
                             id="menu-item-1757"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1757"
                           >
-                            <a href="my-account/index.html">My Account</a>
+                            <a href="#">My Account</a>
                           </li>
                           <li
                             id="menu-item-1759"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1759"
                           >
-                            <a href="wishlist/index.html">Wishlist</a>
+                            <a href="#">Wishlist</a>
                           </li>
                           <li
                             id="menu-item-1758"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1758"
                           >
-                            <a href="cart/index.html">Cart</a>
+                            <a href="#">Cart</a>
                           </li>
                         </ul>
                       </li>
@@ -306,31 +367,31 @@ function Header() {
                             id="menu-item-1767"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767"
                           >
-                            <a href="our-team/index.html">Our Team</a>
+                            <a href="#">Our Team</a>
                           </li>
                           <li
                             id="menu-item-1766"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766"
                           >
-                            <a href="our-doctors/index.html">Our Doctors</a>
+                            <a href="#">Our Doctors</a>
                           </li>
                           <li
                             id="menu-item-1727"
                             className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1727"
                           >
-                            <a href="404.html">404 Page</a>
+                            <a href="#">404 Page</a>
                           </li>
                           <li
                             id="menu-item-1755"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1755"
                           >
-                            <a href="register/index.html">Register</a>
+                            <a href="/user/doctor-or-user">Register</a>
                           </li>
                           <li
                             id="menu-item-1756"
                             className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1756"
                           >
-                            <a href="login/index.html">Login</a>
+                            <a href="/auth/login">Login</a>
                           </li>
                         </ul>
                       </li>
@@ -338,7 +399,7 @@ function Header() {
                         id="menu-item-1747"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"
                       >
-                        <a href="contact-us/index.html">Contact Us</a>
+                        <a href="#">Contact Us</a>
                       </li>
                     </ul>{' '}
                   </nav>
@@ -346,17 +407,24 @@ function Header() {
                 <div className="side-cart">
                   <ul>
                     <li>
-                      <a href="cart/index.html">
+                      <Link href="/e-commerce/cart">
                         <i className="sl icon-basket"></i>
-                        <span className="cart-item">0</span>
-                      </a>
+                        {cart && cart.cartItems.length > 0 && (
+                          <span className="cart-item">
+                            {cart.cartItems.reduce(
+                              (a, c) => a + c.quantityy,
+                              0
+                            )}
+                          </span>
+                        )}
+                      </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <a href="wishlist/index.html">
                         <i className="sl icon-heart"></i>
                         <span className="wishlist-item">0</span>
                       </a>
-                    </li>
+                    </li> */}
                   </ul>
                   <div id="nav-toggle-label">
                     <div id="hamburger">
@@ -375,7 +443,7 @@ function Header() {
                   <div className="mobile-logo">
                     <a href="index.html">
                       <img
-                        src="wp-content/themes/weefly/images/mobile-logo.png"
+                        src="/wp-content/themes/weefly/images/mobile-logo.png"
                         alt="Weefly"
                       />
                     </a>

@@ -1,8 +1,30 @@
 const Product = require('../../models/e-commerce/product');
 // CREATE a new product
+
+// Create the multer middleware
+
 async function createProduct(req, res) {
-  const { name, price, quantity, description, images, category, marque, nutrition } = req.body;
-  const product = new Product({ name, price, quantity, description, images, category, marque, nutrition });
+  const {
+    name,
+    price,
+    quantity,
+    description,
+
+    category,
+    marque,
+    nutrition,
+  } = req.body;
+  const images = req.files.map((file) => file.path);
+  const product = new Product({
+    name,
+    price,
+    quantity,
+    description,
+    images,
+    category,
+    marque,
+    nutrition,
+  });
   try {
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
@@ -25,21 +47,39 @@ async function getProducts(req, res) {
 async function getProductById(req, res) {
   const { id } = req.params;
   try {
-    const product = await Product.findOne({_id:id});
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.json(product);
+    res.status(200).json(product);
   } catch (err) {
-    
-    res.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 }
 
 // UPDATE a product by ID
 async function updateProductById(req, res) {
+  if (!req.body) {
+    return res.status(400).send({
+      message: 'Data to update can not be empty!',
+    });
+  }
+
   const { id } = req.params;
-  const { name, price, quantity, description, images, category, marque, nutrition } = req.body;
+  const {
+    name,
+    price,
+    quantity,
+    description,
+
+    category,
+    marque,
+    //nutrition,
+  } = req.body;
+  let images;
+  if (req.files && req.files.length > 0) {
+    images = req.files.map((file) => file.path);
+  }
   try {
     const product = await Product.findById(id);
     if (!product) {
@@ -52,7 +92,7 @@ async function updateProductById(req, res) {
     product.images = images || product.images;
     product.category = category || product.category;
     product.marque = marque || product.marque;
-    product.nutrition = nutrition || product.nutrition;
+    // product.nutrition = nutrition || product.nutrition;
     const savedProduct = await product.save();
     res.json(savedProduct);
   } catch (err) {
@@ -75,8 +115,17 @@ async function deleteProductById(req, res) {
   }
 }
 
-async function searchByName(req,res)
-{
+async function getByType(req, res) {
+  const { type } = req.params;
+  try {
+    const products = await Product.find({ type });
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+}
+async function searchByName(req, res) {
   try {
     const name = req.params.name;
 
@@ -87,19 +136,18 @@ async function searchByName(req,res)
 
     if (productDoc.length < 0) {
       return res.status(404).json({
-        message: 'No product found.'
+        message: 'No product found.',
       });
     }
 
     res.status(200).json({
-      products: productDoc
+      products: productDoc,
     });
   } catch (error) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      error: 'Your request could not be processed. Please try again.',
     });
   }
-  
 }
 
 module.exports = {
@@ -109,4 +157,5 @@ module.exports = {
   updateProductById,
   deleteProductById,
   searchByName,
+  getByType,
 };
