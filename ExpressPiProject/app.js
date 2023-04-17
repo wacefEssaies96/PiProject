@@ -15,9 +15,10 @@ require('dotenv').config();
 var mealRouter = require('./routes/Meals/mealRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
-// routes SportTypes - SubTypes
+// routes SportTypes - SubTypes - SportSubTypesTitlesScraped
 var sportTypeRouter = require('./routes/Sports/sportTypeRoutes');
 var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
+var sportSubTypeTitlesScrapedRouter = require('./routes/Sports/sprotSubTypesTitlesScrapedRouter');
 // routers Articles and category-subcategory
 var articleRouter = require('./routes/article/article');
 var categoryRouter = require('./routes/article/category');
@@ -27,10 +28,10 @@ var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
 const cartRouter=require('./routes/e-commerce/Cart');
-
 //send email route 
 var resetPassword = require('./routes/resetPasswordRoute')
-
+// morphology route
+const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 
 
@@ -66,6 +67,8 @@ app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
 app.use('/api', resetPassword);
 app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
+app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
+app.use('/api/get-your-morphology', morphologyRoute)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

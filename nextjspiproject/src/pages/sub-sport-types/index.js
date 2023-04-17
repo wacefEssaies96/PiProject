@@ -1,10 +1,13 @@
 import Link from 'next/link'
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
+import Pagination from "../../components/layouts/Pagination"
 
 const SportSubTypesPage = ({ sportSubTypes }) => {
     const [listSportSubTypes, setListSportSubTypes] = useState(sportSubTypes)
     const [sportSubTypesScraped, setSportSubTypesScraped] = useState({})
+    const [currentPage, setCurrentPage] = useState(1)
+    const [sportSubTypesPerPage, setSportSubTypesPerPage] = useState(2)
 
     const searchTitleDynamic = async (title) => {
         return await sportSubTypes.filter((x) => {
@@ -89,6 +92,16 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
         }
     }
 
+    //pagination
+    const indexOfLastSportSubType = currentPage * sportSubTypesPerPage
+    const indexOfFirstSportSubType = indexOfLastSportSubType - sportSubTypesPerPage
+    const currentSportSubTypes = listSportSubTypes.slice(indexOfFirstSportSubType, indexOfLastSportSubType)
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber)
+    }
+
+
     return (
         <div>
             <div className="d-flex justify-content-center" style={{ paddingTop: "5%" }}>
@@ -97,56 +110,112 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                     <h3 className="wow fadeIn">All Sport SubTypes</h3>
                 </div>
             </div>
-            <div className='d-flex justify-content-evenly' style={{ margin: "3%" }}>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterIndividualSubTypes}>Individual Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterPartnerSubTypes}>Partner Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterTeamSubTypes}>Tram Sports</Button>
-                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterExtremeSubTypes}>Extreme Sports</Button>
-            </div>
-            <div className='sidebar' style={{ width: "20%", marginLeft: "70%", marginTop: "3%" }}>
-                <div id="search-1" className="widget widget_search">
-                    <h4 className="widget-title">Search</h4>
-                    <form className="relative" role="search">
-                        <input onChange={handleChange} type="search" className="form-control" placeholder="Search by Title ..." required />
-                        <button className="search_btn"><i className="fa fa-search"></i></button>
-                    </form>
+            <div className="container">
+                <div className="row">
+                    <div className="col-lg-8">
+                        <div className="row">
+                            {currentSportSubTypes && currentSportSubTypes.map((sT, index) => (
+                                <>
+                                    {sT &&
+                                        <div key={index} className="vc_row wpb_row vc_row-fluid wd-section" style={{ display: "flex", flexWrap: "nowrap" }}>
+                                            <div className="col-12 col-lg-6 col-md-6">
+                                                <article
+                                                    id="post-157"
+                                                    className="post_wrap post-157 post type-post status-publish format-standard has-post-thumbnail hentry category-cannabis category-products tag-foods tag-organic tag-tasty"
+                                                >
+                                                    <div className="post_img">
+                                                        <div className="vc_column-inner">
+                                                            <div className="wpb_wrapper">
+                                                                <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
+                                                                    <video width="400px" controls style={{ paddingLeft: "11%", paddingRight: "5%" }}>
+                                                                        <source src={`${process.env.backurl}/${sT.demoVideo}`} />
+                                                                        Your browser does not support the video tag.
+                                                                    </video>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="post-info">
+                                                        <h2 className="post-title">
+                                                            {sT?.title}
+                                                        </h2>
+                                                        <p className="post-excerpt">
+                                                            {sT?.limits}
+                                                        </p>
+                                                        <div className="wd-blog-bottom-meta">
+                                                            <div className="wd-author-meta">
+                                                                <div className="wd-post_date">
+                                                                    <Link href={'/sub-sport-types/details/' + sT._id} className="btn wd-btn-round-2">
+                                                                        Read More
+                                                                    </Link>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                        </div>}
+                                </>
+                            ))}
+                        </div>
+                        <div className="row">
+                            <div className="col-12">
+                                <Pagination itemsPerPage={sportSubTypesPerPage} totalItems={listSportSubTypes.length} paginate={paginate} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <div className="sidebar">
+                            <div id="search-1" className="widget widget_search">
+                                <h4 className="widget-title">Search</h4>
+                                <form
+                                    action="https://slidesigma.com/themes/wp/weefly/"
+                                    method="get"
+                                    className="relative"
+                                >
+                                    <input
+                                        onChange={handleChange}
+                                        type="search"
+                                        defaultValue=""
+                                        className="form-control"
+                                        placeholder="Search for sport subType by Title..."
+                                        name="s"
+                                        required
+                                    />
+                                    <button type="submit" className="search_btn">
+                                        <i className="fa fa-search" />
+                                    </button>
+                                </form>
+                            </div>
+                            <div id="categories-2" className="widget widget_categories">
+                                <h4 className="widget-title">Sport Types</h4>
+                                <ul>
+                                    <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterIndividualSubTypes}>Individual Sports</Button>
+                                    <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterPartnerSubTypes}>Partner Sports</Button>
+                                    <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterTeamSubTypes}>Tram Sports</Button>
+                                    <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterExtremeSubTypes}>Extreme Sports</Button>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {listSportSubTypes && listSportSubTypes.map((sT, index) => (
-                <>
-                    {sT && <div key={index} className="vc_row wpb_row vc_row-fluid wd-section">
-                        <div className="wpb_column vc_column_container vc_col-sm-12 vc_col-lg-6 vc_col-md-6">
-                            <div className="vc_column-inner"><div className="wpb_wrapper">
-                                <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
-                                    <video width="100%" height="100%" controls style={{ paddingLeft: "11%", paddingRight: "5%" }}>
-                                        <source src={`${process.env.backurl}/${sT.demoVideo}`} />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            </div>
-                            </div>
+            <div id="footer-sport" className="inner-page-banner" style={{}}>
+                <div className="container">
+                    <div className="inner_intro text-center">
+                        <h1>Safe training</h1>
+                        <div className="breadcrumb">
+                            <ul className="pagination-inner">
+                                <li className="breadcrumb-item active" aria-current="page">
+                                    Make a workout schedule.<br /> Choose a coach and do one-to-one lessons.<br /> Sports are much closer!
+                                </li>
+                            </ul>
+                            <Button variant='success' size="lg" style={{ marginTop: "5%" }}><Link href={"/sports"}>Start NOW</Link></Button>
+                            <ul className="pagination-inner" />
                         </div>
-                        <div className="wd-about-container wpb_column vc_column_container vc_col-sm-12 vc_col-lg-6 vc_col-md-6">
-                            <div className="vc_column-inner"><div className="wpb_wrapper">
-                                <span className="heading-subtitle" style={{ fontSize: "35px" }}>{sT?.title}</span>
-                                <div className="wpb_text_column wpb_content_element  vc_custom_1580296943324" >
-                                    <div className="wpb_wrapper">
-                                        <h4>Limits</h4>
-                                        <p>{sT?.limits}</p>
-                                    </div>
-                                </div>
-                                <div className="section-heading-left ">
-                                    <Link href={'/sub-sport-types/details/' + sT._id} className="btn wd-btn-round">Learn More</Link>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>}
-                    {listSportSubTypes.indexOf(sT) + 1 < listSportSubTypes.length && <div className="d-flex justify-content-center">
-                        <hr style={{ width: "50%", border: "2px solid #016837", backgroundColor: "#016837" }} />
-                    </div>}
-                </>
-            ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

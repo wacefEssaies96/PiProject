@@ -12,6 +12,7 @@ export const deleteSportType = async (id) => {
 }
 
 export const postSportType = async (data, operationMode, advantages,selectedSubTypes) => {
+    console.log("service");
     const method = operationMode === 'Add' ? 'POST' : 'PUT'
     const options = {
         method : method,

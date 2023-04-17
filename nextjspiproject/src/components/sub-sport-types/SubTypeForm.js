@@ -25,10 +25,15 @@ export default function SportSubTypesForm(props) {
 
     //web scraping
     useEffect(() => {
-        fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
+        // fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
+        //     .then((data) => data.json())
+        //     .then((titles) => {
+        //         setSportSubTypetitle(titles)
+        //     })
+        fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
             .then((data) => data.json())
-            .then((titles) => {
-                setSportSubTypetitle(titles)
+            .then((dataT) => {
+                setSportSubTypetitle(dataT[0].titlesScrapped)
             })
     }, []);
 

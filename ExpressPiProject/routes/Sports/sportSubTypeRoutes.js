@@ -1,8 +1,6 @@
 const sportSubTypes = require("../../controllers/Sports/SubTypeSportController");
-  
 var express = require('express');
 var router = express.Router();
-
 const multer = require("multer")
 const upload = multer({ dest: 'uploads/SportSubTypesDemVideos' })
 // const storage = multer.diskStorage({
@@ -22,8 +20,8 @@ const upload = multer({ dest: 'uploads/SportSubTypesDemVideos' })
 
 //upload.single('Name of the input')
 // Create a new SubSportType
-router.post("/uploads", upload.single('demoVideo'), (req, res)=> {
-    const {file} = req
+router.post("/uploads", upload.single('demoVideo'), (req, res) => {
+    const { file } = req
     console.log(req.file)
     res.send({
         file: file.originalname,
@@ -56,4 +54,4 @@ router.put("/:id", upload.single('demoVideo'), sportSubTypes.updateSportSubType)
 // Retrieve a single SubSportType with title
 router.get("/titleSubType/:title", sportSubTypes.findSportSubTypeByTitle);
 
-module.exports=router;
+module.exports = router;
