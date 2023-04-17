@@ -19,14 +19,14 @@ export default function Index({ products }) {
   const { cart } = state;
 
   const addToCartHandler = async (product) => {
-    const existItem = cart.cartItems.find((x) => x.name === product.name);
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
     console.log('hi');
-    const quantityy = existItem ? existItem.quantity + 1 : 1;
+    const quantityy = existItem ? existItem.quantityy + 1 : 1;
     const { data } = await axios.get(
       `${process.env.backurl}/api/admin/products/find/${product._id}`
     );
     if (data.quantity < quantityy) {
-      return toast.error('Sorry. Product is out of stock');
+      return alert('Sorry. Product is out of stockk');
     }
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantityy } });
 

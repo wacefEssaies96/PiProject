@@ -12,9 +12,10 @@ export default function ProductScreen({ product }) {
   const { state, dispatch } = useContext(Store);
 
   const addToCartHandler = async () => {
-    const existItem = state.cart.cartItems.find((x) => x.name === product.name);
+    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+    //const existItem = cart.cartItems.find((x) => x._id === product._id);
 
-    const quantityy = existItem ? existItem.quantity + 1 : 1;
+    const quantityy = existItem ? existItem.quantityy + 1 : 1;
     const { data } = await axios.get(
       `${process.env.backurl}/api/admin/products/find/${product._id}`
     );
@@ -26,11 +27,11 @@ export default function ProductScreen({ product }) {
     console.log(state.cart.cartItems);
   };
 
-  const handleToast = () => {
-    toast.success('This is a success toast message!', {
-      position: toast.POSITION.TOP_CENTER,
-    });
-  };
+  // const handleToast = () => {
+  //   toast.success('This is a success toast message!', {
+  //     position: toast.POSITION.TOP_CENTER,
+  //   });
+  // };
 
   return (
     <Container className="my-5">
@@ -60,7 +61,7 @@ export default function ProductScreen({ product }) {
           <Button
             variant="primary"
             size="lg"
-            block
+            block={true}
             className="mt-4"
             disabled={product.quantity === 0}
             onClick={addToCartHandler}

@@ -2,14 +2,12 @@ import React, { useContext } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { Store } from '@/utils/Store';
 import { useRouter } from 'next/router';
 import { Container } from 'react-bootstrap';
-//import { XCircleIcon } from '@heroicons/react/outline';
 import { FaTimesCircle } from 'react-icons/fa';
 
-export default function cartScreen({ product }) {
+function CartScreen() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
@@ -26,7 +24,7 @@ export default function cartScreen({ product }) {
     );
     console.log(data);
     if (data.quantity < quantityy) {
-      return alert('Sorry. Product is out of stock');
+      return alert('Sorry. Product is out of stockkkk');
     }
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantityy } });
     alert('Product updated in the cart');
@@ -116,3 +114,4 @@ export default function cartScreen({ product }) {
     </Container>
   );
 }
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

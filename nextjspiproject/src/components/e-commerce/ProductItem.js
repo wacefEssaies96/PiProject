@@ -21,11 +21,7 @@ const ProductItem = ({ product, addToCartHandler }) => {
         </div>
         <div>
           <h4 className="font-weight-bold mb-3">${product.price.toFixed(2)}</h4>
-          <Button
-            variant="primary"
-            block
-            onClick={() => addToCartHandler(product)}
-          >
+          <Button variant="primary" onClick={() => addToCartHandler(product)}>
             Add to cart
           </Button>
         </div>

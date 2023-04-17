@@ -37,7 +37,10 @@ function Header() {
 
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
-
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  useEffect(() => {
+    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
+  }, [cart.cartItems]);
   return (
     <>
       <div className="wd-top-nav">
@@ -409,13 +412,16 @@ function Header() {
                     <li>
                       <Link href="/e-commerce/cart">
                         <i className="sl icon-basket"></i>
-                        {cart && cart.cartItems.length > 0 && (
+                        {/* {cart && cart.cartItems.length > 0 && (
                           <span className="cart-item">
                             {cart.cartItems.reduce(
                               (a, c) => a + c.quantityy,
                               0
                             )}
                           </span>
+                        )} */}
+                        {cartItemsCount > 0 && (
+                          <span className="cart-item">{cartItemsCount}</span>
                         )}
                       </Link>
                     </li>
@@ -426,17 +432,6 @@ function Header() {
                       </a>
                     </li> */}
                   </ul>
-                  <div id="nav-toggle-label">
-                    <div id="hamburger">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                    <div id="cross">
-                      <span></span>
-                      <span></span>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="mobile-navigation">
