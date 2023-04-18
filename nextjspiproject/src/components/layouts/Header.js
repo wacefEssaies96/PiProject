@@ -113,7 +113,7 @@ function Header() {
                   <div className="col-md-12">
                      <div className="main-navigation">
                         <div className="logo">
-                           <a href="#">
+                           <a onClick={() => { router.push("/") }} >
                               <img src="/logo.png" alt="HealthSpotLight" />
                            </a>
                         </div>
@@ -122,18 +122,27 @@ function Header() {
                               <ul id="menu-main-menu" className="menu">
                                  {auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
-                                       <a href="/admin/users" aria-current="page">Managment</a>
+                                       <a onClick={() => { router.push("/admin/users") }}  aria-current="page">Managment</a>
                                        <ul className="sub-menu">
-                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href='#' onClick={() => { router.push("/admin/users") }} aria-current="page">Users</a></li>
-                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">other</a></li>
-                                          <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">other</a></li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/admin/users") }} aria-current="page">Users (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
+                                             <a onClick={() => { router.push("/admin/meals") }} >Meals (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
+                                             <a onClick={() => { router.push("/meals") }} >Meals (User)</a>
+                                          </li>
+                                          <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768">
+                                             <a onClick={() => { router.push("/recipes") }} >Recipes (User)</a>
+                                          </li>
                                           <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">other</a></li>
                                        </ul>
                                     </li>
                                  }
-                                 <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="index.html" aria-current="page">Home</a>
+                                 <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="/" aria-current="page">Home</a>
                                     <ul className="sub-menu">
-                                       <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li>
+                                       <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Homepage One</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">Home Page Two</a></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">Homepage Three</a></li>
                                        <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li>
@@ -178,13 +187,13 @@ function Header() {
                         <div className="side-cart">
                            <ul>
                               <li>
-                                 <a href="cart/index.html">
+                                 <a href="#">
                                     <i className="sl icon-basket"></i>
                                     <span className="cart-item">0</span>
                                  </a>
                               </li>
                               <li>
-                                 <a href="wishlist/index.html">
+                                 <a href="#">
                                     <i className="sl icon-heart"></i>
                                     <span className="wishlist-item">0</span>
                                  </a>
@@ -205,7 +214,7 @@ function Header() {
 
                         <div className="mobile-navigation">
                            <div className="mobile-logo">
-                              <a href="index.html">
+                              <a href="/">
                                  <img src="/wp-content/themes/weefly/images/mobile-logo.png" alt="Weefly" />
                               </a>
                               <div id="nav-toggle-label2">

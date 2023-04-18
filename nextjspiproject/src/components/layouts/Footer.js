@@ -1,6 +1,9 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 
 function Footer() {
+  const router = useRouter();
+  
   return (
     <>
       <footer id="footer">
@@ -9,7 +12,7 @@ function Footer() {
             <div className="row">
               <div className="col-lg-4 top_widget">
                 <div className="wd-footer_logo">
-                  <a href="index.html">
+                  <a onClick={() => { router.push("/") }}>
                     <img src="/logocarre.png" alt="Health SpotLight" />
                   </a>
                 </div>
@@ -95,7 +98,7 @@ function Footer() {
               </div>
               <div className="col-lg-5">
                 <div className="footer_links">
-                  <div id="nav_menu-3" className="widget widget_nav_menu"><div className="menu-footer-bottom-menu-container"><ul id="menu-footer-bottom-menu" className="menu"><li id="menu-item-1742" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1742"><a href="/" aria-current="page">Home</a></li>
+                  <div id="nav_menu-3" className="widget widget_nav_menu"><div className="menu-footer-bottom-menu-container"><ul id="menu-footer-bottom-menu" className="menu"><li id="menu-item-1742" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1742"><a onClick={() => { router.push("/") }} aria-current="page">Home</a></li>
                     <li id="menu-item-1772" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1772"><a href="#">About us</a></li>
                     <li id="menu-item-1732" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1732"><a href="/profile">My Account</a></li>
                     <li id="menu-item-1733" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1733"><a href="#">Checkout</a></li>

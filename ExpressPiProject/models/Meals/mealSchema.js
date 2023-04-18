@@ -1,4 +1,5 @@
 const mongoose =require('mongoose');
+// const userSchema = require('../Users/userSchema');
 
 const mealSchema =new mongoose.Schema(
   {
@@ -12,7 +13,9 @@ const mealSchema =new mongoose.Schema(
     serving_size_portion : String, 
     calories_portion  : String,
     serving_size_oz  : String,
-    calories_oz    : String
+    calories_oz    : String,
+    validated : Boolean,
+    imgMeal  : String,
   },
   { timestamps: true }
 )

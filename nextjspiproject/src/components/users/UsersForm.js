@@ -13,9 +13,13 @@ export default function UsersForm(props) {
     email: "",
     role: "",
     phone: "",
-    speciality: "",
+    dateOfBirth: "",
+    height: "",
+    weight: "",
+    gender: "",
   })
   const [validated, setValidated] = useState(false);
+
   // const [validatedSSRresponce, setValidatedSSRresponce] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -33,6 +37,10 @@ export default function UsersForm(props) {
       console.log(event.target.value)
     setUser({ ...props.user, 'role': event.target.value })
   }
+  const getGender = async (event) => {
+      console.log(event.target.value)
+      setUser({ ...props.user, 'gender': event.target.value })
+  }
 
   useEffect(() => {
 
@@ -42,9 +50,16 @@ export default function UsersForm(props) {
     }
   }, [])
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
   return (
     <Container className="py-5">
-      <h3>{operationMode} User </h3>
+      <h3 className="txtCenter">{operationMode} User </h3>
       <Form noValidate validated={validated} onSubmit={handleSubmit} encType='multipart/form-data'>
         <Stack gap={4}>
           <input type="hidden" name="id" defaultValue={user._id}></input>
@@ -65,6 +80,36 @@ export default function UsersForm(props) {
                 <Form.Control defaultValue={user.email} placeholder="Email" type="email" name="email" required pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+.[a-z]{2,8}' />
                 <Form.Control.Feedback type='invalid'>
                   {'Please enter your email address'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label htmlFor="gender"> Gender </Form.Label>
+                <Form.Select required value={user.gender} name="gender" onChange={getGender} >
+                  <option value="">Select your gender</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label htmlFor="height"> Height </Form.Label>
+                <Form.Control defaultValue={user.height} type="number"  id="height" name="height" required />
+                <Form.Control.Feedback type='invalid'>
+                  {'Please enter your height'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label htmlFor="weight"> Weight </Form.Label>
+                <Form.Control defaultValue={user.weight} type="number" id="weight" name="weight" required />
+                <Form.Control.Feedback type='invalid'>
+                  {'Please enter your weight'}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -92,9 +137,30 @@ export default function UsersForm(props) {
             </Col>
           </Row>
           <Row>
+            
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label htmlFor="dateOfBirth"> Date of Birth </Form.Label>
+                <Form.Control defaultValue={formatDate(user.dateOfBirth)}  type="date" id="dateOfBirth" name="dateOfBirth" required />
+                <Form.Control.Feedback type='invalid'>
+                  {'Please enter this field'}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+            </Col>
+            <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
-              <Form.Control name="password" type="password" placeholder="Password" required minLength={8} />
+              { operationMode== "Create"
+                ?
+                  <Form.Control  name="password" type="password" placeholder="Password" required minLength={8} />
+                :
+                  <>
+                    <Form.Control  name="password" type="password" placeholder="Password" minLength={8} />
+                    <input type="hidden" id="pass" name="pass" defaultValue={user.password} /> 
+                  </>
+              }
+
               <Form.Control.Feedback type="valid">
                 You did it!
               </Form.Control.Feedback>
@@ -102,15 +168,27 @@ export default function UsersForm(props) {
                 {'Please enter your password, password minLength is 8'}
               </Form.Control.Feedback>
             </Form.Group>
+            </Col>
+          </Row>
+          <Row>
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Picture</Form.Label>
-                <Form.Control
-                  type="file"
-                  accept=".png, .jpg, .jpeg"
-                  name="image"
-                  required
-                />
+                {/* {!(user.image)
+                  ?
+                  <Form.Control
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    name="image"
+                    required
+                  />
+                  : */}
+                  <Form.Control
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    name="image"
+                  />
+                {/* } */}
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 <Form.Control.Feedback type="invalid">
                   {'Please choose an image of type : png, jpg, jpeg.'}
@@ -130,6 +208,7 @@ export default function UsersForm(props) {
                     <hr />
                     <div className="desig-content">
                       <p>{`/uploads/User/altUser.png`}</p>
+                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={`/uploads/User/altUser.png`} /> 
                     </div>
                   </>
                   :
@@ -140,7 +219,8 @@ export default function UsersForm(props) {
                     />
                     <hr />
                     <div className="desig-content">
-                      <p>{user.image}</p>
+                      <p >{user.image}</p>
+                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={user.image} /> 
                     </div>
                   </>
                 }

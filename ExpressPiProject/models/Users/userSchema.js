@@ -16,18 +16,13 @@ const userSchema = new mongoose.Schema(
     address: String,
     height: Number,
     weight: Number,
+    dateOfBirth: Date,
     disease: String,
     image: String,
     account_Verified: Boolean,
     speciality: String,
     code: Number,
-    two_factor: Boolean,
-
-
-    meals: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Meal'
-    }],
+    two_factor: Boolean
   },
   { timestamps: true }
 )

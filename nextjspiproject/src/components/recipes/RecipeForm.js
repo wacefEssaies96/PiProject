@@ -3,54 +3,56 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react"
 import { Button, Container, Form, Stack,Row ,Col, Alert } from "react-bootstrap"
 
-export default function MealsForm(props) {
+export default function RecipeForm(props) {
   const router = useRouter()
   
   const [operationMode, setOperationMode] = useState('Create')
-  const [meal, setMeal] = useState({
-    serving_size_100g : "",
-    FoodCategory : "",
-    FoodItem :  "",
-    calories_100g  :  "",
-    serving_size_portion :  "",
-    serving_size_oz  :  "",
-    validated : ""
+  const [recipe, setRecipe] = useState({
+    name : "",
+    description :  "",
+    quantity  :  "",
+    totalCalorie :  "",
+    imgRecipe  :  "",
+    meals  :  "",
+    user  :  ""
   })
   const [validatedForm, setValidatedForm] = useState(false);
 
   
-  const getValidated = async (event) => {
-    console.log(event.target.value)
-    setMeal({ ...props.meal, 'validated': event.target.value })
-}
+//   const getValidated = async (event) => {
+//     console.log(event.target.value)
+//     setMeal({ ...props.meal, 'validated': event.target.value })
+// }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setValidatedForm(true);
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     const form = event.currentTarget;
+//     setValidatedForm(true);
     
-    if (form.checkValidity() === true) {
-      await submitMeal(event, operationMode)
-    }
-  }
+//     if (form.checkValidity() === true) {
+//       await submitMeal(event, operationMode)
+//     }
+//   }
 
   useEffect(() => {
     
-    if (props.meal !== undefined) {
-      setMeal(props.meal)
+    if (props.recipe !== undefined) {
+      setRecipe(props.recipe)
       setOperationMode('Modify')
     }
   }, [])
+  
 
   return (
     <Container>
       
-      <div className=" wd-section-heading-wrapper text-center">
-      <div className="wd-service-heading wd-section-heading">
-        <span className="heading-subtitle ">{operationMode} Meal</span>
+    <div className=" wd-section-heading-wrapper text-center">
+        <div className="wd-service-heading wd-section-heading">
+            <span className="heading-subtitle">{operationMode} Recipe</span>
+            <p></p>
         </div>
-        </div>
-      <Form noValidate validated={validatedForm} onSubmit={handleSubmit}  encType='multipart/form-data'>
+    </div>
+      {/* <Form noValidate validated={validatedForm} onSubmit={handleSubmit}  encType='multipart/form-data'>
         <Stack gap={4}>
 
           <Row>
@@ -118,7 +120,7 @@ export default function MealsForm(props) {
           <Button  variant="success" type="submit">{operationMode} Meal</Button>
         </div>
         <br/>
-      </Form>
+      </Form> */}
     </Container >
     
   )

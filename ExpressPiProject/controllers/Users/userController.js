@@ -33,6 +33,7 @@ exports.createUser = async (req, res) => {
       address: req.body.address,
       height: req.body.height,
       weight: req.body.weight,
+      dateOfBirth: req.body.dateOfBirth,
       disease: req.body.disease,
       image: req.file.path,
       account_Verified: req.body.account_Verified,
@@ -52,19 +53,6 @@ exports.createUser = async (req, res) => {
     });
   }
 };
-
-// SameUser.fullname = req.body.fullname
-//       SameUser.email = req.body.email
-//       SameUser.password = req.body.password
-//       SameUser.role = req.body.role
-//       SameUser.gender = req.body.gender
-//       SameUser.phone = req.body.phone
-//       SameUser.address = req.body.address
-//       SameUser.height = req.body.height
-//       SameUser.weight = req.body.weight
-//       SameUser.disease = req.body.disease
-//       SameUser.account_Verified = req.body.account_Verified
-//       SameUser.speciality = req.body.speciality
 // Find a single user with an Email
 exports.findUserByEmail = async (req, res) => {
   const email = req.params.email;

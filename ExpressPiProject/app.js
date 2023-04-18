@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 //Routes Meals and auth
 var mealRouter = require('./routes/Meals/mealRoutes');
+var recipeRouter = require('./routes/Recipe/recipeRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
 // routes SportTypes - SubTypes
@@ -60,6 +61,7 @@ app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/meal', mealRouter);
+app.use('/api/recipe', recipeRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin/articles', articleRouter);
 app.use('/api/admin/categories', categoryRouter);
