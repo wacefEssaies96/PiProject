@@ -8,9 +8,7 @@ export default function Document() {
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <title>HealthSpotLight</title>
       <meta name='robots' content='max-image-preview:large' />
-      
       <Head>
-        
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
         <script src='/wp-content/themes/weefly/assets/js/ajax-login-register6a4d.js' id='ajax-login-script-js'></script>
         <script src='/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minbd43.js' id='jquery-blockui-js'></script>
@@ -62,13 +60,11 @@ export default function Document() {
         <link rel='shortlink' href='index.html' />
         <link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embedd734.json?url=https%3A%2F%2Fslidesigma.com%2Fthemes%2Fwp%2Fweefly%2F" />
         <link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed70b6?url=https%3A%2F%2Fslidesigma.com%2Fthemes%2Fwp%2Fweefly%2F&amp;format=xml" />
-       
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400%2C600%7CPlayfair+Display:700%7CNunito:400%7CRoboto:400%7CUbuntu:300%2C400%2C500&amp;display=swap" rel="stylesheet" property="stylesheet" media="all" type="text/css" />
         <link rel="preload" as="font" id="rs-icon-set-revicon-woff" href="/wp-content/plugins/revslider/public/assets/fonts/revicons/revicons90c6.woff" type="font/woff" crossOrigin="anonymous" media="all" />
         <link rel="preload" as="font" id="rs-icon-set-fa-icon-woff" type="font/woff2" crossOrigin="anonymous" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/fonts/fontawesome-webfont3e6e.woff2?v=4.7.0" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-fa-icon-css" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/css/font-awesome.css" type="text/css" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-pe-7s-css" href="/wp-content/plugins/revslider/public/assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" type="text/css" media="all" />
-
       </Head>
       <body className="home page-template-default page page-id-148 wp-embed-responsive weefly-main theme-weefly woocommerce-no-js wpb-js-composer js-comp-ver-6.9.0 vc_responsive">
         <Main />

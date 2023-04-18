@@ -15,7 +15,7 @@ export default function Index({ articles }) {
   const [showViewCatAndSubCat, setShowViewCatAndSubCat] = useState(false);
 
   const handleCloseViewCatAndSubCat = () => setShowViewCatAndSubCat(false)
-  const handleShowViewCatAndSubCat = async (mode) => {
+  const handleShowViewCatAndSubCat = (mode) => {
     setShowMode(mode)
     setShowViewCatAndSubCat(true)
   }
@@ -24,9 +24,9 @@ export default function Index({ articles }) {
   const deleteAll = () => confirmDelete(`${process.env.backurl}/api/admin/articles/delete-all`, refresh)
 
   return (
-    <Container>
+    <Container style={{minHeight: '600px'}}>
       <h1>List of Articles</h1>
-      <Link className="btn btn-outline-success" href={`/article/admin/create`}>Create new article</Link>
+      <Link className="btn btn-outline-success" href={`/admin/articles/create`}>Create new article</Link>
       <Button variant="outline-warning" onClick={deleteAll}>
         Delete all articles
       </Button>
@@ -43,31 +43,34 @@ export default function Index({ articles }) {
         <CategoriesAndSubCategories show={showViewCatAndSubCat} handleClose={handleCloseViewCatAndSubCat} mode={showMode}></CategoriesAndSubCategories>
       </Suspense>
 
-      <Table striped bordered hover size="sm">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Sub category</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {list.map((article, index) => {
-            return (
-              <tr key={index}>
-                <td key={article.title}>{article.title}</td>
-                <td key={article.category.title}>{article.category.title}</td>
-                <td key={article.subcategory.title}>{article.subcategory.title}</td>
-                <td key={article._id}>
-                  <Link className="btn btn-outline-secondary me-3 ms-3" href={`/article/admin/edit/${article._id}`}>Edit</Link>
-                  <Button onClick={() => deleteOneArticle(article._id)} variant="outline-danger">Delete</Button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </Table>
+      {list.length == 0 ? <h2 style={{marginTop: '50px', marginLeft: '35%', marginRight: '35%'}}>There is no data.</h2>
+        : <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Sub category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((article, index) => {
+              return (
+                <tr key={index}>
+                  <td key={article.title}>{article.title}</td>
+                  <td key={article.category.title}>{article.category.title}</td>
+                  <td key={article.subcategory.title}>{article.subcategory.title}</td>
+                  <td key={article._id}>
+                    <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/articles/edit/${article._id}`}>Edit</Link>
+                    <Button onClick={() => deleteOneArticle(article._id)} variant="outline-danger">Delete</Button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+      }
+
     </Container>
   )
 }

@@ -20,3 +20,17 @@ export const submitArticle = async (data, operationMode, content) => {
         errorAlert("Oops! An error has occured. Please try again later.")
     }
 }
+
+export const getScrappedArticle = async (data) => {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            link: data
+        })
+    }
+    const response = await fetch(`${process.env.backurl}/api/admin/articles/scrap/wired/one`, options)
+    return response.json()
+} 

@@ -28,4 +28,10 @@ router.get("/find/:id", controller.findOne);
 // Scrap data from wired.com
 router.get("/scrap/wired/:subcategory", controller.scrapFromWired);
 
+// Scrap data from wired.com one article
+router.post("/scrap/wired/one", controller.scrapOneFromWired);
+
+// OpenAi ChatGPT
+router.post('/get-prompt-result', controller.openai);
+
 module.exports = router;

@@ -3,6 +3,8 @@ const Category = require('../../models/article/category');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const slug = require('slug');
+const {Configuration, OpenAIApi} = require("openai");
+
 
 // Create and Save a new Article
 exports.create = async (req, res) => {
@@ -11,7 +13,7 @@ exports.create = async (req, res) => {
     const subcat = JSON.parse(req.body.subcategory)
 
     // Validate request
-    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description ) {
+    if (!req.body.title || !req.body.content || !req.body.category || !req.body.subcategory || !req.body.description) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
@@ -196,24 +198,85 @@ exports.scrapFromWired = async (req, res) => {
     const articles = [];
     const response = await axios.get(url)
     let $ = cheerio.load(response.data);
-    $('.klkoMz.klkoMz.summary-item--has-border').each((i, el) => {
+    $('.jecVbf .SummaryListWrapper-elcoJA .summary-item--layout-placement-side-by-side-desktop-only').each((i, el) => {
         const title = $(el).find('h3').text();
-        const excerpt = $(el).find('p').text();
+        const author = $(el).find('p').text();
+        const time = $(el).find('time').text();
         const link = $(el).find('a').attr('href');
+        const pic = $(el).find('picture').text();
+        const imageLink = pic.split('src="').slice(1).toString().split('"')
         articles.push({
             title: title,
-            excerpt: excerpt,
-            link: link
+            author: author,
+            link: link,
+            time: time,
+            picture: imageLink[0]
         });
     });
+    res.send({ articles: articles })
+
     //  Extract texts from the most rated article and send it to next js
-    const a = await axios.get('https://www.wired.com' + articles[0].link)
-    $ = cheerio.load(a.data)
-    let texts = ''
+    // const a = await axios.get('https://www.wired.com' + articles[0].link)
+    // $ = cheerio.load(a.data)
+    // let texts = ''
+    // $('.paywall').each((i, el) => {
+    //     const text = $(el).text();
+    //     if (text.length > 200)
+    //         texts = texts + ' ' + text
+    // });
+    // res.send({ text: texts })
+}
+exports.scrapOneFromWired = async (req, res) => {
+
+    //  Extract texts from the most rated article and send it to next js
+    const response = await axios.get('https://www.wired.com' + req.body.link)
+    const $ = cheerio.load(response.data)
+    let texts = []
     $('.paywall').each((i, el) => {
         const text = $(el).text();
         if (text.length > 200)
-            texts = texts + ' ' + text
+            texts.push(text)
     });
     res.send({ text: texts })
+}
+
+exports.openai = async (req, res) => {
+    const configuration = new Configuration({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
+    const openai = new OpenAIApi(configuration);
+
+     // Get the prompt from the request body
+     const {prompt, model = 'gpt'} = req.body;
+
+     // Check if prompt is present in the request
+     if (!prompt) {
+         // Send a 400 status code and a message indicating that the prompt is missing
+         return res.status(400).send({error: 'Prompt is missing in the request'});
+     }
+ 
+     try {
+         // Use the OpenAI SDK to create a completion
+         // with the given prompt, model and maximum tokens
+         if (model === 'image') {
+             const result = await openai.createImage({
+                 prompt,
+                 response_format: 'url',
+                 size: '512x512'
+             });
+             return res.send(result.data.data[0].url);
+         }
+         const completion = await openai.createCompletion({
+             model: model === 'gpt' ? "text-davinci-003" : 'code-davinci-002', // model name
+             prompt: `Please reply below question in markdown format.\n ${prompt}`, // input prompt
+             max_tokens: model === 'gpt' ? 4000 : 8000 // Use max 8000 tokens for codex model
+         });
+         // Send the generated text as the response
+         return res.send(completion.data.choices[0].text);
+     } catch (error) {
+         const errorMsg = error.response ? error.response.data.error : `${error}`;
+         console.error(errorMsg);
+         // Send a 500 status code and the error message as the response
+         return res.status(500).send(errorMsg);
+     }
 }
