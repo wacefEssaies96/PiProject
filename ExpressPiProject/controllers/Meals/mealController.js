@@ -1,5 +1,8 @@
 const Meal = require("../../models/Meals/meal");
 const User = require("../../models/Users/user");
+const axios = require('axios');
+const request = require('request');
+const cheerio = require('cheerio');
 
 // Retrieve all meals from the database.
 exports.findAllMeals = (req, res) => {
@@ -15,7 +18,22 @@ exports.findAllMeals = (req, res) => {
   });
   
 };
+// Find validated Meals
+exports.findValidatedMeals = (req, res) => {
 
+  Meal.find({validated:true})
+    .then(data => {
+      if (data[0])
+        res.send(data);
+      else
+        res.status(404).send({ message: "No meal is validated " });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving  validated meal " });
+    });
+};
 // Find a single meal with an id
 exports.findOneMeal = (req, res) => {
   // Validate request
@@ -58,7 +76,7 @@ exports.findMealsOfCategory = (req, res) => {
     });
 };
 
-// Find a single meal with an id
+// Find a single meal with name
 exports.findMealByName = (req, res) => {
   // Validate request
   if (!req.params.food) {
@@ -79,70 +97,52 @@ exports.findMealByName = (req, res) => {
     });
 };
 
-// Create and Save a new meal
-exports.createMeal = (req1, res) => {
+exports.createMeal = async (req, res) => {
+  const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated } = req.body;
 
-  const FoodItem = req1.body.FoodItem;
-  
   // Validate request
-  if (!req1.body.FoodItem || !req1.body.FoodCategory) {
-    res.status(400).send({ message: "Content can not be empty!" });
+  if (!FoodItem || !FoodCategory) {
+    return res.status(400).send({ message: "Content can not be empty!" });
   }
-  Meal.find({FoodItem: FoodItem})
-    .then(dataFood => {
-      if (dataFood[0]){
-        res.status(200).send({ message: " Meals already exist with FoodItem = " + req1.body.FoodItem });
-      }else{
-        const id =req1.body.userId;
-        User.findById(id).then( dataUser => {
-          if (!dataUser)
-            res.status(404).send({ message: "Not found user with id " + id });
-          else {
-            const u = dataUser;
-            
-            // Créer un nouveau produit
-            const m = new Meal({
-              FoodCategory: req1.body.FoodCategory,
-              FoodItem: req1.body.FoodItem,
-              serving_size_100g : req1.body.serving_size_100g,
-              calories_100g  : req1.body.calories_100g,
-              serving_size_portion : req1.body.serving_size_portion, 
-              calories_portion  : req1.body.calories_portion,
-              serving_size_oz  : req1.body.serving_size_oz,
-              calories_oz    : req1.body.calories_oz
-            });
-            
-            m.save()
-            .then(data => {
-              u.meals.push(m["_id"]);
-              u.save();
-              res.status(200).send({"user" : u," m ":data});
-            })
-            .catch(err => {
-              res.status(500).send({
-                message:
-                  err.message || "Some error occurred while creating the meal."
-              });
-            });
-              
-          }
-        })
-        .catch(err => {
-          res
-            .status(500)
-            .send({ message: "Error retrieving user with id=" + id });
-        });
-      
 
-      } 
+  try {
+    // const existingUser = await User.findOne({ _id: userId });
 
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error create meals with FoodItem = " + req1.body.FoodItem });
+    // if (!existingUser) {
+    //   return res.status(500).send({ message: "Error retrieving user with id=" + userId });
+    // }
+
+    const existingMeal = await Meal.findOne({ FoodItem });
+
+    if (existingMeal) {
+      return res.status(302).send({ message: "Meals already exist with FoodItem = " + FoodItem });
+    }
+
+    const meal = new Meal({
+      FoodCategory,
+      FoodItem,
+      serving_size_100g,
+      calories_100g,
+      serving_size_portion,
+      calories_portion,
+      serving_size_oz,
+      calories_oz,
+      validated
+      // ,
+      // user : existingUser
     });
+
+    await meal.save();
+
+    // existingUser.meals.push(meal._id);
+    // await existingUser.save();
+
+    return res.status(200).send({ message: "Meal created successfully." });
+  } catch (err) {
+    return res.status(500).send({ message: "Some error occurred while creating the meal."+err });
+  }
 };
+
 
 // Update a meal by the id in the request
 exports.updateMeal = (req, res) => {
@@ -187,3 +187,126 @@ exports.deleteMeal = (req, res) => {
       });
     });
 };
+
+
+exports.scrapCategoryMeals =  (req, res) => {
+  const url = 'https://www.calories.info/';
+
+
+  axios(url)
+  .then(response => {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const resultslinks = $('#menu-calorie-tables');
+      const links = [];
+      resultslinks.find('a').each((i, link) => {
+      const hrefCatMeals = $(link).attr('href');
+      const nameCatMeals = $(link).text().trim();
+      if (hrefCatMeals && nameCatMeals) {
+          links.push({ hrefCatMeals, nameCatMeals });
+      }
+      });
+      res.send(links);
+      // fs.writeFile('links.json', JSON.stringify(links, null, 4), (err) => {
+      // if (err) {
+      //     console.error(err);
+      //     return;
+      // }
+      // console.log('Links saved to links.json');
+      // });
+  })
+  .catch(console.error);
+};
+
+
+exports.scrapMeals =  (req, res) => {
+  let foods = [];
+  if(req.query.url){
+    let foodUrl = req.query.url
+    //req.body.url;
+    // res.send(foodUrl);
+    let url_parts = foodUrl.split("/");
+    let cat = url_parts[4];
+    // let url = 'https://www.calories.info/food/'+cat;
+
+    request(foodUrl, function(error, response, html) {
+      if (!error) {
+        let $ = cheerio.load(html);
+        let foodresult = $('table tbody tr');
+
+        foodresult.each((i, tr) => {
+          let tds = $(tr).find('td');
+          let food = tds.eq(0).text().trim();
+
+          let serving_size_100g = tds.eq(1).text().trim();
+          let serving_size_100g_Value = extractValue100g(serving_size_100g);
+
+          let calories_100g = tds.eq(4).text().trim();
+          let calories_100g_Value = extractValue100g(calories_100g);
+
+          let serving_size_portion = tds.eq(2).text().trim();
+          let serving_size_portion_Value = extractValue(serving_size_portion);
+
+          let calories_portion = calculateCalories(
+            calories_100g_Value,
+            serving_size_100g_Value,
+            serving_size_portion_Value
+          );
+          let serving_size_oz = tds.eq(3).text().trim();
+          let serving_size_oz_Value = extractValue(serving_size_oz);
+
+          let calories_oz = calculateCalories(
+            calories_100g_Value,
+            serving_size_100g_Value,
+            serving_size_oz_Value
+          );
+          // console.log(" food "+food+" serving_size_portion_Value "+serving_size_portion_Value+" serving_size_oz_Value "+serving_size_oz_Value)
+          // console.log(" serving_size_100g_Value "+serving_size_100g_Value+" calories_portion "+calories_portion+" calories_oz "+calories_oz)
+          let food_dict = {
+            FoodCategory: cat,
+            FoodItem: food,
+            serving_size_100g: serving_size_100g,
+            calories_100g: calories_100g,
+            serving_size_portion: serving_size_portion,
+            calories_portion: calories_portion+" cal",
+            serving_size_oz: serving_size_oz,
+            calories_oz: calories_oz+" cal",
+          };
+          foods.push(food_dict);
+        });
+        res.send(foods);
+        // fs.writeFileSync('food.json', JSON.stringify(foods, null, 4));
+      } else {
+        console.log(error);
+      }
+    });
+  }else{
+    res.send(foods);
+  }
+};
+
+function extractValue100g(string) {
+  let match = string.match(/\d+\.?\d*/);
+  if (match) {
+    return parseFloat(match[0]);
+  } else {
+    return null;
+  }
+}
+
+function extractValue(string) {
+  // let match = string.match(/\d+\.?\d*/);
+  // let match = string.match(/\((\d+\.?\d*)\s*s\)/);
+  let match = string.match(/\((\d+(?:\.\d+)?)\s*[a-z\s]*\)/);
+  if (match) {
+    return parseFloat(match[1]);
+  } else {
+    return null;
+  }
+}
+
+function calculateCalories(calories_100g_Value, serving_size_100g_Value, serving_size_Value) {
+  let num_float = (calories_100g_Value / serving_size_100g_Value) * serving_size_Value;
+  let rounded_num = Math.round(num_float);
+  return rounded_num;
+}
