@@ -6,19 +6,12 @@ var SubTypeSportSchema = new mongoose.Schema({
     },
     demoVideo: {
     type: String,
-    // required: true,
     },
-    advantages: {
+    definitionHistory: {
     type: String,
-    // required: true,
-    },
-    limits: {
-    type: String,
-    // required: true,
     },
     slug: {
     type: String,
-    // required: false,
     },
 }, {
     timestamps: true,

@@ -863,3 +863,45 @@ body .is-layout-flex>* {
 /* .article-form-container {
   width: min-content;
 } */
+.image-container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.text-image {
+  position: absolute;
+  /* top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+}
+
+.text-image > h1 {
+  color: #016837;
+  font-size: 70px;
+  text-shadow: 1px 1px 2px #016837, 0 0 1em #d93, 0 0 0.2em #d93;
+}
+
+.text-image > h5 {
+  color: #d93;
+  font-size: 30px;
+}
+
+.page-number-clicked:active {
+  border: #016837 solid 2px;
+  background: #016837;
+}
+
+#footer-sport {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/SportSubTypePage.png);
+  background-size: cover;
+}
+
+#form-sport {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/sportForm.jpg);
+  background-size: cover;
+}

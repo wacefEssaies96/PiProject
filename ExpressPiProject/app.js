@@ -16,9 +16,10 @@ var mealRouter = require('./routes/Meals/mealRoutes');
 var recipeRouter = require('./routes/Recipe/recipeRoutes');
 var usersRouter = require('./routes/Users/userRoutes');
 var authRouter = require('./routes/authentificationRoutes');
-// routes SportTypes - SubTypes
+// routes SportTypes - SubTypes - SportSubTypesTitlesScraped
 var sportTypeRouter = require('./routes/Sports/sportTypeRoutes');
 var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
+var sportSubTypeTitlesScrapedRouter = require('./routes/Sports/sprotSubTypesTitlesScrapedRouter');
 // routers Articles and category-subcategory
 var articleRouter = require('./routes/article/article');
 var categoryRouter = require('./routes/article/category');
@@ -30,10 +31,10 @@ var appointmentRouter = require('./routes/apointments/appointmentroutes')
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
 const cartRouter=require('./routes/e-commerce/Cart');
-
 //send email route 
 var resetPassword = require('./routes/resetPasswordRoute')
-
+// morphology route
+const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 
 
@@ -51,8 +52,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 // app.use(passport.session());
-
-
 
 //Routes
 app.use('/api/admin/products', productRouter);
@@ -72,6 +71,9 @@ app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
 app.use('/api/app', appointmentRouter);
 app.use('/api', resetPassword);
+app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
+app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
+app.use('/api/get-your-morphology', morphologyRoute)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

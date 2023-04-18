@@ -2,8 +2,7 @@ import Head from 'next/head'
 import { BiPlus, BiEdit, BiTrashAlt } from 'react-icons/bi'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-// import Success from '@/components/layouts/SuccessMsg'
-import { fetchSubTypeData } from '@/services/SportSubTypeServices'
+import { deleteSportSubType, fetchSubTypeData } from '@/services/SportSubTypeServices'
 import styles from '../../../styles/Home.module.css'
 import { Alert, Table } from 'react-bootstrap'
 import CustomModal from '@/components/layouts/CustomModal'
@@ -17,6 +16,10 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
   const [deleteMessage, setDeleteMessage] = useState(null)
   const [sportSubTypeMessage, setSportSubTypeMessage] = useState(null)
 
+  const searchTitle = async (id) => {
+    return await sportSubTypes.find((x) => x._id === id).title
+  }
+
   const showDeleteModal = async (id) => {
     setId(id)
     setDeleteMessage(`Are you sure you want to delete the sport subtype : '${await searchTitle(id)}'?`)
@@ -27,34 +30,25 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
     setDisplayConfirmationModal(false)
   }
 
-  const searchTitle = async (id) => {
-    return await sportSubTypes.find((x) => x._id === id).title
-  }
-
   const submitDelete = async (id) => {
-    setSportSubTypeMessage(`The sport subtype '${await searchTitle(id)}' was deleted successfully.`)
-    setListSportSubTypes(sportSubTypes.filter((x) => x._id !== id))
+    await deleteSportSubType(id)
+    const listAfterDelete = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
+    setSportSubTypeMessage(`The sport sub-type '${sportSubTypes.find((x) => x._id === id).title}' was deleted successfully.`)
+    const resList = await listAfterDelete.json()
+    setListSportSubTypes(resList)
     setDisplayConfirmationModal(false)
+    setShowAlert(true)
   }
-
-  // const deleteSubType = async (sportSubTypeId) => {
-  //   deleteSportSubType(sportSubTypeId)
-  //   const l = await fetchSubTypeData(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
-  //   setListSportSubTypes(l)
-  //   if (!showAlert) {
-  //     setShowAlert(true)
-  //   }
-  // }
 
   useEffect(() => {
     setTimeout(() => {
       setShowAlert(false)
-    }, 2000);
+    }, 3000);
   }, [showAlert])
 
   const searchTitleDynamic = async (title) => {
     return await sportSubTypes.filter((x) => {
-      let t = x.title.includes(title)
+      let t = x.title.toLowerCase().includes(title.toLowerCase())
       if(t) {
         return x
       }
@@ -66,7 +60,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
   }
 
   const handleChange = async (e) => {
-    console.log(await newList(e))
     setListSportSubTypes(await newList(e))
   }
 
@@ -87,14 +80,13 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
           <input onChange={handleChange} className="form-control mx-5" style={{ width: "280px" }} type="search" placeholder="Search for sport subtype by Title" aria-label="Search" />
         </form><br /><br />
 
-        {sportSubTypeMessage && <Alert variant="success">{sportSubTypeMessage}</Alert>}
+        {showAlert && <Alert variant="success">{sportSubTypeMessage}</Alert>}
         <Table striped bordered hover size="sm">
           <thead>
             <tr className='text-center'>
               <th><span>Title</span></th>
               <th><span>DemoVideo</span></th>
-              <th><span>Advantages</span></th>
-              <th><span>Limits</span></th>
+              <th><span>Definition and History</span></th>
               <th><span>Actions</span></th>
             </tr>
           </thead>
@@ -102,15 +94,13 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
             {listSportSubTypes.length>0 && listSportSubTypes.map(subType => {
               return (
                 <tr>
-                  <td key={subType.title}>{subType.title}</td>
+                  <td style={{textAlign: "center"}} key={subType.title}>{subType.title}</td>
                   <td key={subType.demoVideo}>{subType.demoVideo}</td>
-                  <td key={subType.advantages}>{subType.advantages}</td>
-                  <td key={subType.limits}>{subType.limits}</td>
-                  <td key={subType._id} className='px-16 py-2 flex justify-content-center'>
+                  <td key={subType.definitionHistory}>{subType.definitionHistory}</td>
+                  <td style={{textAlign: "center"}} key={subType._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/sport-sub-type/edit/${subType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
                     </Link>
-                    {/* onClick={() => deleteSubType(subType._id)} */}
                     <button className="btn" type="button" onClick={() => showDeleteModal(subType._id)}>
                       <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                     </button>
@@ -120,7 +110,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
             })}
           </tbody>
         </Table>
-        {/* {showAlert && (<Success message={"Sport SubType Deleted Successfully !"}></Success>)} */}
         <CustomModal showModal={displayConfirmationModal} confirmModal={submitDelete} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
       </div>
     </div>
