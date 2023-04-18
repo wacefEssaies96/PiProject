@@ -1,10 +1,12 @@
-import styles from '@/styles/SportList.module.css'
-import Link from 'next/link'
+import MyVerticallyCenteredModal from '@/components/layouts/SportTypeModal'
 import { useState } from 'react'
+import { Button } from 'react-bootstrap'
 
 const SportHomePage = ({ sportTypes }) => {
 
     const [listSportTypes, setListSportTypes] = useState(sportTypes)
+    const [modalShow, setModalShow] = useState(false);
+    // const [showMode, setShowMode] = useState('');
 
     const searchTitleDynamic = async (title) => {
         return await sportTypes.filter((x) => {
@@ -23,6 +25,15 @@ const SportHomePage = ({ sportTypes }) => {
         setListSportTypes(await newList(e))
     }
 
+    const showModal = async (title) => {
+        // setShowMode(title)
+        setModalShow(true)
+      }
+
+    const hideModal=()=> {
+        setModalShow(false)
+    }
+
     return (
         <div className='container'>
             <h1>All Sports Types</h1>
@@ -36,11 +47,16 @@ const SportHomePage = ({ sportTypes }) => {
                 </div>
             </div>
             {listSportTypes && listSportTypes.map(sportType => (
-                <Link href={`/sport-types/details/${sportType.title}`} key={sportType._id} legacyBehavior>
-                    <a className={styles.single}>
-                        <h3>{sportType.title}</h3>
-                    </a>
-                </Link>
+                <>
+                    <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" variant="primary" onClick={showModal}>
+                        {sportType.title}
+                    </Button>
+                    <MyVerticallyCenteredModal
+                        show={modalShow}
+                        onHide={hideModal}
+                        title={sportType.title}
+                    />
+                </>
             ))}
         </div>
     );
@@ -52,7 +68,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            sportTypes: data,
+            sportTypes: data
         },
     }
 }

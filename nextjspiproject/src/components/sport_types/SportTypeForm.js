@@ -2,7 +2,7 @@ import { postSportType } from "@/services/SportTypeService"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Alert, Button, Card, Form } from "react-bootstrap"
+import { Alert, Button, Card, Carousel, Form } from "react-bootstrap"
 import { BiBlock, BiCheck } from "react-icons/bi"
 import Success from "../layouts/SuccessMsg"
 import axios from "axios"
@@ -27,8 +27,8 @@ export default function SportTypeForm({ sportType }) {
     })
     const [advObj, setADVObj] = useState({ titles: '', paragraphes: '' })
     const [searchForTitle, setSearchForTitle] = useState([])
-    const [sportSubTypesDeFaultValueInput, setSportSubTypesDeFaultValueInput] = useState('')
-
+    const [sportSubTypesDeFaultValueInput, setSportSubTypesDeFaultValueInput] = useState({ titles: '' })
+    const [showError, setShowError] = useState(false)
     const submit = async (e) => {
         e.preventDefault()
         const form = e.currentTarget
@@ -55,16 +55,33 @@ export default function SportTypeForm({ sportType }) {
                 advUpdate.push(parag[index])
             }
         }
+        // search for subtypestitle
+        let selectedSubTypes = []
+        let table = sportSubTypesDeFaultValueInput.titles.split('/ ');
+        table.shift();
+        table.forEach(async (element) => {
+            const response = await axios.get(`${process.env.backurl}/api/sportSubTypes/titleSubType/${element}`)
+            console.log(response);
+            if (response.data != null) {
+                selectedSubTypes.push(response.data)
+            }
+            else {
+                setShowError(true)
+            }
+        });
 
         const findBySportTypeByTitle = await fetch(`${process.env.backurl}/api/sportTypes/searchTypeByTitle/${e.target.title.value}`)
         const resFindByTitle = await findBySportTypeByTitle.json()
 
-        const selectedSubTypes = sportSubTypesTable
-
         if (operation === 'Add') {
-            if (resFindByTitle === null) {
+
+            if (resFindByTitle == null) {
                 if (form.checkValidity() === true) {
                     let tableST = []
+                    if (showError) {
+                        setShowAlertErrorSubTypes(true)
+                        setErrorMsgSubTypes(`The Sport Sub Type title does not exist in the database !`)
+                    }
                     for (let index = 0; index < selectedSubTypes.length; index++) {
                         const findBySportSubTypeByTitle = await fetch(`${process.env.backurl}/api/sportSubTypes/titleSubType/${selectedSubTypes[index].title}`)
                         const resFindByTitleSubType = await findBySportSubTypeByTitle.json()
@@ -77,11 +94,10 @@ export default function SportTypeForm({ sportType }) {
                         }
                     }
                     await postSportType(e, operation, advantages, selectedSubTypes)
-                    console.log(e.target.title.value, selectedSubTypes);
                     setShowAlert(true)
                     setTimeout(() => {
                         setShowAlert(false)
-                        // router.push('/admin/sport-type')
+                        router.push('/admin/sport-type')
                     }, 3000)
                 }
             } else {
@@ -155,8 +171,8 @@ export default function SportTypeForm({ sportType }) {
                     await fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
                         .then((data) => data.json())
                         .then((dataT) => {
-                            setSubTypesTitles(dataT[0].titlesScrapped)
-                            setSportSTTitles(dataT[0].titlesScrapped.sportSubTypes1)
+                            setSubTypesTitles(dataT[1].titlesScrapped)
+                            setSportSTTitles(dataT[1].titlesScrapped.sportSubTypes1)
                         })
                     break;
                 }
@@ -165,8 +181,8 @@ export default function SportTypeForm({ sportType }) {
                     await fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
                         .then((data) => data.json())
                         .then((dataT) => {
-                            setSubTypesTitles(dataT[0].titlesScrapped)
-                            setSportSTTitles(dataT[0].titlesScrapped.sportSubTypes2)
+                            setSubTypesTitles(dataT[1].titlesScrapped)
+                            setSportSTTitles(dataT[1].titlesScrapped.sportSubTypes2)
                         })
                     break;
                 }
@@ -175,8 +191,8 @@ export default function SportTypeForm({ sportType }) {
                     await fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
                         .then((data) => data.json())
                         .then((dataT) => {
-                            setSubTypesTitles(dataT[0].titlesScrapped)
-                            setSportSTTitles(dataT[0].titlesScrapped.sportSubTypes3)
+                            setSubTypesTitles(dataT[1].titlesScrapped)
+                            setSportSTTitles(dataT[1].titlesScrapped.sportSubTypes3)
                         })
                     break;
                 }
@@ -185,19 +201,21 @@ export default function SportTypeForm({ sportType }) {
                     await fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
                         .then((data) => data.json())
                         .then((dataT) => {
-                            setSubTypesTitles(dataT[0].titlesScrapped)
-                            setSportSTTitles(dataT[0].titlesScrapped.sportSubTypes4)
+                            setSubTypesTitles(dataT[1].titlesScrapped)
+                            setSportSTTitles(dataT[1].titlesScrapped.sportSubTypes4)
                         })
                     break;
                 }
         }
 
     }
-    // console.log(sTTitles)
-    // console.log(sportSubTypesTable);
+
     useEffect(() => {
         if (sportType.title !== '') {
             setOperationMode('Edit')
+            sportType.sportSubType.forEach(element => {
+                setSportSubTypesDeFaultValueInput({ titles: sportSubTypesDeFaultValueInput.titles + "/ " + element.title })
+            })
         }
     }, [])
 
@@ -226,17 +244,28 @@ export default function SportTypeForm({ sportType }) {
             }
         })
     }
-
-    const passSportSubTypes = async (title) => {
-        const data = await axios.get(`${process.env.backurl}/api/sportSubTypes/titleSubType/${title}`)
-        setSearchForTitle(prev => [...prev, data.data])
-        let titles = ""
-        for (let index = 0; index < searchForTitle.length; index++) {
-            if (searchForTitle[index].title != data.data.title) {
-                titles = titles + title + ", "
+    const removeFromInput = (mode, title) => {
+        if (mode === "Advantages") {
+            if (advObj.titles.search(title) !== -1) {
+                let str1 = advObj.titles.substring(0, advObj.titles.search(title) - 2)
+                let str2 = advObj.titles.substring(title.length + advObj.titles.search(title), advObj.titles.length)
+                console.log(str1, str2)
+                setADVObj({ titles: str1 + str2 })
+                console.log(advObj.titles);
             }
         }
-        setSportSubTypesDeFaultValueInput(titles)
+    }
+    const passSportSubTypes = async (title) => {
+
+        setSportSubTypesDeFaultValueInput(prevObj => {
+            if (!prevObj.titles.includes(title)) {
+                return {
+                    titles: prevObj.titles = prevObj.titles + "/ " + title,
+                }
+            } else {
+                return prevObj
+            }
+        })
     }
 
     return (
@@ -261,7 +290,7 @@ export default function SportTypeForm({ sportType }) {
                     <Form.Label htmlFor="floatingInput">Advantages</Form.Label>
                     {operation === 'Edit' ? <Form.Control as="textarea" defaultValue={[sportType.advantages, advObj.titles]} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required>
                     </Form.Control> :
-                        <Form.Control as="textarea" defaultValue={sportType.advantages} value={advObj.titles} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required>
+                        <Form.Control as="textarea" value={advObj.titles} name="advantages" type="text" className="form-control" id="floatingInput" placeholder="Advantages" required>
                         </Form.Control>
                     }
                     <Form.Control.Feedback type="valid">
@@ -271,23 +300,39 @@ export default function SportTypeForm({ sportType }) {
                         Please enter sport sub-type advantages !
                     </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
+                {/* <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
                     {sTADV && sTADV.map((o, i) =>
                         <Card key={i} style={{ width: '15rem' }}>
                             <Card.Body>
                                 <Card.Title>{Object.keys(o)[0]}</Card.Title>
                                 <Card.Text>{Object.values(o)[0]}</Card.Text>
                                 <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
+                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("Advantages", Object.keys(o)[0])}>Remove</Button>
+
                             </Card.Body>
                         </Card>)
                     }
-                </Form.Group >
+                </Form.Group > */}
+                <Form.Group>
+                    <Carousel variant="dark">
+                        {sTADV && sTADV.map((o, i) =>
+                            <Carousel.Item key={i}>
+                                <Card style={{ width: '50%', marginLeft:"25%", height:"10%"}}>
+                                    <Card.Body>
+                                        <Card.Title>{Object.keys(o)[0]}</Card.Title>
+                                        <Card.Text>{Object.values(o)[0]}</Card.Text>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("Advantages", Object.keys(o)[0])}>Remove</Button><br/><br/><br/>
+                                    </Card.Body>
+                                </Card>
+                            </Carousel.Item>)}
+                    </Carousel>
+                </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Choose sports subtypes</Form.Label>
-                    {operation === 'Edit' ? <Form.Control as="textarea" defaultValue={[sportType.sportSubType, sportSubTypesDeFaultValueInput]} name="sportSubType" type="text" className="form-control" id="floatingInput" placeholder="SportSubTypes" required>
-                    </Form.Control> :
-                        <Form.Control as="textarea" value={sportSubTypesDeFaultValueInput} name="sportSubType" type="text" className="form-control" id="floatingInput" placeholder="sportSubTypes" required>
-                        </Form.Control>
+                    {operation === 'Edit'
+                        ? <Form.Control as="textarea" defaultValue={sportSubTypesDeFaultValueInput.titles} name="sportSubType" type="text" className="form-control" id="floatingInput" placeholder="SportSubTypes" required></Form.Control>
+                        : <Form.Control as="textarea" value={sportSubTypesDeFaultValueInput.titles} name="sportSubType" type="text" className="form-control" id="floatingInput" placeholder="sportSubTypes" required></Form.Control>
                     }
                     <Form.Control.Feedback type="valid">
                         You did it!
@@ -295,7 +340,7 @@ export default function SportTypeForm({ sportType }) {
                     <Form.Control.Feedback type='invalid'>
                         Please enter sport sub-types !
                     </Form.Control.Feedback>
-                    <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
+                    {/* <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
                         {sTTitles && sTTitles.map((t, i) =>
                             <Card key={i} style={{ width: '15rem' }}>
                                 <Card.Body>
@@ -304,7 +349,8 @@ export default function SportTypeForm({ sportType }) {
                                 </Card.Body>
                             </Card>)
                         }
-                    </Form.Group >
+                    </Form.Group > */}
+                    {showError && (<Alert variant="danger">{errorMsgSubTypes}</Alert>)}
                     {showAlertErrorSubTypes && (<Alert variant="danger">{errorMsgSubTypes}</Alert>)}
                     <Form.Control.Feedback type='invalid'>
                         Please select sport subtypes !
@@ -312,6 +358,20 @@ export default function SportTypeForm({ sportType }) {
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group>
+                    <Carousel variant="dark">
+                        {sTTitles && sTTitles.map((t, i) =>
+                            <Carousel.Item key={i}>
+                                <Card style={{ width: '25%', marginLeft:"35%", height:"10%"}}>
+                                    <Card.Body>
+                                        <Card.Title>{t}</Card.Title>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("SubTypes", t)}>Remove</Button><br/><br/><br/>
+                                    </Card.Body>
+                                </Card>
+                            </Carousel.Item>)}
+                    </Carousel>
                 </Form.Group>
                 <Button variant="success" type="submit">
                     {operation} <BiCheck></BiCheck>

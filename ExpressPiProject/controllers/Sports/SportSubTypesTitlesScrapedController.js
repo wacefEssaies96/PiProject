@@ -2,7 +2,8 @@ const cron = require('node-cron')
 var express = require('express')
 const cheerio = require("cheerio")
 const axios = require("axios")
-const SportSubTypesScrapedTitels = require("../../models/Sports/SportSubTypesScrappedTitles")
+const SportSubTypesScrapedTitles = require("../../models/Sports/SportSubTypesScrappedTitles")
+const SportSubType = require("../../models/Sports/SubTypeSportModel")
 
 const url = "https://www.leadershipandsport.com/types-of-sports/";
 
@@ -32,7 +33,7 @@ cron.schedule("* */23 * * *", async (req, res) => {
                     }
                 });
 
-                var newSportSubTypeTitles = new SportSubTypesScrapedTitels({
+                var newSportSubTypeTitles = new SportSubTypesScrapedTitles({
                     titlesScrapped: {
                         sportSubTypes1,
                         sportSubTypes2,
@@ -51,10 +52,38 @@ cron.schedule("* */23 * * *", async (req, res) => {
 
 //get all SportSubTypesTitlesScraped
 exports.findAll = (req, res) => {
-    SportSubTypesScrapedTitels.find()
+    SportSubTypesScrapedTitles.find()
         .then(subtypes => res.json(subtypes))
         .catch(err => res.status(400).json('Error: ' + err));
 }
+
+//scrapping dynamically sport subtypes definitions
+const url1 = "https://olympics.com/en/sports/surfing/"
+
+cron.schedule("* */23 * * *", async (req, res) => {
+    try {
+        await axios.get(url1)
+            .then(urlRes => {
+                const $ = cheerio.load(urlRes.data);
+                const listItems = $(".history-of__body p");
+                const history = [];
+                listItems.each((idx, el) => {
+                    const h = $(el).text();
+                    history.push(h);
+                });
+                var newSportSubTypeTitles = new SportSubTypesScrapedTitles({
+                    historyScrapped: {
+                        history
+                    }
+                })
+                newSportSubTypeTitles.save()
+                    .then(data => console.log(data))
+            })
+            .catch(e => console.log(e))
+    } catch (err) {
+        console.error(err);
+    }
+})
 
 exports.getYourMorphologyType = (req, res) => {
     let bodyShape = ""

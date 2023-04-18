@@ -10,7 +10,7 @@ export default function SportSubTypesForm(props) {
     const [sportSubType, setSportSubType] = useState({
         title: '',
         demoVideo: '',
-        limits: ''
+        definitionHistory: ''
     })
     const [operationMode, setOperationMode] = useState('Add')
     const [showAlert, setShowAlert] = useState(false)
@@ -19,24 +19,21 @@ export default function SportSubTypesForm(props) {
     const [validated, setValidated] = useState(false)
     const [showAlertError, setShowAlertError] = useState(false)
     const [sportSubTypeTitle, setSportSubTypetitle] = useState({})
+    const [sportSubTypeDef, setSportSubTypeDef] = useState({history:[]})
     const [checkSport, setCheckSport] = useState(false);
     const [arr, setArr] = useState([])
     const [sportTypeTitle, setSportTypeTitle] = useState('')
 
     //web scraping
     useEffect(() => {
-        // fetch(`${process.env.backurl}/api/sportSubTypes/sportSubTypesTitle`)
-        //     .then((data) => data.json())
-        //     .then((titles) => {
-        //         setSportSubTypetitle(titles)
-        //     })
         fetch(`${process.env.backurl}/api/scrapedSportSubTypesTitles/getAllSubSportTypesTitlesScraped`)
             .then((data) => data.json())
             .then((dataT) => {
-                setSportSubTypetitle(dataT[0].titlesScrapped)
+                setSportSubTypeDef(dataT[0].historyScrapped)
+                setSportSubTypetitle(dataT[1].titlesScrapped)
             })
     }, []);
-
+console.log(sportSubTypeDef);
     const handleChange = (e) => {
         setCheckSport(e.target.checked)
         setSportTypeTitle(`${e.target.name} Sports`)
@@ -184,20 +181,20 @@ export default function SportSubTypesForm(props) {
                                 <source src={`${process.env.backurl}/${sportSubType.demoVideo}`} />
                                 Your browser does not support the video tag.
                             </video>
-                            {/* <div className="desig-content">
-                                <p>{sportSubType.demoVideo}</p>
-                            </div> */}
                         </>}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="floatingInput">Limits</Form.Label>
-                    <Form.Control value={sportSubType.limits} name="limits" type="text" className="form-control" id="floatingInput" placeholder="Limits" required onChange={handleChangeAtt} />
+                    <Form.Label htmlFor="floatingInput">definitionHistory</Form.Label>
+                    <Form.Control value={sportSubType.definitionHistory} name="definitionHistory" type="text" className="form-control" id="floatingInput" placeholder="Definition and History of this sport sub type" required onChange={handleChangeAtt} />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>
-                        Please enter a sport sub-type limits !
+                        Please enter a sport sub-type Definition and History !
                     </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group>
+                    {sportSubTypeDef.history.length>0 && sportSubTypeDef.history.map((e, i)=> <p>{e}</p>)}
                 </Form.Group>
                 <Button variant="success" type="submit">
                     {operationMode} <BiCheck></BiCheck>

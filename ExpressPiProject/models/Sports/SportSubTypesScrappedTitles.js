@@ -4,6 +4,9 @@ const Schema = mongoose.Schema;
 const SportSubTypeScrapedTitlesSchema = new Schema({
     titlesScrapped : {
         type: Object
+    }, 
+    historyScrapped : {
+        type: Object
     }
 }, {
     timestamps: true,

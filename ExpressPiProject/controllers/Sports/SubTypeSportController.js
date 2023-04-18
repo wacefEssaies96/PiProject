@@ -78,7 +78,7 @@ exports.create = async (req, res) => {
         var newSportSubType = new SportSubType({
             title: req.body.title,
             demoVideo: (file && file.path) || null,
-            limits: req.body.limits,
+            definitionHistory: req.body.definitionHistory,
             slug: slug(req.body.title),
         })
         newSportSubType.save()
@@ -126,7 +126,7 @@ exports.updateSportSubType = (req, res) => {
         .then(async (sub) => {
             sub.title = req.body.title;
             sub.demoVideo = (file && file.path) || null;
-            sub.limits = req.body.limits;
+            sub.definitionHistory = req.body.definitionHistory;
             sub.slug = slug(req.body.title);
 
             sub.save()

@@ -13,9 +13,6 @@ export default function Pagination({ itemsPerPage, totalItems, paginate }) {
                     <nav className="navigation pagination" aria-label=" ">
                         <h2 className="screen-reader-text"> </h2>
                         <div className="nav-links">
-                            {/* <span aria-current="page" className="page-numbers current">
-                                1
-                            </span> */}
                             {pageNumber.map(number => <a key={number} className="page-numbers page-number-clicked" onClick={() => paginate(number)}>
                                 {number}
                             </a>)}

@@ -7,7 +7,7 @@ var SubTypeSportSchema = new mongoose.Schema({
     demoVideo: {
     type: String,
     },
-    limits: {
+    definitionHistory: {
     type: String,
     },
     slug: {

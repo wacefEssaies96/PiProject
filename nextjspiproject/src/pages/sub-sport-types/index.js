@@ -8,6 +8,11 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
     const [sportSubTypesScraped, setSportSubTypesScraped] = useState({})
     const [currentPage, setCurrentPage] = useState(1)
     const [sportSubTypesPerPage, setSportSubTypesPerPage] = useState(2)
+    const [showMore, setShowMore] = useState(false);
+
+    const toggleShowMore = () => {
+        setShowMore(!showMore);
+    };
 
     const searchTitleDynamic = async (title) => {
         return await sportSubTypes.filter((x) => {
@@ -92,6 +97,10 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
         }
     }
 
+    const getAllSportSubTypes = () => {
+        setListSportSubTypes(sportSubTypes)
+    }
+
     //pagination
     const indexOfLastSportSubType = currentPage * sportSubTypesPerPage
     const indexOfFirstSportSubType = indexOfLastSportSubType - sportSubTypesPerPage
@@ -100,7 +109,6 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber)
     }
-
 
     return (
         <div>
@@ -127,7 +135,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                                                         <div className="vc_column-inner">
                                                             <div className="wpb_wrapper">
                                                                 <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
-                                                                    <video width="400px" controls style={{ paddingLeft: "11%", paddingRight: "5%" }}>
+                                                                    <video width="400px" controls>
                                                                         <source src={`${process.env.backurl}/${sT.demoVideo}`} />
                                                                         Your browser does not support the video tag.
                                                                     </video>
@@ -139,28 +147,44 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                                                         <h2 className="post-title">
                                                             {sT?.title}
                                                         </h2>
-                                                        <p className="post-excerpt">
-                                                            {sT?.limits}
-                                                        </p>
-                                                        <div className="wd-blog-bottom-meta">
-                                                            <div className="wd-author-meta">
-                                                                <div className="wd-post_date">
-                                                                    <Link href={'/sub-sport-types/details/' + sT._id} className="btn wd-btn-round-2">
-                                                                        Read More
-                                                                    </Link>
+                                                        {showMore ? (
+                                                            <div>
+                                                                {sT?.definitionHistory}
+                                                                <div className="wd-blog-bottom-meta">
+                                                                    <div className="wd-author-meta">
+                                                                        <div className="wd-post_date"></div>
+                                                                        <button onClick={toggleShowMore} className="btn wd-btn-round-2">Read Less</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        ) : (
+                                                            <div>
+                                                                {sT?.definitionHistory.slice(0, 100)}
+                                                                {sT?.definitionHistory.length > 100 && (
+                                                                    <div className="wd-blog-bottom-meta">
+                                                                        <div className="wd-author-meta">
+                                                                            <div className="wd-post_date">
+                                                                                <button onClick={toggleShowMore} className="btn wd-btn-round-2">Read More</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </article>
-                                            </div>
+                                            </div >
                                         </div>}
                                 </>
                             ))}
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <Pagination itemsPerPage={sportSubTypesPerPage} totalItems={listSportSubTypes.length} paginate={paginate} />
+                                <Pagination 
+                                itemsPerPage={sportSubTypesPerPage} 
+                                totalItems={listSportSubTypes.length} 
+                                paginate={paginate}
+                                 />
                             </div>
                         </div>
                     </div>
@@ -190,6 +214,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                             <div id="categories-2" className="widget widget_categories">
                                 <h4 className="widget-title">Sport Types</h4>
                                 <ul>
+                                    <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={getAllSportSubTypes}>All Sports</Button>
                                     <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterIndividualSubTypes}>Individual Sports</Button>
                                     <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterPartnerSubTypes}>Partner Sports</Button>
                                     <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={filterTeamSubTypes}>Tram Sports</Button>
@@ -199,7 +224,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
             <div id="footer-sport" className="inner-page-banner" style={{}}>
                 <div className="container">
                     <div className="inner_intro text-center">
@@ -216,7 +241,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

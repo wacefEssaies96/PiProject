@@ -85,8 +85,8 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
           <thead>
             <tr className='text-center'>
               <th><span>Title</span></th>
-              <th width="50%"><span>DemoVideo</span></th>
-              <th><span>Limits</span></th>
+              <th><span>DemoVideo</span></th>
+              <th><span>Definition and History</span></th>
               <th><span>Actions</span></th>
             </tr>
           </thead>
@@ -96,7 +96,7 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
                 <tr>
                   <td style={{textAlign: "center"}} key={subType.title}>{subType.title}</td>
                   <td key={subType.demoVideo}>{subType.demoVideo}</td>
-                  <td key={subType.limits}>{subType.limits}</td>
+                  <td key={subType.definitionHistory}>{subType.definitionHistory}</td>
                   <td style={{textAlign: "center"}} key={subType._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/sport-sub-type/edit/${subType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
