@@ -1,4 +1,4 @@
-import DoctorsForm from '@/components/users/Doctorform'
+import DoctorsForm from '@/components/users/doctorform'
 import nextCookie from 'next-cookies'
 
 function Doctor({ user }) {

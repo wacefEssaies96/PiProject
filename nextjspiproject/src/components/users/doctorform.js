@@ -88,6 +88,9 @@ export default function DoctorsForm(props) {
                                     </div> */}
                                     <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form" encType='multipart/form-data'>
                                         {operationMode === 'Add' ? <h2>Sign up</h2> : <h2>Edit Profile</h2>}
+                                        {operationMode === 'Update' ? <a href="/clinic/ClinicDoctor" class=" float-end"  style={{color: '#016837'}}>see list of clinics</a>  : <div className="alert alert-danger" role="alert">
+  Please register
+</div>}
                                         <Form.Control defaultValue={doctor._id} name="id" type="hidden"></Form.Control>
                                         <Form.Group className="mb-3">
                                             <Form.Label>FullName</Form.Label>

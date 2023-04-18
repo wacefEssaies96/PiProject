@@ -24,7 +24,9 @@ var articleRouter = require('./routes/article/article');
 var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
-var ClinicRouter = require('./routes/apointmentsroutes/clinicroutes');
+var ClinicRouter = require('./routes/apointments/clinicroutes');
+//routes appointments
+var appointmentRouter = require('./routes/apointments/appointmentroutes')
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
 const cartRouter=require('./routes/e-commerce/Cart');
@@ -68,6 +70,7 @@ app.use('/api/admin/categories', categoryRouter);
 app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'))
 app.use('/api/clinic', ClinicRouter);
+app.use('/api/app', appointmentRouter);
 app.use('/api', resetPassword);
 
 //connect to mongo database
