@@ -74,7 +74,7 @@ function CartScreen() {
                         ))}
                       </select>
                     </td>
-                    <td className="text-right">${item.price}</td>
+                    <td className="text-right">{item.price}dt</td>
                     <td className=" text-center">
                       <button onClick={() => removeItemHandler(item)}>
                         <FaTimesCircle className="h-5 w-5"></FaTimesCircle>
@@ -100,6 +100,7 @@ function CartScreen() {
                   <li>
                     <button
                       onClick={() => router.push('/e-commerce/shipping')}
+                      //   onClick={() => router.push('login?redirect=/shipping')}
                       className="btn btn-primary btn-block"
                     >
                       Check Out

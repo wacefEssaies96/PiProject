@@ -12,9 +12,10 @@ export const submitProduct = async (productData, mode) => {
     formData.append('marque', productData.marque);
     formData.append('type', productData.type);
     productData.images.forEach((image) => formData.append('images', image));
-    console.log(productData.images);
-    console.log(productData._id);
-
+    // console.log(productData.images);
+    // console.log(productData._id);
+    console.log(formData);
+    console.log(productData);
     if (mode === 'Create') {
       response = await axios.post(
         `${process.env.backurl}/api/admin/products`,
@@ -27,7 +28,7 @@ export const submitProduct = async (productData, mode) => {
       );
     }
 
-    console.log(response.data);
+    // console.log(response.data);
   } catch (error) {
     console.error(error);
     // handle error

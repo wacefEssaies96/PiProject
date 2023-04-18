@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
+
 function Header() {
   const cookies = new Cookies();
 

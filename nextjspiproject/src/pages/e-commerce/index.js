@@ -9,7 +9,11 @@ import ProductItem from '../../components/e-commerce/ProductItem';
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
 import axios from 'axios';
-
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Index({ products }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState(null);
@@ -26,11 +30,11 @@ export default function Index({ products }) {
       `${process.env.backurl}/api/admin/products/find/${product._id}`
     );
     if (data.quantity < quantityy) {
-      return alert('Sorry. Product is out of stockk');
+      toast.error('Sorry. Product is out of stockk');
     }
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantityy } });
 
-    //toast.success('Product added to the cart');
+    toast.success('Product added to the cart');
   };
   const filteredProducts = products
     .filter((product) =>
@@ -55,6 +59,7 @@ export default function Index({ products }) {
 
   return (
     <Container>
+      <ToastContainer position="top-left" limit={1} />
       <h1 className="my-5 text-center">Shop by category</h1>
       <Row>
         <Col md={3}>

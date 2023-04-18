@@ -4,12 +4,29 @@ import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import { Store } from '@/utils/Store';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import Router, { useRouter } from 'next/router';
 import axios from 'axios';
 export default function ProductScreen({ product }) {
   // const { product } = props;
   const { state, dispatch } = useContext(Store);
+  console.log(product);
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (!product) {
+  //     router.push('/404');
+  //   }
+  // }, [product]);
+
+  if (!product._id) {
+    return (
+      <div>
+        <h1>Product Not Found</h1>
+        <p>We're sorry, but the product you are looking for cannot be found.</p>
+      </div>
+    );
+  }
 
   const addToCartHandler = async () => {
     const existItem = state.cart.cartItems.find((x) => x._id === product._id);
