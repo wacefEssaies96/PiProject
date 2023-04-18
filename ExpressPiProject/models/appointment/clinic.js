@@ -1,6 +1,6 @@
 var Mongoose= require('mongoose');
-const servicesSchema= require('./servicesSchema');
+const clinicSchema= require('./clinicSchema');
 const service= Mongoose.model(
-    "service", servicesSchema
+    "service", clinicSchema
 );
 module.exports=service;
