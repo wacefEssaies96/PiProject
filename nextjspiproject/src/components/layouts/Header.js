@@ -3,6 +3,8 @@ import { Cookies } from 'react-cookie'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useContext } from 'react';
+import { Store } from '@/utils/Store';
 
 
 function Header() {
@@ -34,7 +36,12 @@ function Header() {
          })
    }, [])
 
-
+   const { state, dispatch } = useContext(Store);
+   const { cart } = state;
+   const [cartItemsCount, setCartItemsCount] = useState(0);
+   useEffect(() => {
+     setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
+   }, [cart.cartItems]);
    return (
       <>
          <div className="wd-top-nav">
@@ -122,7 +129,7 @@ function Header() {
                               <ul id="menu-main-menu" className="menu">
                                  {auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
-                                       <a onClick={() => { router.push("/admin/users") }}  aria-current="page">Managment</a>
+                                       <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/users") }} aria-current="page">Users (Admin)</a>
@@ -171,7 +178,13 @@ function Header() {
                                  <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>
                                  <li id="menu-item-1728" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1728"><a href="#">Products</a>
                                     <ul className="sub-menu">
-                                       <li id="menu-item-1745" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1745"><a href="#">Shop</a></li>
+                                       <li id="menu-item-1745" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1745"><a
+                                          onClick={() => {
+                                             router.push('/e-commerce');
+                                          }}
+                                       >
+                                          Shop
+                                       </a></li>
                                        <li id="menu-item-1760" className="menu-item menu-item-type-post_type menu-item-object-product menu-item-1760"><a href="#">Shop Details</a></li>
                                        <li id="menu-item-1757" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1757"><a href="#">My Account</a></li>
                                        <li id="menu-item-1759" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1759"><a href="#">Wishlist</a></li>
@@ -193,29 +206,28 @@ function Header() {
                         <div className="side-cart">
                            <ul>
                               <li>
-                                 <a href="#">
+                                 <Link href="/e-commerce/cart">
                                     <i className="sl icon-basket"></i>
-                                    <span className="cart-item">0</span>
-                                 </a>
+                                    {/* {cart && cart.cartItems.length > 0 && (
+                          <span className="cart-item">
+                            {cart.cartItems.reduce(
+                              (a, c) => a + c.quantityy,
+                              0
+                            )}
+                          </span>
+                        )} */}
+                                    {cartItemsCount > 0 && (
+                                       <span className="cart-item">{cartItemsCount}</span>
+                                    )}
+                                 </Link>
                               </li>
-                              <li>
-                                 <a href="#">
-                                    <i className="sl icon-heart"></i>
-                                    <span className="wishlist-item">0</span>
-                                 </a>
-                              </li>
+                              {/* <li>
+                      <a href="wishlist/index.html">
+                        <i className="sl icon-heart"></i>
+                        <span className="wishlist-item">0</span>
+                      </a>
+                    </li> */}
                            </ul>
-                           <div id="nav-toggle-label">
-                              <div id="hamburger">
-                                 <span></span>
-                                 <span></span>
-                                 <span></span>
-                              </div>
-                              <div id="cross">
-                                 <span></span>
-                                 <span></span>
-                              </div>
-                           </div>
                         </div>
 
                         <div className="mobile-navigation">

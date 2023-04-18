@@ -1,3 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 /* .main {
   background: pink;
   display: flex;
@@ -276,7 +280,7 @@
   to {
     transform: rotate(0deg);
   }
-} */ 
+} */
 
 .title {
   color: #333;

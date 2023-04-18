@@ -1,11 +1,11 @@
-import {  Suspense,lazy } from 'react'
+import { Suspense, lazy } from 'react';
 
-const MealsForm = lazy(() => import('@/components/meals/MealForm'))
+const MealsForm = lazy(() => import('@/components/meals/MealForm'));
 
 export default function Create() {
-    return (
-        <Suspense> 
-            <MealsForm></MealsForm>
-        </Suspense>
-    )
+  return (
+    <Suspense>
+      <MealsForm></MealsForm>
+    </Suspense>
+  );
 }
