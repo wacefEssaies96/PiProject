@@ -188,7 +188,8 @@ function Login() {
                               value="Login linkedIn" onClick={linkedInAuth} ><AiFillLinkedin size={20}></AiFillLinkedin>LinkedIn</Button>
                           </div>
                         </Form>
-                        <p>{auth.error && `Error: ${auth.error}`}</p>
+                        {/* <p>{auth.error && `Error: ${auth.error}`}</p> */}
+                        <p style={{color : "red"}}>{auth.error && `Error: Please verify your credentials !`}</p>
                         <div className="d-flex justify-content-center">
                           <p>Forgotten password ?
                             <Button className='btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' style={{ borderRadius: "8000px", margin: "15px" }} onClick={showResetPwdModal}>

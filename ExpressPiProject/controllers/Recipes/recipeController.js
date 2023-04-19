@@ -83,30 +83,37 @@ exports.findRecipeByName = (req, res) => {
 
 exports.createRecipe = async (req, res) => {
   const mealList =[];
-  const { name, validated, description, quantity, imgRecipe, meals, userId } = req.body;
+  
+  const { name, validated, description, quantity,imgRecipe, meals, user } = req.body;
 
   // Validate request
   if (!name ) {
     return res.status(400).send({ message: "Content can not be empty!" });
   }
   var totalCalorie=0;
-  meals.forEach( async (element, index) => {
+
+  for (let i = 0; i < meals.length; i++) {
     
-    const existingMeal = await Meal.findOne({ _id: element });
+    var existingMeal = undefined;
+    
+      try {
+        existingMeal = await Meal.findOne({ _id: meals[i] });
+      } catch (errm) {
+        return res.status(500).send({ message: "Some error find meal." + errm });
+      }
 
-    if (!existingMeal) {
-      return res.status(500).send({ message: "Error retrieving meal with id=" + element });
-    }
-    else{
       mealList.push(existingMeal._id)
-      totalCalorie=totalCalorie+(extractValue(existingMeal.calories_100g)*quantity[index])
-    }
-  });
+      totalCalorie=totalCalorie+(extractValue(existingMeal.calories_100g)*quantity[i])
+  
+  };
+  
   try {
-    const existingUser = await User.findOne({ _id: userId });
-
-    if (!existingUser) {
-      return res.status(500).send({ message: "Error retrieving user with id=" + userId });
+    
+    var existingUser = undefined;
+    try {
+      existingUser = await User.findById( user );
+    } catch (erru) {
+      return res.status(500).send({ message: "Some error find user." + erru });
     }
 
     const existingRecipe = await Recipe.findOne({ name });
@@ -121,19 +128,18 @@ exports.createRecipe = async (req, res) => {
         description,
         quantity,
         totalCalorie,
-        imgRecipe,
+        // "imgRecipe":imgRecipe,
         meals: mealList,
         user : existingUser 
     });
     await recipe.save();
-
-    // existingUser.meals.push(meal._id);
-    // await existingUser.save();
+    
 
     return res.status(200).send({ message: "recipe created successfully." });
   } catch (err) {
     return res.status(500).send({ message: "Some error occurred while creating the recipe."+err });
   }
+  
 };
 
 

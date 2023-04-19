@@ -39,6 +39,8 @@ var resetPassword = require('./routes/resetPasswordRoute')
 // morphology route
 const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");
+const otherAppsAuthRouter = require("./routes/otherappsauth");
+
 
 var app = express();
 
