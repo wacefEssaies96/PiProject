@@ -129,6 +129,22 @@ export default function RecipeForm(props) {
             </Col>
           </Row>
           <Row>
+            
+                    {/* <div class="quantity">
+					<input type="button" value="-" class="minus btn btn-outline-secondary"/>
+					<input
+						type="number"
+						id="quantity_6407f5d94259b"
+						class="input-text qty text"
+						step="1"
+						min="1"
+						max="99999"
+						name="quantity"
+						value="1"
+						title="Qty"
+						size="4" />
+					<input type="button" value="+" class="plus btn btn-outline-secondary"/>
+				</div> */}
             <Col md={4}>
               <Form.Group>
                   <Form.Label htmlFor="quantity"> Quantity</Form.Label>
