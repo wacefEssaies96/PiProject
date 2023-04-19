@@ -16,7 +16,14 @@ const appointmentSchema = new mongoose.Schema({
   Duration: {
     type: String,
     required: true
-  }
+  },
+  user: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    //required: true,
+     
+  },],
+  reserved: Boolean
 });
 
 

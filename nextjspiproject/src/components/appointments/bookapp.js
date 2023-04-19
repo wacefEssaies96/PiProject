@@ -11,9 +11,9 @@ import { useRouter } from 'next/router';
 
 
       
-    function Appointments({user,appointment}){
+    function Book({user,appointment}){
         
-    const [appointments, setAppointments] = useState(appointment);
+    const [appointments, setAppointments] = useState([appointment]);
     const [currentPage, setCurrentPage] = useState(1);
     const [appointmentsPerPage, setAppointmentsPerPage] = useState(5);
     const router = useRouter();
@@ -127,9 +127,10 @@ import { useRouter } from 'next/router';
                							
             </div>
             
-            <a href="/appointments/AjoutAppointments" class=" float-end"  style={{color: '#016837'}}>Add an appointment</a>
-            {/* <div className='container'>
-            <div>{user.speciality}</div>
+            {/* <a href="/appointments/AjoutAppointments" class=" float-end"  style={{color: '#016837'}}>Add an appointment</a> */}
+            <div className='container'>
+                <div>{user._id}</div>
+            <div>{user.speciality}</div> 
             <div>{user.fullname}</div>
             <div><img style={{ height: '2rem', width: '2rem' }}
                                           src={`${process.env.backurl}/${user.image}`}
@@ -137,7 +138,7 @@ import { useRouter } from 'next/router';
                                           alt="verifiy img"
                                        /></div>
  
-  </div> */}
+  </div>
 
 
             <div className="table-responsive">
@@ -149,6 +150,7 @@ import { useRouter } from 'next/router';
                             <th>Date</th>
                             <th>Hour</th>
                             <th>Duration</th>
+                            <th>User</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,7 +159,8 @@ import { useRouter } from 'next/router';
                                 <td key={app.Date}>{app.Date}</td>
                                 <td key={app.Hour}>{app.Hour}</td>
                                 <td key={app.Duration}>{app.Duration}</td>
-                                <td>
+                                <td key={app.user}>{app.user}</td>
+                                {/* <td>
                                  <button
                                         className="btn border border-danger   btn-sm" 
                                         onClick={() => handleDelete(app._id)}
@@ -165,17 +168,18 @@ import { useRouter } from 'next/router';
                                         Delete
                                     </button>
                                     
-                                    </td>
-                                    <td>
+                                    </td> */}
+                                    
                                     {/* <button className="btn btn-primary" onClick={handleAdd}>Add Clinic</button> */}
                                      {/* <NavLink to="/ajout-form" activeClassName="active">
                                      <button onClick={handleClick}>Ajouter</button>
                                        {showForm && <AjoutForm />}
                                      </NavLink> 
-                                       */}
+                                    //    */}
+                                    {/* <td>
                                         <Link className="btn btn-outline-secondary me-3 ms-3" href={`/appointments/edit/${app._id}`}>Edit</Link>
                                         
-                                    </td>
+                                    </td> */}
                             </tr>
                         ))}
                     </tbody>
@@ -190,4 +194,4 @@ import { useRouter } from 'next/router';
     );
 }
 
-export default Appointments;
+export default Book;

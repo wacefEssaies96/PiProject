@@ -59,7 +59,9 @@ export default function UsersForm(props) {
   }
   return (
     <Container className="py-5">
+      
       <h3 className="txtCenter">{operationMode} User </h3>
+     
       <Form noValidate validated={validated} onSubmit={handleSubmit} encType='multipart/form-data'>
         <Stack gap={4}>
           <input type="hidden" name="id" defaultValue={user._id}></input>

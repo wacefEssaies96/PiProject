@@ -56,11 +56,9 @@ export default function Register(props) {
         {showAlert && (<Success message={'Welcome to our Health SpotLight App!'}></Success>)}
         <div id="inner_header" className="inner-page-banner" style={{}}>
             <div className="container">
+           
                 <div className="inner_intro text-center">
-                    {operationMode === 'Add'
-                        ? <h1>Register </h1>
-                        : <h1>Edit Profile</h1>
-                    }
+                    
                     <div className="breadcrumb">
                         <ul className="pagination-inner">
                             <li className="breadcrumb-item">
@@ -93,6 +91,12 @@ export default function Register(props) {
                                         </Link>
                                     </p>
                                 </div>}
+                                {operationMode === 'Update'
+                                 ? 
+                                 <><a href="/appointments/BookPage" class=" float-end"  style={{color: '#016837'}}>see list of appointments</a> </>:  <div className="alert alert-danger" role="alert">
+                                 Please register
+                               </div>}
+                    
                                 <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form" encType='multipart/form-data'>
                                     {operationMode === 'Add' ? <h2>Sign up</h2> : <h2>Edit Profile</h2>}
                                     <Form.Control defaultValue={registerData._id} name="id" type="hidden"></Form.Control>
