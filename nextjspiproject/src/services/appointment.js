@@ -1,13 +1,20 @@
 import axios from "axios";
 import moment from 'moment';
+ import { Cookies } from 'react-cookie'
 export const handleUpdateOrAdd  = async (data, operationMode) => {
-   
+   const cookies= new Cookies()
+   let u =null
+
+   if(cookies.get('user')){
+    let u = cookies.get('user')["_id"]
+   }
     let op= {
          
-        'Date':moment(data.target.Date.value, "DD/MM/YYYY").toDate(),
+        'Date':moment(data.target.Date.value).toDate(),
         
         'Hour':data.target.Hour.value ,
         'Duration': data.target.Duration.value ,
+        'user': u
        
     }
    
