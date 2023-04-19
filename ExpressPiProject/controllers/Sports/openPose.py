@@ -30,25 +30,20 @@ image_path = sys.stdin.read().strip()
 # Load the image
 image = cv2.imread(image_path)
 
-# Get the width and height of the image
-height, width, _ = image.shape
-# print(f"Image width: {width} pixels")
-# print(f"Image height: {height} pixels")
-
-# Resize the image
-#image = cv2.resize(image, (int(width/96), int(height/96)))
-
 # Convert the image to grayscale for easier computation
 image_grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
 window_name = f"Detected body in {image}" # Set name of window that shows image
 
 # Display the image
-# cv2.imshow(window_name, image)
+#cv2.imshow(window_name, image)
 
-imageWidth = image.shape[1]
-imageHeight = image.shape[0]
-net.setInput(cv2.dnn.blobFromImage(image, 1.0, (inWidth, inHeight), (127.5, 127.5, 127.5), swapRB=True, crop=False))
+# Get the width and height of the image
+imageHeight, imageWidth, _ = image.shape
+#print(f"Image width: {imageWidth} pixels")
+#print(f"Image height: {imageHeight} pixels")
+
+net.setInput(cv2.dnn.blobFromImage(image, scalefactor=1.0, size=(inWidth, inHeight), mean=(127.5, 127.5, 127.5), swapRB=True, crop=False))
 out = net.forward()
 out = out[:, :19, :, :]  # MobileNet output [1, 57, -1, -1], we only need the first 19 elements
 
@@ -58,7 +53,7 @@ assert(len(BODY_PARTS) == out.shape[1])
 points = []
 # Extract the keys of the dictionary
 keys = BODY_PARTS.keys()
-# print(keys)
+
 for i in range(len(keys)):
     # Slice heatmap of corresponging body's part.
     heatMap = out[0, i, :, :]
@@ -70,7 +65,7 @@ for i in range(len(keys)):
     # If the confidence score is above a certain threshold, print the coordinates of the body part
     if conf > 0.2:
         x, y = point
-        # print(f'{list(keys)[i]} coordinates: ({x}, {y})')
+        #print(f'{list(keys)[i]} coordinates: ({x}, {y})')
     x = (imageWidth * point[0]) / out.shape[3]
     y = (imageHeight * point[1]) / out.shape[2]
     # Add a point if it's confidence is higher than threshold.
@@ -97,59 +92,51 @@ cv2.putText(image, '%.2fms' % (t / freq), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.
 
 estimated_image = image
 # Display the estimated image
-# cv2.imshow("Estimated Image", estimated_image)
-
-left_shoulder = (30, 9)
-right_shoulder = (15, 9)
-x1, y1 = left_shoulder
-x2, y2 = right_shoulder
-distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-distance_pixels = distance
-# print("shoulder_distance in pixels : ",distance_pixels)
-
-#calculate the ppi of the laptop screen
-screen_width_pixel = 1366
-screen_height_pixel = 768
-screen_width = 14.1
-screen_height = 8.25
-
-Horizontal_PPI = 1366/14.1
-Vertical_PPI = 768/8.25
-average_ppi = (Horizontal_PPI+Vertical_PPI)/2
-# print(Horizontal_PPI, Vertical_PPI, f'Estimated average screen resolution: {average_ppi} PPI')
-
-#converting 30cm en pixels
-Number_of_pixels = (30*average_ppi/2.54)
-# print("30cm in pixels : ",Number_of_pixels)
-
-ppi = average_ppi
+#cv2.imshow("Estimated Image", estimated_image)
 
 # Define the coordinates of the two points
-p1 = (30, 9)
-p2 = (15, 9)
+p1 = (29*44, 10)
+p2 = (17*44, 11)
 
-# Measure the object's real width in cm
-object_real_width_cm = 100  # e.g. the length of the ruler
+# Draw a line between the two points with a color (in BGR format) and thickness
+color = (0, 0, 0)  # Green color
+thickness = 2        # Line thickness
+#cv2.line(image, p1, p2, color, thickness)
+#cv2.imshow("draw lines", image)
 
-# Get the image dimensions
-image_height_pixels, image_width_pixels = image.shape[:2]
-
-# Calculate the distance between the points in pixels
-distance_pixels = cv2.norm(p1, p2)
+def distanceCalculate(p1, p2):
+    dis = ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** 0.5
+    return dis
+distance_pixels1 = distanceCalculate(p1, p2)
+#print('Distance in pixels Shoulder width: {}'.format(distance_pixels1))
 
 # Calculate the distance between the points in cm
-distance_cm = (distance_pixels * object_real_width_cm) / image_width_pixels
-
+#distance_cm = (distance_pixels * object_real_width_cm) / image_width_pixels
+distance_cm1 = distance_pixels1 / 72*2 * 2.54
 # Print the result
-# print('Distance between the two points: {} cm'.format(distance_cm))
+#print('Distance between the two points Shoulder width: {} cm'.format(distance_cm1))
 
+p3 = (20*44, 21)
+p4 = (27*44, 22)
+distance_pixels2 = distanceCalculate(p3, p4)
+#print('Distance in pixels Hips width: {}'.format(distance_pixels2))
+
+distance_cm2 = distance_pixels2 / 72*2 * 2.54
+# Print the result
+#print('Distance between the two points Hips width: {} cm'.format(distance_cm2+distance_cm2/2))
 cv2.waitKey(0)  # Keep window open indefinitely until any keypress
-cv2.destroyAllWindows()  # Destroy all open OpenCV windows
-json_data = json.dumps(distance_cm)
+cv2.destroyAllWindows()  # Destroy all open OpenCV windowsprint(distance_cm)
+
+data = {
+    "shoulderWidth": distance_cm1,
+    "hipsWidth": distance_cm2+distance_cm2/2
+}
+
+json_data = json.dumps(data)
 
 # Generate a random UUID
 unique_img_name = str(uuid.uuid4())
 
 # Save the file with the unique name
 cv2.imwrite(f"uploads/openPose/{unique_img_name}.jpg", estimated_image)
-print(distance_cm)
+print(data)
