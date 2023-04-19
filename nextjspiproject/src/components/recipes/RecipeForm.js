@@ -1,4 +1,4 @@
-import { submitMeal } from "@/services/meal";
+import { submitRecipe } from "@/services/recipe";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react"
 import { Button, Container, Form, Stack,Row ,Col, Alert } from "react-bootstrap"
@@ -19,20 +19,20 @@ export default function RecipeForm(props) {
   const [validatedForm, setValidatedForm] = useState(false);
 
   
-//   const getValidated = async (event) => {
-//     console.log(event.target.value)
-//     setMeal({ ...props.meal, 'validated': event.target.value })
-// }
+  const getValidated = async (event) => {
+    console.log(event.target.value)
+    setRecipe({ ...props.recipe, 'validated': event.target.value })
+}
 
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     const form = event.currentTarget;
-//     setValidatedForm(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    setValidatedForm(true);
     
-//     if (form.checkValidity() === true) {
-//       await submitMeal(event, operationMode)
-//     }
-//   }
+    if (form.checkValidity() === true) {
+      await submitRecipe(event, operationMode)
+    }
+  }
 
   useEffect(() => {
     
@@ -52,62 +52,106 @@ export default function RecipeForm(props) {
             <p></p>
         </div>
     </div>
-      {/* <Form noValidate validated={validatedForm} onSubmit={handleSubmit}  encType='multipart/form-data'>
+      <Form noValidate validated={validatedForm} onSubmit={handleSubmit}  encType='multipart/form-data'>
         <Stack gap={4}>
 
           <Row>
             <Col md={4}>
               <Form.Group>
-                  <input type="hidden" name="id" defaultValue={meal._id}></input>
+                  <input type="hidden" name="id" defaultValue={recipe._id}></input>
 
-                  <Form.Label htmlFor="FoodCategory">Food Category</Form.Label>
-                  <Form.Control defaultValue={meal.FoodCategory} placeholder="Food Category" type="text" id="FoodCategory" name="FoodCategory" required></Form.Control>
+                  <Form.Label htmlFor="Name">Name</Form.Label>
+                  <Form.Control defaultValue={recipe.name} placeholder="Name" type="text" id="name" name="name" required></Form.Control>
               </Form.Group>
             </Col>
             <Col md={4}>
             <Form.Group>
-                <Form.Label htmlFor="FoodItem"> Food Item</Form.Label>
-                <Form.Control defaultValue={meal.FoodItem} placeholder="Food Item " type="text" id="FoodItem" name="FoodItem" required></Form.Control>
+                <Form.Label htmlFor="description"> description</Form.Label>
+                <Form.Control defaultValue={recipe.description} placeholder="description" type="text" id="description" name="description" required></Form.Control>
             </Form.Group>
             </Col>
+          </Row>
+          
+          <Row>
+            {/* <Col md={6}>
+              <Form.Group>
+                <Form.Label>Picture</Form.Label>
+                {/* {!(recipe.imgRecipe)
+                  ?
+                  <Form.Control
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    name="image"
+                    required
+                  />
+                  : /}
+                  <Form.Control
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    name="imgRecipe"
+                  />
+                {/* } /}
+                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {'Please choose an image of type : png, jpg, jpeg.'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col> */}
             <Col md={4}>
-
-            <Form.Group>
-                <Form.Label htmlFor="serving_size_100g"> Serving size 100 g/ml</Form.Label>
-                <Form.Control defaultValue={meal.serving_size_100g} placeholder="100" type="text" id="serving_size_100g" name="serving_size_100g" required></Form.Control>
-            </Form.Group>
+              <div className="designation-profile-img">
+                {!(recipe.imgRecipe)
+                  ?
+                  <>
+                    <img style={{ height: '15rem', width: '15rem' }}
+                      src={`${process.env.backurl}/uploads/Recipe/altRecipe.jpg`}
+                      alt="no img altRecipe.jpg"
+                    />
+                    <hr />
+                    <div className="desig-content">
+                      <p>{`/uploads/Recipe/altRecipe.jpg`}</p>
+                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={`/uploads/Recipe/altRecipe.jpg`} /> 
+                    </div>
+                  </>
+                  :
+                  <>
+                    <img style={{ height: '15rem', width: '15rem' }}
+                      src={`${process.env.backurl}/${recipe.imgRecipe}`}
+                      alt="verifiy img"
+                    />
+                    <hr />
+                    <div className="desig-content">
+                      <p >{recipe.imgRecipe}</p>
+                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={recipe.imgRecipe} /> 
+                    </div>
+                  </>
+                }
+              </div>
             </Col>
           </Row>
           <Row>
             <Col md={4}>
               <Form.Group>
-                  <Form.Label htmlFor="calories_100g"> Calories 100 g/ml</Form.Label>
-                  <Form.Control defaultValue={meal.calories_100g} placeholder="150" type="text" id="calories_100g" name="calories_100g" required></Form.Control>
+                  <Form.Label htmlFor="quantity"> Quantity</Form.Label>
+                  <Form.Control defaultValue={recipe.quantity} placeholder="150" type="text" id="quantity" name="quantity" required></Form.Control>
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group>
-                  <Form.Label htmlFor="serving_size_portion"> Serving Size Portion </Form.Label>
-                  <Form.Control defaultValue={meal.serving_size_portion} placeholder="10" type="text" id="serving_size_portion" name="serving_size_portion" required></Form.Control>  
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group>
-                  <Form.Label htmlFor="serving_size_oz"> Serving Size Oz</Form.Label>
-                  <Form.Control defaultValue={meal.serving_size_oz} placeholder="28" type="text" id="serving_size_oz" name="serving_size_oz" required></Form.Control>
+                  <Form.Label htmlFor="meals"> Meals </Form.Label>
+                  <Form.Control defaultValue={recipe.meals} placeholder="10" type="text" id="meals" name="meals" required></Form.Control>  
               </Form.Group>
             </Col>
           </Row>
           <Row>
             <Col md={4}>
             <Alert key="info" variant="info">
-              If meal is validated ,you cannot delete it ! 
+              If recipe is validated ,All users can find it ! 
             </Alert>
             </Col>
             <Col md={4}>
               <Form.Group>
                 <Form.Label htmlFor="validated"> Validated </Form.Label>
-                <Form.Select required value={meal.validated} name="validated" onChange={getValidated} >
+                <Form.Select required value={recipe.validated} name="validated" onChange={getValidated} >
                   <option value="false">False</option>
                   <option value="true">True</option>
                 </Form.Select>
@@ -120,7 +164,7 @@ export default function RecipeForm(props) {
           <Button  variant="success" type="submit">{operationMode} Meal</Button>
         </div>
         <br/>
-      </Form> */}
+      </Form>
     </Container >
     
   )

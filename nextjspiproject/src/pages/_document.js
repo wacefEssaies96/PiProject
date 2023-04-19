@@ -62,7 +62,7 @@ export default function Document() {
         <link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed70b6?url=https%3A%2F%2Fslidesigma.com%2Fthemes%2Fwp%2Fweefly%2F&amp;format=xml" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400%2C600%7CPlayfair+Display:700%7CNunito:400%7CRoboto:400%7CUbuntu:300%2C400%2C500&amp;display=swap" rel="stylesheet" property="stylesheet" media="all" type="text/css" />
         <link rel="preload" as="font" id="rs-icon-set-revicon-woff" href="/wp-content/plugins/revslider/public/assets/fonts/revicons/revicons90c6.woff" type="font/woff" crossOrigin="anonymous" media="all" />
-        <link rel="preload" as="font" id="rs-icon-set-fa-icon-woff" type="font/woff2" crossOrigin="anonymous" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/fonts/fontawesome-webfont3e6e.woff2?v=4.7.0" media="all" />
+        <link rel="preload" as="font" id="rs-icon-set-fa-icon-woff" type="font/woff2" crossOrigin="anonymous" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/fonts/fontawesome-webfont3e6e.woff2" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-fa-icon-css" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/css/font-awesome.css" type="text/css" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-pe-7s-css" href="/wp-content/plugins/revslider/public/assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" type="text/css" media="all" />
       </Head>

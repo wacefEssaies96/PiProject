@@ -8,6 +8,7 @@ export default function RecipeDetails(props) {
   
   // const [operationMode, setOperationMode] = useState('Create')
   const [listMeal, setListMeal] = useState([])
+  const [listMealoneTime, setListMealoneTime] = useState(true)
 
   const [recipe, setRecipe] = useState({
     name : "",
@@ -33,11 +34,16 @@ export default function RecipeDetails(props) {
    const refresh =()=>{
       
       // setRecipe({...recipe,melas:[]})
-      // setRecipe({...recipe,melas:props.recipe.meals})
-      for (let i in props.recipe.meals){
-         addToListMeals(props.recipe.meals[i])
+      setRecipe({...recipe,melas:props.recipe.meals})
+      for (let i in recipe.meals){
+        // console.log(" meals : "+recipe.meals)
+        if (listMealoneTime) {
+          addToListMeals(recipe.meals[i])
+        }
+
          // console.log("addToListMeals "+props.recipe.meals[i].calories_100g)
       }
+      setListMealoneTime(false)
    }
   useEffect(() => {
     if (props.recipe !== undefined) {
@@ -203,7 +209,7 @@ export default function RecipeDetails(props) {
         </td>
         <td key={meal.FoodItem} className="woocommerce-product-attributes-item__value">{meal.FoodItem}</td>
         <td key={meal.calories_100g}  className="woocommerce-product-attributes-item__value">{meal.calories_100g}</td>
-        <td  className="woocommerce-product-attributes-item__value">{ (extractValue(meal.calories_100g)/recipe.totalCalorie*100).toFixed(2)} %</td>
+        <td  className="woocommerce-product-attributes-item__value">{ (extractValue(meal.calories_100g)*recipe.quantity[index]/recipe.totalCalorie*100).toFixed(2)} %</td>
 
 
       </tr>
