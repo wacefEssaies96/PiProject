@@ -98,7 +98,7 @@ import { useRouter } from 'next/router';
     const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
     // const currentAppointments=1;
     
-    const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+    const currentAppointments = appointments && appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
 
     
    

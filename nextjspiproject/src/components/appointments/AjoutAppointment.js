@@ -152,7 +152,7 @@ export default function AppointmentForm(props) {
                                                             name="Duration"
                                                             type="text"
                                                             placeholder="e.g. 1h30min"
-                                                            pattern="([1-9]|[1-9][0-9]+)h([0-5]?[0-9]?)min" // ajout du pattern
+                                                           // ajout du pattern
                                                             required
                                                         />
                                             <Form.Control.Feedback type="valid">
