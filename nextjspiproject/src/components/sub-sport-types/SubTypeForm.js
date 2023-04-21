@@ -2,9 +2,9 @@ import { submitSubTypeForm } from "@/services/SportSubTypeServices"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Alert, Button, Form } from "react-bootstrap"
+import { Button, Form, Accordion } from "react-bootstrap"
 import { BiBlock, BiCheck } from 'react-icons/bi'
-import Success from "../layouts/SuccessMsg"
+import { toast } from 'react-toastify';
 
 export default function SportSubTypesForm(props) {
     const [sportSubType, setSportSubType] = useState({
@@ -13,13 +13,10 @@ export default function SportSubTypesForm(props) {
         definitionHistory: ''
     })
     const [operationMode, setOperationMode] = useState('Add')
-    const [showAlert, setShowAlert] = useState(false)
     const router = useRouter()
-    const [errorMsg, setErrorMsg] = useState(null)
     const [validated, setValidated] = useState(false)
-    const [showAlertError, setShowAlertError] = useState(false)
     const [sportSubTypeTitle, setSportSubTypetitle] = useState({})
-    const [sportSubTypeDef, setSportSubTypeDef] = useState({history:[]})
+    const [sportSubTypeDef, setSportSubTypeDef] = useState({ history: [] })
     const [checkSport, setCheckSport] = useState(false);
     const [arr, setArr] = useState([])
     const [sportTypeTitle, setSportTypeTitle] = useState('')
@@ -33,7 +30,7 @@ export default function SportSubTypesForm(props) {
                 setSportSubTypetitle(dataT[1].titlesScrapped)
             })
     }, []);
-console.log(sportSubTypeDef);
+    console.log(sportSubTypeDef);
     const handleChange = (e) => {
         setCheckSport(e.target.checked)
         setSportTypeTitle(`${e.target.name} Sports`)
@@ -67,21 +64,43 @@ console.log(sportSubTypeDef);
         if (resFindByTitle === null) {
             if (form.checkValidity() === true) {
                 await submitSubTypeForm(e, operationMode)
-                if (!showAlert) {
-                    setShowAlert(true)
-                    router.push('/admin/sport-sub-type')
-                }
+                toast.success('Sport SubType Added Successfully!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                router.push('/admin/sport-sub-type')
             }
         } else {
             if (operationMode === 'Add') {
-                setShowAlertError(true)
-                setErrorMsg("This sport subtype Title is already existing in DB !")
+                toast.error('This sport subtype Title is already existing in DB !', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
             await submitSubTypeForm(e, operationMode)
-            if (!showAlert) {
-                setShowAlert(true)
-                router.push('/admin/sport-sub-type')
-            }
+            toast.success('Sport SubType Updated Successfully!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            router.push('/admin/sport-sub-type')
         }
     }
 
@@ -92,18 +111,6 @@ console.log(sportSubTypeDef);
         }
     }, [])
 
-    useEffect(() => {
-        setTimeout(() => {
-            setShowAlert(false)
-        }, 2000);
-    }, [showAlert])
-
-    useEffect(() => {
-        setTimeout(() => {
-            setShowAlertError(false)
-        }, 5000);
-    }, [showAlertError])
-
     const handleChangeAtt = (e) => {
         setSportSubType({ ...sportSubType, [e.target.name]: e.target.value })
     }
@@ -112,9 +119,12 @@ console.log(sportSubTypeDef);
         setSportSubType({ ...sportSubType, demoVideo: e.target.files[0] })
     }
 
+    const copyText = (text) => {
+        navigator.clipboard.writeText(text)
+    }
+
     return (
         <div className="container" style={{ padding: "5%" }}>
-            {showAlert && (<Success message={`Sport SubType ${operationMode}ed Successfully !`}></Success>)}
             <h2>{sportTypeTitle}</h2>
             <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Control defaultValue={sportSubType._id} name="id" type="hidden" className="form-control" id="floatingInput" />
@@ -158,10 +168,9 @@ console.log(sportSubTypeDef);
                         <option value="">Select Soprt SubType Title</option>
                         {arr && arr.map((t, i) => <option value={t} key={i}>{t}</option>)}
                     </Form.Select>
-                    {!errorMsg && <Form.Control.Feedback type="valid">
+                    <Form.Control.Feedback type="valid">
                         You did it!
-                    </Form.Control.Feedback>}
-                    {showAlertError && (<Alert variant="danger">{errorMsg}</Alert>)}
+                    </Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>
                         Please enter a sport sub-type title !
                     </Form.Control.Feedback>
@@ -194,7 +203,17 @@ console.log(sportSubTypeDef);
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group>
-                    {sportSubTypeDef.history.length>0 && sportSubTypeDef.history.map((e, i)=> <p>{e}</p>)}
+                    {sportSubTypeDef.history.length > 0 && sportSubTypeDef.history.map((e, i) =>
+                        <Accordion defaultActiveKey="0" flush>
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>Paragraphe {i}</Accordion.Header>
+                                <Accordion.Body>
+                                    {e}
+                                    <Button variant="success" onClick={() => copyText(e)}>Copy Text</Button>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    )}
                 </Form.Group>
                 <Button variant="success" type="submit">
                     {operationMode} <BiCheck></BiCheck>

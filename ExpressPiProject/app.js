@@ -40,7 +40,8 @@ var resetPassword = require('./routes/resetPasswordRoute')
 const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");
 const otherAppsAuthRouter = require("./routes/otherappsauth");
-
+// body shapes scraped routes
+const BodyShapesScrapedRouter = require("./routes/Sports/bodyShapesScrapedRouter")
 
 var app = express();
 
@@ -79,6 +80,7 @@ app.use('/api', resetPassword);
 app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
 app.use('/api/get-your-morphology', morphologyRoute)
+app.use('/api/store', BodyShapesScrapedRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

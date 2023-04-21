@@ -3,19 +3,18 @@ import Head from 'next/head'
 import { BiPlus, BiEdit, BiTrashAlt } from 'react-icons/bi'
 import Link from 'next/link'
 import { getSporTypes } from '@/services/SportTypeService'
-import { useEffect, useState } from 'react'
-import { Alert, Table } from 'react-bootstrap'
+import { useState } from 'react'
+import { Table } from 'react-bootstrap'
 import CustomModal from '@/components/layouts/CustomModal'
 import { deleteSportType } from '@/services/SportTypeService'
+import { toast } from 'react-toastify';
 
 export default function SportTypesAdminHomePage({ sportTypes }) {
 
   const [list, setList] = useState(sportTypes)
   const [id, setId] = useState(null)
-  const [showAlert, setShowAlert] = useState(false)
   const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
   const [deleteMessage, setDeleteMessage] = useState(null)
-  const [sportTypeMessage, setSportTypeMessage] = useState(null)
 
   const showDeleteModal = (id) => {
     setId(id)
@@ -30,11 +29,19 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
   const submitDelete = async (id) => {
     await deleteSportType(id)
     const listAfterDelete = await fetch(`${process.env.backurl}/api/sportTypes/getAllSportTypes`)
-    setSportTypeMessage(`The sport type '${sportTypes.find((x) => x._id === id).title}' was deleted successfully.`)
+    toast.success(`The sport type '${sportTypes.find((x) => x._id === id).title}' was deleted successfully!`, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    })
     const resList = await listAfterDelete.json()
     setList(resList)
     setDisplayConfirmationModal(false)
-    setShowAlert(true)
   }
 
   const searchTitleDynamic = async (title) => {
@@ -54,12 +61,6 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
     setList(await newList(e))
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShowAlert(false)
-    }, 3000);
-  }, [showAlert])
-
   return (
     <div>
       <Head>
@@ -76,8 +77,6 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
         <form className="d-flex float-end" role="search">
           <input onChange={handleChange} type="search" className="form-control mx-5" style={{ width: "250px" }} placeholder="Search for sport type by Title" aria-label="Search" />
         </form><br /><br />
-
-        {showAlert && <Alert variant="success">{sportTypeMessage}</Alert>}
         <Table striped bordered hover size="sm">
           <thead>
             <tr className='text-center'>
@@ -93,7 +92,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
               const arr2 = sportType.advantages.slice(sportType.advantages.length / 2)
               return (
                 <tr key={sportType._id}>
-                  <td style={{textAlign: "center"}} key={sportType.title}>{sportType.title}</td>
+                  <td style={{ textAlign: "center" }} key={sportType.title}>{sportType.title}</td>
                   <td key={sportType.advantages}>{sportType.advantages &&
                     arr1.map((a, i) =>
                       <div key={i}>
@@ -109,7 +108,7 @@ export default function SportTypesAdminHomePage({ sportTypes }) {
                       )
                     })}
                   </td>
-                  <td style={{textAlign: "center"}} key={sportType._id} className='px-16 py-2 flex justify-content-center'>
+                  <td style={{ textAlign: "center" }} key={sportType._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/sport-type/edit/${sportType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
                     </Link>

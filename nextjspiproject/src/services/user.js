@@ -74,6 +74,7 @@ export const registerUser = async (data, operationMode) => {
     options.append('gender', data.target.gender.value)
     options.append('phone', data.target.phone.value)
     options.append('address', data.target.address.value)
+    options.append('dateOfBirth', data.target.dateOfBirth.value)
     options.append('role', 'USER')
     options.append('image', data.target.image.files[0]);
     const res =
