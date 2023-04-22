@@ -1,6 +1,5 @@
 const { spawn } = require('child_process');
 const User = require('../../models/Users/user');
-const userController = require("../Users/userController");
 
 // Handle file upload
 exports.uploadUserImage = async (req, res) => {
@@ -68,7 +67,6 @@ exports.morphologyType = async (req, res) => {
   //   // Subtract 1 from age if the birth month and day are not yet past
   //   userAge = userAge - 1;
   // }
-  console.log(user);
 
   //get body type
   if (gender.toLocaleLowerCase() === 'male') {
@@ -198,5 +196,16 @@ exports.morphologyType = async (req, res) => {
       bodyShape = 'Unknown';
     }
 
-  res.send({"morphology" : bodyShape})
+  try {
+    const newUser = user;
+    newUser.morphology = bodyShape
+    
+    // Update the user in the database
+    const result = await User.findByIdAndUpdate(id, newUser, { new: true });
+
+    res.json({ "morphology": bodyShape, "updatedUser": result }); // return the updated user object
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
 }

@@ -10,6 +10,6 @@ const upload = multer({ dest: 'uploads/UserMorphology' })
 router.post('/getYourMorphologyType', upload.single('userImage'), morphology.uploadUserImage)
 
 // get your body shape type
-router.get('/bodyShapeType/:id/:shouldersWidth/:hipsWidth', morphology.morphologyType)
+router.put('/bodyShapeType/:id/:shouldersWidth/:hipsWidth', morphology.morphologyType)
 
 module.exports = router;

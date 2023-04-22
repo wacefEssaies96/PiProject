@@ -3,7 +3,9 @@ const SportType = require("../../models/Sports/SportType")
 const slug = require('slug')
 const axios = require("axios");
 const cheerio = require("cheerio");
-const usetube = require('usetube')
+const usetube = require('usetube');
+const morphology = require("../../controllers/Sports/getYourMorphologyController");
+const fetch = require('node-fetch');
 
 const url = "https://www.leadershipandsport.com/types-of-sports/";
 
@@ -46,19 +48,19 @@ exports.webScrapingSportSubTypesTitle = async (req, res) => {
 }
 //AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs
 //scraping youtube videos
-exports.youtubeVideos = async (req, res)=> {
+exports.youtubeVideos = async (req, res) => {
     // const data = await usetube.searchVideo('Coding Shiksha')
     // console.log(data)
     await axios.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&key=AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs")
-    .then((result)=>{
-        return result;
-    })
-    .then((data)=>{
-        console.log(data);
-        const videos = data.items
-        console.log(videos)
-        data.items.forEach(video => console.log(video.snippet.title))
-    })
+        .then((result) => {
+            return result;
+        })
+        .then((data) => {
+            console.log(data);
+            const videos = data.items
+            console.log(videos)
+            data.items.forEach(video => console.log(video.snippet.title))
+        })
 }
 
 // Create and Save a new SportSubType
@@ -143,4 +145,93 @@ exports.findSportSubTypeByTitle = (req, res) => {
     SportSubType.findOne({ title: req.params.title })
         .then(sportSubType => res.json(sportSubType))
         .catch(err => res.status(400).json('Error: ' + err));
+}
+
+//get your sport type accourding to your morphology
+exports.getYourSportTypes = async (req, res) => {
+
+    const id = req.params.id;
+    const shouldersWidth = req.params.shouldersWidth;
+    const hipsWidth = req.params.hipsWidth;
+
+    fetch(`http://localhost:3030/api/get-your-morphology/bodyShapeType/${id}/${shouldersWidth}/${hipsWidth}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        // body: JSON.stringify(),
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error making HTTP request: ' + response.statusText);
+            }
+        })
+        .then(data => {
+            // Process the response data
+            console.log(data);
+
+            let gender = data.updatedUser.gender
+            bodyShapeType = data.morphology
+            let recommendedSports = "";
+
+            if (gender.toLowerCase() === 'male') {
+                switch (bodyShapeType.toLowerCase()) {
+                    case "ectomorph":
+                        recommendedSports = "Sports that focus on building muscle and increasing overall strength, such as weightlifting, bodybuilding, or powerlifting.";
+                        break;
+                    case "mesomorph":
+                        recommendedSports = "Sports that involve a combination of strength training and cardiovascular exercise, such as basketball, football, or swimming.";
+                        break;
+                    case "endomorph":
+                        recommendedSports = "Sports that emphasize cardiovascular exercise and calorie burning, such as running, cycling, or high-intensity interval training (HIIT).";
+                        break;
+                    case "rectangle":
+                        recommendedSports = "Sports that involve a mix of cardiovascular exercise and resistance training, such as circuit training, calisthenics, or crossfit.";
+                        break;
+                    case "triangle":
+                        recommendedSports = "Sports that focus on lower body strength and power, such as squats, lunges, or cycling.";
+                        break;
+                    case "inverted triangle":
+                        recommendedSports = "Sports that require upper body strength and power, such as boxing, swimming, or tennis.";
+                        break;
+                    case "oval":
+                        recommendedSports = "Sports that provide low-impact cardiovascular exercise and incorporate resistance training and core exercises, such as swimming, Pilates, or yoga.";
+                        break;
+                    case "diamond":
+                        recommendedSports = "Sports that emphasize core strength and stability, such as Pilates, yoga, or tai chi, and require cardiovascular endurance and total body strength, such as rowing, hiking, or circuit training.";
+                        break;
+                    default:
+                        recommendedSports = "Invalid body shape type. Please input a valid body shape type.";
+                        break;
+                }
+            } else if (gender.toLowerCase() === 'female') {
+                switch (bodyShapeType.toLowerCase()) {
+                    case "pear":
+                        recommendedSports = "Sports that involve lower body strength and power, such as squats, lunges, or dancing.";
+                        break;
+                    case "inverted triangle":
+                        recommendedSports = "Sports that require upper body strength and power, such as boxing, swimming, or tennis.";
+                        break;
+                    case "oval":
+                        recommendedSports = "Sports that provide low-impact cardiovascular exercise and incorporate resistance training and core exercises, such as swimming, Pilates, or yoga.";
+                        break;
+                    case "hourglass":
+                        recommendedSports = "Sports that involve a mix of cardiovascular exercise and resistance training, such as circuit training, weightlifting, or dancing.";
+                        break;
+                    case "rhomboid":
+                        recommendedSports = "Sports that emphasize core strength and stability, such as Pilates, yoga, or tai chi, and require cardiovascular endurance and total body strength, such as rowing, hiking, or circuit training.";
+                        break;
+                    default:
+                        recommendedSports = "Invalid body shape type. Please input a valid body shape type.";
+                        break;
+                }
+            }
+            res.send({recommendedSports});
+        })
+        .catch(error => {
+            // Handle the error
+            console.error(error);
+        });
 }

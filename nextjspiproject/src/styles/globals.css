@@ -905,3 +905,10 @@ body .is-layout-flex>* {
   background-image: url(../../public/sportForm.jpg);
   background-size: cover;
 }
+
+#sportTypeForYou {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/sportTypeForYou.jpg);
+  background-size: cover;
+}

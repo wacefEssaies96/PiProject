@@ -54,4 +54,7 @@ router.put("/:id", upload.single('demoVideo'), sportSubTypes.updateSportSubType)
 // Retrieve a single SubSportType with title
 router.get("/titleSubType/:title", sportSubTypes.findSportSubTypeByTitle);
 
+// Get your sport type
+router.get("/sport-type/:id/:shouldersWidth/:hipsWidth", sportSubTypes.getYourSportTypes);
+
 module.exports = router;
