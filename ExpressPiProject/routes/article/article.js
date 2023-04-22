@@ -34,4 +34,7 @@ router.post("/scrap/wired/one", controller.scrapOneFromWired);
 // OpenAi ChatGPT
 router.post('/get-prompt-result', controller.openai);
 
+// 
+router.get('/find-by-title/:title', controller.findArticleByTitle);
+
 module.exports = router;

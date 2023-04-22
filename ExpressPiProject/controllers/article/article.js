@@ -3,7 +3,7 @@ const Category = require('../../models/article/category');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const slug = require('slug');
-const {Configuration, OpenAIApi} = require("openai");
+const { Configuration, OpenAIApi } = require("openai");
 
 
 // Create and Save a new Article
@@ -81,6 +81,14 @@ exports.findOne = (req, res) => {
             res.status(500).send({ message: "Error retrieving Article with id=" + id });
         });
 };
+
+// Get article by title
+exports.findArticleByTitle = (req, res) => {
+    // console.log(req.params.title)
+    Article.findOne({ title: req.params.title })
+        .then(article => res.json(article))
+        .catch(err => res.status(400).json('Error: ' + err));
+}
 
 // Update a article by the id in the request
 exports.update = async (req, res) => {
@@ -246,37 +254,37 @@ exports.openai = async (req, res) => {
     });
     const openai = new OpenAIApi(configuration);
 
-     // Get the prompt from the request body
-     const {prompt, model = 'gpt'} = req.body;
+    // Get the prompt from the request body
+    const { prompt, model = 'gpt' } = req.body;
 
-     // Check if prompt is present in the request
-     if (!prompt) {
-         // Send a 400 status code and a message indicating that the prompt is missing
-         return res.status(400).send({error: 'Prompt is missing in the request'});
-     }
- 
-     try {
-         // Use the OpenAI SDK to create a completion
-         // with the given prompt, model and maximum tokens
-         if (model === 'image') {
-             const result = await openai.createImage({
-                 prompt,
-                 response_format: 'url',
-                 size: '512x512'
-             });
-             return res.send(result.data.data[0].url);
-         }
-         const completion = await openai.createCompletion({
-             model: model === 'gpt' ? "text-davinci-003" : 'code-davinci-002', // model name
-             prompt: `Please reply below question in markdown format.\n ${prompt}`, // input prompt
-             max_tokens: model === 'gpt' ? 4000 : 8000 // Use max 8000 tokens for codex model
-         });
-         // Send the generated text as the response
-         return res.send(completion.data.choices[0].text);
-     } catch (error) {
-         const errorMsg = error.response ? error.response.data.error : `${error}`;
-         console.error(errorMsg);
-         // Send a 500 status code and the error message as the response
-         return res.status(500).send(errorMsg);
-     }
+    // Check if prompt is present in the request
+    if (!prompt) {
+        // Send a 400 status code and a message indicating that the prompt is missing
+        return res.status(400).send({ error: 'Prompt is missing in the request' });
+    }
+
+    try {
+        // Use the OpenAI SDK to create a completion
+        // with the given prompt, model and maximum tokens
+        if (model === 'image') {
+            const result = await openai.createImage({
+                prompt,
+                response_format: 'url',
+                size: '512x512'
+            });
+            return res.send(result.data.data[0].url);
+        }
+        const completion = await openai.createCompletion({
+            model: model === 'gpt' ? "text-davinci-003" : 'code-davinci-002', // model name
+            prompt: `Please reply below question in markdown format.\n ${prompt}`, // input prompt
+            max_tokens: model === 'gpt' ? 4000 : 8000 // Use max 8000 tokens for codex model
+        });
+        // Send the generated text as the response
+        return res.send(completion.data.choices[0].text);
+    } catch (error) {
+        const errorMsg = error.response ? error.response.data.error : `${error}`;
+        console.error(errorMsg);
+        // Send a 500 status code and the error message as the response
+        return res.status(500).send(errorMsg);
+    }
 }

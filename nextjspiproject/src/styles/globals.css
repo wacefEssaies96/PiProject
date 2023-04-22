@@ -1,20 +1,23 @@
 /* template */
-.txtCenter{
+.txtCenter {
   text-align: center;
 }
-.greenBtn{
-  text-align : center;
-  background-color : white;
-  color:green;
-  border : solid green 3px;
-  width : 250px ;
-  border-radius : 30px;
+
+.greenBtn {
+  text-align: center;
+  background-color: white;
+  color: green;
+  border: solid green 3px;
+  width: 250px;
+  border-radius: 30px;
 
 }
-.sectionCenter{
-  width: 80% ;
-  margin: 0 10% ;
+
+.sectionCenter {
+  width: 80%;
+  margin: 0 10%;
 }
+
 a {
   color: inherit;
   text-decoration: none;
@@ -655,7 +658,7 @@ body .is-layout-flex>* {
   min-height: 20px;
   color: rgb(255, 255, 255);
   background-color: rgb(163, 163, 163);
-    overflow: auto;
+  overflow: auto;
 }
 
 #prompt-input:focus {
@@ -800,7 +803,8 @@ body .is-layout-flex>* {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  background-color: rgb(163, 163, 163);;
+  background-color: rgb(163, 163, 163);
+  ;
   border-radius: 5px;
   margin: 10px 200px;
 }
@@ -876,13 +880,13 @@ body .is-layout-flex>* {
   /* transform: translate(-50%, -50%); */
 }
 
-.text-image > h1 {
+.text-image>h1 {
   color: #016837;
   font-size: 70px;
   text-shadow: 1px 1px 2px #016837, 0 0 1em #d93, 0 0 0.2em #d93;
 }
 
-.text-image > h5 {
+.text-image>h5 {
   color: #d93;
   font-size: 30px;
 }
@@ -904,4 +908,25 @@ body .is-layout-flex>* {
   background-position: center center;
   background-image: url(../../public/sportForm.jpg);
   background-size: cover;
+}
+
+.article-image {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
+  border-style: none;
+}
+
+.article-container {
+  display: flex;
+  flex-direction: row;
+  top: 20px;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 1000px) {
+  .article-container {
+    flex-direction: column;
+  }
 }
