@@ -1,14 +1,54 @@
 import Article from "@/components/article/Article";
 import Sidebar from "@/components/article/Sidebar";
 import { fetchData } from "@/services/mix";
+import axios from "axios";
+import { useState } from "react";
+
 
 export default function Index(props) {
+    const [articles, setArticles] = useState(props.articles)
+    const [currentPage, setCurrentPage] = useState(props.currentPage)
+    const [totalPages, setTotalPages] = useState(props.totalPages)
+    const [query, setQuery] = useState('')
+
+    const handleSearch = async (query) => {
+        setCurrentPage(1)
+        try {
+            const response = await axios.get(`${process.env.backurl}/api/admin/articles/search`, {
+                params: {
+                    query,
+                    page: 1
+                }
+            })
+            setArticles(response.data.docs)
+            setTotalPages(response.data.totalPages)
+           
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    const handlePageChange = async (page) => {
+        try {
+            const response = await axios.get(`${process.env.backurl}/api/admin/articles/search`, {
+                params: {
+                    query,
+                    page
+                }
+            })
+
+            setArticles(response.data.docs)
+            setCurrentPage(page)
+        } catch (err) {
+            console.error(err)
+        }
+    }
     return (
         <>
             <div className="row">
                 <div className="col-lg-8">
                     <div className="row">
-                        {props.articles.map((element, index) => {
+                        {articles.map((element, index) => {
                             return (
                                 <div key={index} className="col-12 col-lg-6 col-md-6">
                                     <Article key={element._id} article={element}></Article>
@@ -16,9 +56,32 @@ export default function Index(props) {
                             )
                         })}
                     </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="pagination-wrap">
+                                <div className="row align-items-center">
+                                    <div className="col-12 col-md-12">
+                                        <nav className="navigation pagination" aria-label=" ">
+                                            <h2 className="screen-reader-text"> </h2>
+                                            <div className="nav-links">
+
+                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                                    currentPage == page
+                                                        ? <span key={page} aria-current="page" className="page-numbers current">{currentPage}</span>
+                                                        : <a href="#" className="page-numbers" key={page} onClick={() => handlePageChange(page)}>
+                                                            {page}
+                                                        </a>
+                                                ))}
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="col-12 col-lg-4">
-                    <Sidebar categories={props.categories}></Sidebar>
+                    <Sidebar query={query} setQuery={setQuery} handleSearch={handleSearch} categories={props.categories}></Sidebar>
                 </div>
             </div>
         </>
@@ -26,16 +89,28 @@ export default function Index(props) {
 }
 
 export async function getServerSideProps() {
-    const data = await fetchData(`${process.env.backurl}/api/admin/articles/find-all`)
     const categories = await fetchData(`${process.env.backurl}/api/admin/subcategories/find-all`)
-    data.map(element => {
-        const myArray = element.createdAt.split("T")
-        element.createdAt = myArray[0]
-    })
-    return {
-        props: {
-            articles: data,
-            categories: categories
+    try {
+        const response = await axios.get(`${process.env.backurl}/api/admin/articles/search`, {
+            params: {
+                query: '',
+                page: 1
+            }
+        })
+        return {
+            props: {
+                articles: response.data.docs,
+                totalPages: response.data.totalPages,
+                currentPage: response.data.page,
+                categories: categories
+            }
+        }
+    } catch (err) {
+        return {
+            props: {
+                articles: [],
+                categories: categories
+            }
         }
     }
 }

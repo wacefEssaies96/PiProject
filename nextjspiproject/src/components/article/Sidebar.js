@@ -1,11 +1,16 @@
 export default function Sidebar(props) {
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        props.handleSearch(props.query)
+    }
+
     return (
         <div className="sidebar">
             <div id="search-1" className="widget widget_search">
                 <h4 className="widget-title">Search</h4>
-                <form action="https://slidesigma.com/themes/wp/weefly/" method="get" className="relative">
-                    <input type="search" defaultValue="" className="form-control" placeholder="Search your keyword..." name="s"
-                        required></input>
+                <form onSubmit={handleSubmit} className="relative">
+                    <input type="search" value={props.query} onChange={(e) => props.setQuery(e.target.value)} className="form-control" placeholder="Search..." name="s"></input>
                     <button type="submit" className="search_btn"><i className="fa fa-search"></i></button>
                 </form>
             </div>

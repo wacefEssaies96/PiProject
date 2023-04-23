@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const slug = require('slug');
 const { Configuration, OpenAIApi } = require("openai");
+const paginate = require('mongoose-paginate-v2')
 
 
 // Create and Save a new Article
@@ -88,6 +89,31 @@ exports.findArticleByTitle = (req, res) => {
     Article.findOne({ title: req.params.title })
         .then(article => res.json(article))
         .catch(err => res.status(400).json('Error: ' + err));
+}
+
+// Search article
+exports.searchArticle = async (req, res) => {
+    const { query, page , limit = 2 } = req.query
+
+    const options = {
+        page,
+        limit,
+        collation: {
+            locale: 'en'
+        }
+    }
+
+    const regexQuery = new RegExp(query, 'i')
+
+    try {
+        const articles = await Article.paginate(
+            { title: regexQuery },
+            options
+        )
+        res.json(articles)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }
 
 // Update a article by the id in the request
