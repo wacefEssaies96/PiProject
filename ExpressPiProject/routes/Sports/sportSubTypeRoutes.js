@@ -33,9 +33,6 @@ router.post("/uploads", upload.single('demoVideo'), (req, res) => {
 // WebScraping 
 router.get("/sportSubTypesTitle", sportSubTypes.webScrapingSportSubTypesTitle);
 
-// WebScraping Yutube videos
-router.get("/demoVideo", sportSubTypes.youtubeVideos);
-
 //Create
 router.post("/addSportSubType", upload.single('demoVideo'), sportSubTypes.create);
 

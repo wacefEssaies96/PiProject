@@ -42,6 +42,10 @@ const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 // body shapes scraped routes
 const BodyShapesScrapedRouter = require("./routes/Sports/bodyShapesScrapedRouter")
+// sport youtube videos scraped routes
+const SportVideosScrapedRouter = require("./routes/Sports/sportVideosScrapedRouter")
+// sport events calendar sport routes
+const EventCalendarSportRouter = require("./routes/Sports/EventCalendarSportRouter")
 
 var app = express();
 
@@ -81,6 +85,8 @@ app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVid
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
 app.use('/api/get-your-morphology', morphologyRoute)
 app.use('/api/store', BodyShapesScrapedRouter)
+app.use('/api/scrapedYoutubeVideos', SportVideosScrapedRouter)
+app.use('/api/eventCalendarSport', EventCalendarSportRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

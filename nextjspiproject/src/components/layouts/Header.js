@@ -35,12 +35,12 @@ function Header() {
             user: cookies.get('user')
          })
    }, [])
-
+console.log(auth);
    const { state, dispatch } = useContext(Store);
    const { cart } = state;
    const [cartItemsCount, setCartItemsCount] = useState(0);
    useEffect(() => {
-     setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
+      setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
    }, [cart.cartItems]);
    return (
       <>
@@ -173,6 +173,7 @@ function Header() {
                                        <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
+                                       {auth.user != null && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${cookies.get('user')._id}`}>Training Videos</Link></li>}
                                        <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li>
                                     </ul>
                                  </li>

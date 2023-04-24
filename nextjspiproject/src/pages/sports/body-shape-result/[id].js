@@ -2,8 +2,9 @@ import Head from "next/head"
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Cookies } from 'react-cookie'
-import { Carousel } from "react-bootstrap";
+import { Button, Carousel, Form } from "react-bootstrap";
 import { getYourMorphology } from "@/services/getYourSportService";
+import Link from "next/link";
 
 const BodyShapePage = () => {
     // set up cookies
@@ -13,6 +14,7 @@ const BodyShapePage = () => {
     const [morphology, setMorphology] = useState('')
     const [bodyShapes, setBodyShapes] = useState([])
     const [recommendedSports, setRecommendedSports] = useState('')
+    const [selectedSport, setSelectedSport] = useState(null)
 
     const getData = async () => {
         await getYourMorphology(cookies.get('user')._id, shouldersWidth, hipsWidth).then(data => setMorphology(data))
@@ -37,6 +39,18 @@ const BodyShapePage = () => {
         });
     };
 
+    const handleSelectChange = (event) => {
+        setSelectedSport(event.target.value); // Update selected value when the select option changes
+    }
+
+    const handleClick = () => {
+        // Pass data as query parameters in the URL
+        router.push({
+            pathname: `/sports/sport-videos/${cookies.get('user')._id}`,
+            query: { selectedSport },
+        });
+    };
+
     return (
         <div style={{ marginTop: "2%", marginBottom: "2%" }}>
             <Head>
@@ -50,7 +64,7 @@ const BodyShapePage = () => {
                             <div className="vc_column-inner">
                                 <div className="wpb_wrapper">
                                     <div className=" vc_custom_1571382109622 wd-section-heading-wrapper text-center">
-                                        <button onClick={getData} href="#" className="btn wd-btn-round-2">
+                                        <button onClick={getData} className="btn wd-btn-round-2">
                                             Show Result
                                         </button><br /><br />
                                         <div className="wd-service-heading wd-section-heading">
@@ -145,11 +159,29 @@ const BodyShapePage = () => {
                     </>
                 </div>
                 <div id="sportTypeForYou" className="inner-page-banner" style={{ height: "700px" }}>
-                    <div className="container">
+                    {recommendedSports != '' && <div className="container">
                         <div className="inner_intro text-center">
-                            <h2 style={{ color: "white", marginTop:"12%" }}>{recommendedSports != '' && recommendedSports}</h2>
-                        </div>
-                    </div>
+                            <h1 style={{ marginTop: "2%" }}>The best Sports for You accourding to your Body Shape</h1>
+                            <h2 style={{ color: "white", marginTop: "2%" }}>{recommendedSports}</h2>
+                        </div><br />
+                        <Form.Select
+                            value={selectedSport} // Set the selected value
+                            onChange={handleSelectChange} // Call the handleSelectChange function on change
+                            style={{ width: "40%", marginLeft: "30%" }}>
+                            <option>Select Your Favorite Sport</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Pilates">Pilates</option>
+                            <option value="Cycling">Cycling</option>
+                            <option value="Yoga">Yoga</option>
+                        </Form.Select>
+                        {selectedSport &&
+                            <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{marginTop:"15px", marginLeft:"20%"}} onClick={handleClick}>
+                                <Link className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ color: "white" }} href={`/sports/sport-videos/${cookies.get('user')._id}`}>
+                                    Please click here {selectedSport} to see sport videos
+                                </Link>
+                            </Button>
+                        }
+                    </div>}
                 </div>
             </div>
         </div >

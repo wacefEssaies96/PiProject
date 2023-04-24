@@ -3,8 +3,6 @@ const SportType = require("../../models/Sports/SportType")
 const slug = require('slug')
 const axios = require("axios");
 const cheerio = require("cheerio");
-const usetube = require('usetube');
-const morphology = require("../../controllers/Sports/getYourMorphologyController");
 const fetch = require('node-fetch');
 
 const url = "https://www.leadershipandsport.com/types-of-sports/";
@@ -46,25 +44,43 @@ exports.webScrapingSportSubTypesTitle = async (req, res) => {
         console.error(err);
     }
 }
-//AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs
+
 //scraping youtube videos
 exports.youtubeVideos = async (req, res) => {
-    // const data = await usetube.searchVideo('Coding Shiksha')
-    // console.log(data)
-    await axios.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&key=AIzaSyCwEg_MwpL14oSFRdJJG3X5KQ7z5C8ZETs")
-        .then((result) => {
-            return result;
-        })
-        .then((data) => {
-            console.log(data);
-            const videos = data.items
-            console.log(videos)
-            data.items.forEach(video => console.log(video.snippet.title))
-        })
+
+    // Get the search query from the request query parameters
+    const query = req.query.query;
+
+    try {
+        // Make an API request to YouTube Data API to search for videos
+        const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
+            params: {
+                q: query,
+                part: 'id,snippet',
+                type: 'video',
+                maxResults: 10, // Specify the number of results to retrieve
+                key: 'AIzaSyC8zRRDe5qseKnGUrfLI2b3lAafbllMFNg', // Replace with your actual API key
+            }
+        });
+
+        // Extract video data from the API response
+        const videoData = response.data.items.map(item => {
+            return {
+                videoId: item.id.videoId,
+                videoTitle: item.snippet.title,
+                videoUrl: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+            };
+        });
+
+        // Send the video data as JSON in the response
+        res.json(videoData);
+    } catch (error) {
+        // Handle error
+        res.status(500).json({ error: error.message });
+    }
 }
 
 // Create and Save a new SportSubType
-
 exports.create = async (req, res) => {
     // Validate request
     if (!req.body.title) {
@@ -215,7 +231,7 @@ exports.getYourSportTypes = async (req, res) => {
                         recommendedSports = "Sports that require upper body strength and power, such as boxing, swimming, or tennis.";
                         break;
                     case "oval":
-                        recommendedSports = "Sports that provide low-impact cardiovascular exercise and incorporate resistance training and core exercises, such as swimming, Pilates, or yoga.";
+                        recommendedSports = "Sports that provide low-impact cardiovascular exercise and incorporate resistance training and core exercises, such as Swimming, Pilates, Cycling or Yoga.";
                         break;
                     case "hourglass":
                         recommendedSports = "Sports that involve a mix of cardiovascular exercise and resistance training, such as circuit training, weightlifting, or dancing.";
@@ -228,7 +244,7 @@ exports.getYourSportTypes = async (req, res) => {
                         break;
                 }
             }
-            res.send({recommendedSports});
+            res.send({ recommendedSports });
         })
         .catch(error => {
             // Handle the error
