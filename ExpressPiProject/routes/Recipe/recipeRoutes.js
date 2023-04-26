@@ -6,6 +6,10 @@ const upload = multer({ dest: 'uploads/' })
 
 // Retrieve all Recipes
 router.get("/findAll", recipe.findAllRecipes);
+// Retrieve Validated Recipes
+router.get("/Validated", recipe.findValidatedRecipes);
+// Retrieve Validated Recipes and My Recipes
+router.get("/Validated/:userId", recipe.findValidated_MyRecipes);
 // Retrieve a single Recipe with id
 router.get("/findOne/:id", recipe.findOneRecipe);
 // Retrieve a single recipe with name

@@ -78,7 +78,27 @@ export default function Index({ catMeals,meals,mealsdb }) {
     
     return (
       <tr key={index} className="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_conditions">
-        <td key={meal.FoodCategory} className="woocommerce-product-attributes-item__value">{meal.FoodCategory}</td>
+        
+        <td key={meal.imgMeal}>
+          <div className="designation-profile-img">
+            
+            { 
+            meal.imgMeal
+              ?
+              <img style={{ height: '10 rem', width: '10 rem' }}
+                src={`${process.env.backurl}${meal.imgMeal}`}
+                alt="verifiy img"
+              />
+              :
+              <img style={{ height: '10 rem', width: '10 rem' }}
+                src={`${process.env.backurl}/uploads/Meal/altMeal.jpg`}
+                alt="no img altMeal.jpg"
+              />
+            }
+              
+          </div>
+        </td>
+        <td key={meal.FoodCategory+meal.index} className="woocommerce-product-attributes-item__value">{meal.FoodCategory}</td>
         <td key={meal.FoodItem}  className="woocommerce-product-attributes-item__value">{meal.FoodItem}</td>
         
         {showServing_100g ? 
@@ -201,6 +221,7 @@ export default function Index({ catMeals,meals,mealsdb }) {
       <Table striped bordered hover size="sm" style={{width:"80%",margin:"0 10%"}} className="woocommerce-product-attributes shop_attributes">
         <thead>
           <tr className="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_conditions">
+            <th>Picture</th>
             <th className="woocommerce-product-attributes-item__label">FoodCategory</th>
             <th className="woocommerce-product-attributes-item__label">FoodItem</th>
             {showServing_100g ? <><th className="woocommerce-product-attributes-item__label">Serving_size_100 g/ml</th><th className="woocommerce-product-attributes-item__label">calories_100 g/ml</th></>:
@@ -229,10 +250,13 @@ export default function Index({ catMeals,meals,mealsdb }) {
 }
 
 export async function getServerSideProps() {
-  const catMeals = await fetchData(`${process.env.backurl}/api/meal/scrapeCatMeals`);
-  // const urlcatMeal = "https://www.calories.info/food/fruit-juices"
-  // const data = await fetchData(`${process.env.backurl}/api/meal/scrape/${urlcatMeal}`);
-  const data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
+  var data = [];
+  var catMeals = [];
+  //// const urlcatMeal = "https://www.calories.info/food/fruit-juices"
+  //// const data = await fetchData(`${process.env.backurl}/api/meal/scrape/${urlcatMeal}`);
+
+  catMeals = await fetchData(`${process.env.backurl}/api/meal/scrapeCatMeals`);
+  data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
   const mealsdb = await fetchData(`${process.env.backurl}/api/meal/findAll`);
 
   return {

@@ -24,7 +24,7 @@ exports.findValidatedMeals = (req, res) => {
   Meal.find({validated:true})
     .then(data => {
       if (data[0])
-        res.send(data);
+        res.status(200).send(data);
       else
         res.status(404).send({ message: "No meal is validated " });
     })
@@ -98,6 +98,7 @@ exports.findMealByName = (req, res) => {
 };
 
 exports.createMeal = async (req, res) => {
+  
   const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated } = req.body;
 
   // Validate request
@@ -127,7 +128,8 @@ exports.createMeal = async (req, res) => {
       calories_portion,
       serving_size_oz,
       calories_oz,
-      validated
+      validated,
+      imgMeal: "/"+req.file.path.replace(/\\/g, '/')
       // ,
       // user : existingUser
     });
@@ -150,7 +152,14 @@ exports.updateMeal = (req, res) => {
     
   const id = req.params.id;
 
-  Meal.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+
+  var meal = req.body; 
+  if (req.file)
+    meal.imgMeal = "/"+req.file.path.replace(/\\/g, '/')
+  else if(req.body.imgMeal)
+    meal.imgMeal =req.body.imgMeal
+
+  Meal.findByIdAndUpdate(id, meal, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({

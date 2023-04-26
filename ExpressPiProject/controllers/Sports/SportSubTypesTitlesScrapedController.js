@@ -42,11 +42,11 @@ cron.schedule("* */23 * * *", async (req, res) => {
                     }
                 })
                 newSportSubTypeTitles.save()
-                    .then(data => console.log(data))
+                    .then(data => console.log("data"))
             })
-            .catch(e => console.log(e))
+            .catch(e => console.log("e"))
     } catch (err) {
-        console.error(err);
+        console.error("err");
     }
 })
 
@@ -77,11 +77,11 @@ cron.schedule("* */23 * * *", async (req, res) => {
                     }
                 })
                 newSportSubTypeTitles.save()
-                    .then(data => console.log(data))
+                    .then(data => console.log("data"))
             })
-            .catch(e => console.log(e))
+            .catch(e => console.log("e"))
     } catch (err) {
-        console.error(err);
+        console.error("err");
     }
 })
 

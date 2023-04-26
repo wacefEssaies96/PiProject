@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { Container, Table, Button, Form } from "react-bootstrap";
 import { useState } from "react";
-import { deleteData, fetchData } from "@/services/mix";
+import { VerifImg, deleteData, fetchData } from "@/services/mix";
 import { verifyAccount } from "@/services/user";
 import withAuth from "@/components/Withauth";
+import { async } from "regenerator-runtime";
 
 
-function Index({ users }) {
+function Index({ users ,dataListImg}) {
 
   const [list, setList] = useState(users)
+  const [listImg, setListImg] = useState(dataListImg)
   const [allRoles, setAllRoles] = useState(true)
   const [admin, setAdmin] = useState(false)
   const [client, setClient] = useState(false)
@@ -27,6 +29,15 @@ function Index({ users }) {
     if (filter == "doctor")
       setDoctor(true)
   }
+  
+  
+
+  // const VerifImg2 = async (path) => {
+  //   var result =false;
+  //   result = await VerifImg(path)
+  //   console.log(" result "+result)
+  //   return result;
+  // }
 
   const approve = async (e) => {
     e.preventDefault()
@@ -34,7 +45,19 @@ function Index({ users }) {
     await refresh()
   }
 
-  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/users/findAll`))
+  const refresh = async () => {
+    setList(await fetchData(`${process.env.backurl}/api/users/findAll`));
+    setListImg([]);
+    var ii;
+    list.map( async (u, i) => {
+      ii = await VerifImg(u.image);
+      listImg.push(JSON.stringify(ii))
+    });
+    console.log(" dataListImg ")
+    listImg.map(e =>{
+      console.log("e listImg : "+e);
+    })
+  }
   const deleteOneUser = async (id) => deleteData(`${process.env.backurl}/api/users/${id}`).then(refresh)
 
   return (
@@ -81,7 +104,12 @@ function Index({ users }) {
                 <tr key={index}>
                   <td key={user.image}>
                     <div className="designation-profile-img">
-                      {!(user.image)
+                      
+                      { 
+                      user.image == undefined 
+                      || 
+                      listImg[index] == false
+                      //  VerifImg2(`${user.image}`)
                         ?
                         <img style={{ height: '10 rem', width: '10 rem' }}
                           src={`${process.env.backurl}/uploads/User/altUser.png`}
@@ -93,6 +121,7 @@ function Index({ users }) {
                           alt="verifiy img"
                         />
                       }
+                        
                     </div>
                   </td>
                   <td key={user.fullname}>{user.fullname}</td>
@@ -125,9 +154,16 @@ function Index({ users }) {
 
 export async function getServerSideProps() {
   const data = await fetchData(`${process.env.backurl}/api/users/findAll`);
+  var dataListImg = [];
+  var ii;
+  data.map(async (u, i) => {
+    ii = await VerifImg(u.image);
+    dataListImg.push(JSON.stringify(ii))
+    });
   return {
     props: {
-      users: data
+      users: data,
+      dataListImg:dataListImg,
     }
   }
 }

@@ -2,6 +2,14 @@
 .txtCenter{
   text-align: center;
 }
+.paragraph-container {
+  height: 100px; /* set the height to a specific value */
+  overflow: auto; /* enable scrolling when content exceeds container's height */
+}
+.meals-container{
+  height: 250px; /* set the height to a specific value */
+  overflow: auto; /* enable scrolling when content exceeds container's height */
+}
 .greenBtn{
   text-align : center;
   background-color : white;

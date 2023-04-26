@@ -17,6 +17,24 @@ exports.findAllRecipes = (req, res) => {
   
 };
 
+
+// Find Validated Recipe 
+exports.findValidatedRecipes = (req, res) => {
+  
+  Recipe.find({validated:true})
+    .then(data => {
+      if (data[0])
+        res.send(data);
+      else
+        res.status(404).send({ message: "Not found validated Recipe "  });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving validated Recipe "+err  });
+    });
+};
+
 // Find a single Recipe with an id
 exports.findOneRecipe = (req, res) => {
   // Validate request
@@ -60,6 +78,31 @@ exports.findMyRecipe = (req, res) => {
     });
 };
 
+// Find validated recipe and My Recipes
+exports.findValidated_MyRecipes = (req, res) => {
+  // Validate request
+  if (!req.params.userId) {
+    res.status(400).send({ message: "User id is empty!" });
+  }
+  const userId = req.params.userId;
+  Recipe.find({
+    $or: [
+      { user: userId },
+      { user: { $ne :userId},validated: true }
+    ]
+    })
+    .then(data => {
+      if (data[0])
+        res.send(data);
+      else
+        res.status(404).send({ message: "Not found Recipe for you " + userId });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving Recipe of  User =" + userId +" err "+err});
+    });
+};
 // Find a single Recipe with name
 exports.findRecipeByName = (req, res) => {
   // Validate request
@@ -82,9 +125,13 @@ exports.findRecipeByName = (req, res) => {
 };
 
 exports.createRecipe = async (req, res) => {
+
+  
   const mealList =[];
   
-  const { name, validated, description, quantity,imgRecipe, meals, user } = req.body;
+  var { name, validated, description, quantity, meals, user } = req.body;
+  meals=meals.split(",")
+  quantity=quantity.split(",")
 
   // Validate request
   if (!name ) {
@@ -106,6 +153,7 @@ exports.createRecipe = async (req, res) => {
       totalCalorie=totalCalorie+(extractValue(existingMeal.calories_100g)*quantity[i])
   
   };
+
   
   try {
     
@@ -128,10 +176,11 @@ exports.createRecipe = async (req, res) => {
         description,
         quantity,
         totalCalorie,
-        // "imgRecipe":imgRecipe,
+        imgRecipe: "/"+req.file.path.replace(/\\/g, '/'),
         meals: mealList,
         user : existingUser 
     });
+
     await recipe.save();
     
 
@@ -167,7 +216,8 @@ exports.updateRecipe =async (req, res) => {
 
   var recipe = req.body; 
   
-  if(recipe.meals){    
+  if(recipe.meals){  
+    recipe.meals=recipe.meals.split(",")
     recalculer=1;
     meals=[];
     recipe.meals.forEach(el =>{
@@ -175,6 +225,7 @@ exports.updateRecipe =async (req, res) => {
     })
   }
   if(recipe.quantity){
+    recipe.quantity=recipe.quantity.split(",")
     recalculer=1;
     quantity=[];
     recipe.quantity.forEach(elq =>{
@@ -194,19 +245,26 @@ exports.updateRecipe =async (req, res) => {
         totalCalorie += extractValue(existingMeal1.calories_100g) * quantity[i];
       }
     }
-    recipe = {
-      totalCalorie,
-      quantity,
-      meals: mealList
-    }
+    // recipe = {
+    //   "name":req.body.name,
+    //   "validated":req.body.validated,
+    //   "description":req.body.description,
+    //   quantity,
+    //   totalCalorie,
+    //   // "imgRecipe":imgRecipe,
+    //   meals: mealList
+    // }
+    recipe.quantity=quantity
+    recipe.totalCalorie=totalCalorie
+    recipe.meals=mealList
   }
 
-  // if (req.body.imgRecipe)
-  //   recipe.imgRecipe =req.body.imgRecipe
-  // if (req.file)
-  //   req.body.imgRecipe = req.file.path 
+  if (req.file)
+    recipe.imgRecipe = "/"+req.file.path.replace(/\\/g, '/')
+  else if(req.body.imgRecipe)
+    recipe.imgRecipe =req.body.imgRecipe
     
- 
+  // return res.status(500).send({ message: "file "+JSON.stringify(recipe) });
 
   Recipe.findByIdAndUpdate(id, recipe, { useFindAndModify: false })
     .then(data => {
@@ -214,7 +272,7 @@ exports.updateRecipe =async (req, res) => {
         res.status(404).send({
           message: `Cannot update Recipe with id=${id}. Maybe Recipe was not found!`
         });
-      } else res.send({ message: "Recipe was updated successfully." });
+      } else res.send({ message: "Recipe was updated successfully."});
     })
     .catch(err => {
       res.status(500).send({
