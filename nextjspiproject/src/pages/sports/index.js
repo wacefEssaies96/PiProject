@@ -5,9 +5,10 @@ import { BiBlock, BiCheck } from 'react-icons/bi'
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import nextCookie from 'next-cookies'
+import { Cookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 
-const StartNowFormPage = (ctx) => {
+const StartNowFormPage = () => {
 
     const [userImage, setUserImage] = useState('')
     const [validated, setValidated] = useState(false)
@@ -15,13 +16,18 @@ const StartNowFormPage = (ctx) => {
     const [showA, setShowA] = useState(true);
     const router = useRouter();
     const [userId, setUserId] = useState(null);
-    const {user} = nextCookie(ctx)
+    const cookies = new Cookies()
+    const [user, setUser] = useState(cookies.get('user'))
+    const [cookies2] = useCookies(['user']);
 
     useEffect(() => {
+        setUser(cookies.get('user'))
         // Get user ID from cookie
-        const userIdFromCookie = user._id;
-        setUserId(userIdFromCookie);
-      }, []);
+        if (user) {
+            const userIdFromCookie = user._id;
+            setUserId(userIdFromCookie);
+        }
+    }, []);
 
     const toggleShowA = () => setShowA(!showA);
 
@@ -44,11 +50,13 @@ const StartNowFormPage = (ctx) => {
 
     const handleClick = () => {
         // Pass data as query parameters in the URL
-        router.push({
-          pathname: `/sports/body-shape-result/${userId}`,
-          query: { shouldersWidth: res.shoulderWidth, hipsWidth: res.hipsWidth },
-        });
-      };
+        if (userId) {
+            router.push({
+                pathname: `/sports/body-shape-result/${userId}`,
+                query: { shouldersWidth: res.shoulderWidth, hipsWidth: res.hipsWidth },
+            });
+        }
+    };
 
     return (
         <div style={{ marginTop: "2%", marginBottom: "2%" }}>

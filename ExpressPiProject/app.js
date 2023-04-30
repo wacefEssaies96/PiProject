@@ -37,7 +37,7 @@ const orderRouter = require('./routes/e-commerce/Order');
 //send email route 
 var resetPassword = require('./routes/resetPasswordRoute')
 // morphology route
-const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
+const morphologyRoute = require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 // body shapes scraped routes
@@ -46,6 +46,10 @@ const BodyShapesScrapedRouter = require("./routes/Sports/bodyShapesScrapedRouter
 const SportVideosScrapedRouter = require("./routes/Sports/sportVideosScrapedRouter")
 // sport events calendar sport routes
 const EventCalendarSportRouter = require("./routes/Sports/EventCalendarSportRouter")
+// sport notification routes
+const sportNotificationRouter = require("./routes/Sports/sendSportNotificationRouter")
+// sport ratings routes
+const sportRatingRouter = require("./routes/Sports/RatingSportRouter")
 
 var app = express();
 
@@ -81,12 +85,14 @@ app.use('/api/clinic', ClinicRouter);
 app.use('/api/app', appointmentRouter);
 app.use('/api/appuser', UserappointmentRouter);
 app.use('/api', resetPassword);
-app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
+app.use('/api/sportSubTypes/uploads', express.static('uploads/SportSubTypesDemVideos'))
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
 app.use('/api/get-your-morphology', morphologyRoute)
 app.use('/api/store', BodyShapesScrapedRouter)
 app.use('/api/scrapedYoutubeVideos', SportVideosScrapedRouter)
 app.use('/api/eventCalendarSport', EventCalendarSportRouter)
+app.use('/api/sportsNotif', sportNotificationRouter)
+app.use('/api/sportsRating', sportRatingRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

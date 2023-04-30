@@ -15,12 +15,18 @@ const BodyShapePage = () => {
     const [bodyShapes, setBodyShapes] = useState([])
     const [recommendedSports, setRecommendedSports] = useState('')
     const [selectedSport, setSelectedSport] = useState(null)
+    const [user, setUser] = useState({})
 
     const getData = async () => {
-        await getYourMorphology(cookies.get('user')._id, shouldersWidth, hipsWidth).then(data => setMorphology(data))
+        setUser(cookies.get('user'))
+        if (user) {
+            console.log(user);
+            await getYourMorphology(user._id, shouldersWidth, hipsWidth).then(data => setMorphology(data))
+        }
     }
 
     useEffect(() => {
+        setUser(cookies.get('user'))
         const getBodyShapes = async () => {
             const result = await fetch(`${process.env.backurl}/api/store/allBodyShapesScared`)
             const data = await result.json()
@@ -30,7 +36,7 @@ const BodyShapePage = () => {
     }, [])
 
     const handleScrollToBottom = async () => {
-        const result = await fetch(`${process.env.backurl}/api/sportSubTypes/sport-type/${cookies.get('user')._id}/${shouldersWidth}/${hipsWidth}`)
+        const result = await fetch(`${process.env.backurl}/api/sportSubTypes/sport-type/${user._id}/${shouldersWidth}/${hipsWidth}`)
         const data = await result.json()
         setRecommendedSports(data.recommendedSports)
         window.scrollTo({
@@ -46,7 +52,7 @@ const BodyShapePage = () => {
     const handleClick = () => {
         // Pass data as query parameters in the URL
         router.push({
-            pathname: `/sports/sport-videos/${cookies.get('user')._id}`,
+            pathname: `/sports/sport-videos/${user._id}`,
             query: { selectedSport },
         });
     };
@@ -134,10 +140,10 @@ const BodyShapePage = () => {
                                 let valuesSlice = values.slice(3, 8)
                                 let table = [valuesSlice[2], valuesSlice[0], valuesSlice[1], valuesSlice[3], valuesSlice[4]]
                                 return <Carousel.Item key={i}>
-                                    <div className="wd-members-section" style={{ marginLeft: "35%", width: "100%" }}>
+                                    <div className="wd-members-section" style={{ marginLeft: "30%", width: "100%" }}>
                                         <div className="row ">
                                             <div className="col-lg-4 col-md-6">
-                                                <div className="members">
+                                                {/* <div className="members">
                                                     <img
                                                         src={`${img[keys[0]]}`}
                                                         alt="image"
@@ -148,6 +154,17 @@ const BodyShapePage = () => {
                                                         <p>
                                                             {table[i]}
                                                         </p>
+                                                    </div>
+                                                </div> */}
+                                                <div class="members" style={{width: "500px"}}>
+                                                    <img
+                                                        src={`${img[keys[0]]}`}
+                                                        alt="image"
+                                                        className="mx-auto img-fluid d-block"
+                                                    />
+                                                    <div class="member-info text-center" style={{width: "500px", height:"500px"}}>
+                                                        <h5>{keys[0]}</h5><br />
+                                                        <p>{table[i]}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -175,9 +192,9 @@ const BodyShapePage = () => {
                             <option value="Yoga">Yoga</option>
                         </Form.Select>
                         {selectedSport &&
-                            <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{marginTop:"15px", marginLeft:"20%"}} onClick={handleClick}>
-                                <Link className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ color: "white" }} href={`/sports/sport-videos/${cookies.get('user')._id}`}>
-                                    Please click here {selectedSport} to see sport videos
+                            <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ marginTop: "15px", marginLeft: "29%" }} onClick={handleClick}>
+                                <Link className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ color: "white" }} href={`/sports/sport-videos/${user._id}`}>
+                                    Please click here to see sport {selectedSport} videos
                                 </Link>
                             </Button>
                         }

@@ -1,5 +1,6 @@
 import { getYourSportVideos } from "@/services/getYourSportService";
 import Head from "next/head"
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Carousel } from "react-bootstrap";
@@ -11,14 +12,22 @@ const BodyShapePage = () => {
     const cookies = new Cookies();
     const { selectedSport } = router.query;
     const [listVideos, setListVideos] = useState([])
+    const [bodyShapes, setBodyShapes] = useState([])
+    const [user, setUser] = useState(cookies.get("user"))
 
     const getData = async () => {
         await getYourSportVideos(cookies.get('user')._id, selectedSport).then(data => setListVideos(data.updatedUser.subTypeSport.SportYoutubeVideosScraped.listVideos))
     }
 
     useEffect(() => {
-        if (cookies.get("user").hasOwnProperty("subTypeSport"))
-            setListVideos(cookies.get("user").subTypeSport.SportYoutubeVideosScraped.listVideos)
+        const getBodyShapes = async () => {
+            const result = await fetch(`${process.env.backurl}/api/store/allBodyShapesScared`)
+            const data = await result.json()
+            setBodyShapes(data)
+        }
+        getBodyShapes()
+        if (user.hasOwnProperty("subTypeSport"))
+            setListVideos(user.subTypeSport.SportYoutubeVideosScraped.listVideos)
     }, [])
 
     return (
@@ -34,7 +43,7 @@ const BodyShapePage = () => {
                         The Sport Best Videos For You With
                         <span className="wd-primary-color">  Health SpotLight</span>
                     </h3>
-                    {!cookies.get("user").hasOwnProperty("subTypeSport") &&
+                    {user && !user.hasOwnProperty("subTypeSport") &&
                         <button disabled={listVideos.length > 0} onClick={getData} className="btn wd-btn-round-2">
                             Show Result
                         </button>}
@@ -84,6 +93,45 @@ const BodyShapePage = () => {
                         </div>
                     </Carousel.Item>)}
             </Carousel>
+            {bodyShapes.length > 0 && <h1 style={{ marginLeft: "250px", marginTop: "10px" }}>Every Body Shape Needs</h1>}
+            {bodyShapes.length > 0 && bodyShapes[0].description.map((d, i) => {
+                let keys = Object.keys(d);
+                return (<div key={i} className="vc_row wpb_row vc_row-fluid wd-section" style={{ display: "flex", justifyContent: "center", marginLeft: "-250px", marginRight: "-250px" }}>
+                    <div className="wpb_column vc_column_container vc_col-sm-12 vc_col-lg-6 vc_col-md-6">
+                        <div className="vc_column-inner">
+                            <div className="wpb_wrapper">
+                                <div className=" vc_custom_1577255051717 wd-section-heading-wrapper section-heading-left">
+                                    <div className="wd-service-heading wd-section-heading">
+                                        <span className="heading-subtitle">
+                                            Needs
+                                        </span>
+                                        <h3 className="wow fadeIn">
+                                            {keys[0]} <span style={{ fontSize: "30px" }}>body shape type</span>
+                                        </h3>
+                                        <p />
+                                    </div>
+                                </div>
+                                <div className="wpb_text_column wpb_content_element  vc_custom_1576839916141">
+                                    <div className="wpb_wrapper">
+                                        <p>{d.needs}</p>
+                                    </div>
+                                    <div className="wd-service-heading wd-section-heading" style={{marginTop:"25px"}}>
+                                        <span className="heading-subtitle">
+                                            Average duration to achieve these specific needs
+                                        </span>
+                                        <p />
+                                        <div className="wpb_wrapper">
+                                            <p>{d.duration}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
+            }
+            )}
+            <p style={{float:"right", padding:"3%", fontSize:"25px"}}>Click <Link href={`/sports/calendar/${cookies.get('user')._id}`} style={{textDecoration:"underline", color:"#dd9933"}}>here</Link> to help you plan your training</p>
         </div>
     );
 }

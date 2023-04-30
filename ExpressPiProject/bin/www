@@ -20,6 +20,16 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+// const io = require('socket.io')(server);
+const { Server } = require('socket.io')
+
+var server = http.createServer(app);
+const io = new Server(server, {
+  cors:{
+    origin:"http://localhost:3000",
+    methods:["GET", "POST"]
+  }
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -88,3 +98,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = io;

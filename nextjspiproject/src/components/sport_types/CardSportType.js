@@ -17,7 +17,7 @@ const CardSportType = (props) => {
                     <div className="vc_column-inner">
                         <div className="wpb_wrapper">
                             <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
-                                <video width="400px" controls>
+                                <video width="100%" controls>
                                     <source src={`${process.env.backurl}/${props.sT.demoVideo}`} />
                                     Your browser does not support the video tag.
                                 </video>

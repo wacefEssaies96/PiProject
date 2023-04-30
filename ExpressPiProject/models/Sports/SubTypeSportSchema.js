@@ -16,6 +16,9 @@ var SubTypeSportSchema = new mongoose.Schema({
     },
     SportYoutubeVideosScraped: {
         type: SportVideosScrapedSchema
+    },
+    averageRating: {
+        type: Number
     }
 }, {
     timestamps: true,

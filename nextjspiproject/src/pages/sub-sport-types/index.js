@@ -167,7 +167,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                         <div className="breadcrumb">
                             <ul className="pagination-inner">
                                 <li className="breadcrumb-item active" aria-current="page">
-                                    Make a workout schedule.<br /> Choose a coach and do one-to-one lessons.<br /> Sports are much closer!
+                                    Make a workout schedule.<br /> Sports are much closer!
                                 </li>
                             </ul>
                             <Button variant='success' size="lg" style={{ marginTop: "5%" }}><Link href={"/sports"}>Start NOW</Link></Button>

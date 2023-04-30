@@ -2,6 +2,7 @@ const EventModel = require("../../models/Sports/EventCalendarSportModel")
 const { google } = require('googleapis');
 require('dotenv').config();
 const User = require("../../models/Users/user");
+const moment = require('moment-timezone');
 
 // Provide the required configuration
 const CREDENTIALS = { "type": "service_account", "project_id": "youtubevideosscraping", "private_key_id": "8ff96d3acae19e550a72c01c1156318bb3055ad3", "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNft972fdX9CQB\nwqqZytna/jxqcp6/ZUKFrZvr9vBvxmOJPx11nIHDARZpMjbvvoHQRTPWI8K5Hfv4\n+E8G3A/plDd9SZfMwqzshxVjCwBEe23+DxR00RRVpaIsXwV1a9c6oJ75OThfZ1UE\nZG+XNRSQkfNcWrnHdudeJETXrfsfqzVTAaFvXZBn7bGFtFSryVa2CA1KchQbPTgu\nqhV8CoNh+UoqbCWByAn+ZFuVoE5Ny4H3UcdqfCxYs5t74Im7myZi2HDjK/Ba6TqY\n1KEefYnDpsMvIv96JH8DsEZ7C1+irLqgciTkBK5C1/ucSbqvtl75pb6bVzyZ2M73\nMKzSTKlDAgMBAAECggEAEBsYB/x64tVbNxobRed8sKnJcWxfXc/haVnEhTd6+7+4\nUGr2c5/bGb4NlBwf6yVqxjiOSgPOgLTFaWuIwhhgVOXNfY/VinJdnEIwHm2fzT5B\nTi6/YzJ53gaX0dN2uY/EtC8flpfx/6Q5KRl4F4lM/dG6mavwsJ30n0/HZ4IW0xHz\nrPbaOzV1FaMlxa+lDTXrshOoS76a9BbCY7qDjfUwrVyokUlSTCrg91dZZokv1A43\n+F3CFNrUHZsgrJjjD+JYamC5tROt8Y06NotpyFQNxSX1xcZmtZF3oVTgc1wDkk6I\nSbIkcaLfdL6l0yl+L28kv/QuLWMLmhkLaNyIeQvwtQKBgQDnrVGiSbYHOYI/EffB\nldOQ5m9kLYImrppSREzHwCUKDdJIacB2CibepbXksIQNV5Qe93AZ/ToyWTFenz0v\nRIDtG3F1fpE+NuU3JdetCBINdQZ8BK1sHWs70pMZYBy+xvCKUNQEk4Hoetmtf/dV\nE05hxm+dmqxUpIlP28HqOzi7bQKBgQDjEeMsBj8IcQS7jMKX4KiAXCA0hMhR9zRB\neJYBuvZQG+RTRIa5r1dZvGT21qCvC37Uh4hxUJrEUwcFVF/JxJt3neqag9v1ovkV\n4E3zejs8c+tdbq5Eyrw+MWmkApy+5T/PT+uR1bDYMOZtt+ExwbgyRi3GN4E3S6AC\n/KKAbKTZbwKBgBxwhT3jyImYgKmXXg+QgdkewHvOrlRrSJxir/4xUxqp2a9z8+FJ\nm73nH64EESHGJ3OpskQudq9pjYrtB0i/Iwh4PvRKZi/58ydS6Offvr+SJwqgVF2a\nOuisD8ykpMKyjyKbi3tIVEEim4gV1lnGNfAAuQDi1NbLH+QCuQo03OD9AoGAVDw2\nggZvK7qBfvHg3mbBG50RdWosxftmr0MEou+woFc4hItPT2L0jJ2O9uL4CPfCvSTq\nQN8eCuaiHCAIyNjes6kpdtijqKQkszDauhAGGY8HKUn97Bcpbgj2n5k4fLiey1Fi\nml8jk4/Qa7NjHwo2QrA2GupMTS8I1RLTVcD4BpECgYEAzMJHYOKlDfNysg4dQnxx\n6EXOvKoIDk6HO7HY6Y+dTpSOaIpQAPCAH0cvbHoLftFIpxBD8UbGPIRu+TuoaL3Q\nIlq1rH8DGGru4rsyFlQjR4JEEoCne6a2lRXA1hMowNjQbOK03V9gqt10L/Sf1G7O\nq1qaPFToHa0/xm/+NtjJ2OE=\n-----END PRIVATE KEY-----\n", "client_email": "sport-calendar@youtubevideosscraping.iam.gserviceaccount.com", "client_id": "100874968205871947167", "auth_uri": "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token", "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs", "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sport-calendar%40youtubevideosscraping.iam.gserviceaccount.com" }
@@ -108,14 +109,15 @@ exports.create = async (req, res) => {
         summary: req.body.summary,
         description: req.body.description,
         start: {
-            'dateTime': dateTime['start'],
+            'dateTime': req.body.start,
             'timeZone': 'Africa/Tunis'
         },
         end: {
-            'dateTime': dateTime['end'],
+            'dateTime': req.body.end,
             'timeZone': 'Africa/Tunis'
         }
     })
+
     newEvent.save()
         .then(data => console.log(data))
         .catch(err => {
@@ -163,27 +165,187 @@ exports.findEventById = (req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 }
 
+// Get all the events between two dates
+const getEvents = async (dateTimeStart, dateTimeEnd) => {
+    try {
+        let response = await calendar.events.list({
+            auth: auth,
+            calendarId: calendarId,
+            timeMin: dateTimeStart,
+            timeMax: dateTimeEnd,
+            timeZone: 'Africa/Tunis'
+        });
+
+        let items = response['data']['items'];
+        return items;
+    } catch (error) {
+        console.log(`Error at getEvents --> ${error}`);
+        return 0;
+    }
+};
+
+//get events between two dates 
+exports.findEventsBetweenTwoDates = (req, res) => {
+    let start = req.body.startDate
+    let end = req.body.endDate
+    getEvents(start, end)
+        .then(event => res.json(event))
+        .catch(err => res.status(400).json('Error: ' + err));
+}
+
+//get events from calendar
+exports.getEventsCalendar = async (req, res) => {
+    calendar.events.list({
+        auth: auth,
+        calendarId: calendarId,
+        // timeMin: (new Date()).toISOString(),
+        maxResults: 10,
+        singleEvents: true,
+        orderBy: 'startTime',
+    }
+        //   , (err, res) => {
+        //     if (err) return console.log('The API returned an error: ' + err);
+        //     const eventsFromCalendar = res.data.items;
+        //     // Combine events from MongoDB and Google Calendar
+        //     // const events = [...eventsFromDb, ...eventsFromCalendar];
+        //     // res.json(events);
+        //     res.send(eventsFromCalendar)
+        //   }
+    ).then(data => res.send(data.data.items))
+        .catch(err => err.status(500).json({ error: 'Failed to get events' }))
+}
+
+// Delete an event from eventID
+const deleteEventformCalendar = async (eventId) => {
+
+    try {
+        let response = await calendar.events.delete({
+            auth: auth,
+            calendarId: calendarId,
+            eventId: eventId
+        });
+
+        if (response.data === '') {
+            return 1;
+        } else {
+            return 0;
+        }
+    } catch (error) {
+        console.log(`Error at deleteEvent --> ${error}`);
+        return 0;
+    }
+};
+
 //delete a Event by id
 exports.deleteEvent = async (req, res) => {
-    EventModel.findByIdAndDelete(req.params.id)
-        .then(async () => {
-            res.json('Event type deleted!')
-        })
+
+    let e = null
+    let id = req.params.id
+    //find event by id
+    try {
+        e = await EventModel.findById(id);
+        if (!e) {
+            console.log("Event not found");
+        }
+    } catch (err) {
+        console.log("Internal server error");
+    }
+
+    let list = getEvents(e.start.dateTime, e.end.dateTime)
+        .then(() =>
+            EventModel.findByIdAndDelete(req.params.id)
+                .then(async () => {
+                    res.json('Event type deleted!')
+
+                    await User.updateMany({}, { $pull: { SportEvents: { _id: req.params.id } } })
+
+                    //delete event from calendar
+                    for (let index = 0; index < list.length; index++) {
+                        deleteEventformCalendar(list[index].id)
+                            .then((res) => {
+                                console.log(res);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                })
+                .catch(err => res.status(400).json('Error: ' + err))
+        )
         .catch(err => res.status(400).json('Error: ' + err));
 }
 
 //update a Event
-exports.updateEvent = (req, res) => {
-    EventModel.findById(req.params.id)
-        .then(async (event) => {
-            event.summary = req.body.summary;
-            event.description = req.body.description;
-            event.start = req.body.start;
-            event.end = req.body.end;
+exports.updateEvent = async (req, res) => {
 
-            event.save()
-                .then(() => res.json('Event updated!'))
+    let e = null
+    let id = req.params.id
+    //find event by id
+    try {
+        e = await EventModel.findById(id);
+        if (!e) {
+            console.log("Event not found");
+        }
+    } catch (err) {
+        console.log("Internal server error");
+    }
+
+    let list = getEvents(e.start.dateTime, e.end.dateTime)
+        .then((data) => {
+            EventModel.findById(req.params.id)
+                .then(async (event) => {
+                    event.summary = req.body.summary;
+                    event.description = req.body.description;
+
+                    event.save()
+                        .then(() => res.json('Event updated!'))
+                        .catch(err => res.status(400).json('Error: ' + err));
+
+                    await User.updateMany({}, { $set: { SportEvents: event } })
+
+                    console.log(data);
+                    for (let index = 0; index < list.length; index++) {
+                        console.log("hi");
+                        console.log({ "id": list[index].id });
+                        // deleteEventformCalendar(list[index].id)
+                        //     .then((res) => {
+                        //         console.log(res);
+                        //     })
+                        //     .catch((err) => {
+                        //         console.log(err);
+                        //     });
+
+                        // Update the event using the Calendar API
+                        calendar.events.update({
+                            auth: auth,
+                            calendarId: calendarId,
+                            eventId: list[index].id,
+                            resource: event
+                        }, (err, res) => {
+                            if (err) {
+                                console.error(`Error updating event: ${err}`);
+                            } else {
+                                console.log('Event updated successfully:', res.data);
+                            }
+                        });
+                    }
+
+                    // insertEvent(event)
+                    //     .then((res) => {
+                    //         console.log(res);
+                    //     })
+                    //     .catch((err) => {
+                    //         console.log(err);
+                    //     });
+                })
                 .catch(err => res.status(400).json('Error: ' + err));
         })
+}
+
+//get all events of a specific user
+//get Event by id
+exports.getEventsUser = (req, res) => {
+    User.findById(req.params.id)
+        .then(user => res.json(user.SportEvents))
         .catch(err => res.status(400).json('Error: ' + err));
 }

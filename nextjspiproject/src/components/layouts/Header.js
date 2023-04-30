@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
+import { IoMdNotificationsOutline } from 'react-icons/io';
 
 
 function Header() {
@@ -35,7 +36,7 @@ function Header() {
             user: cookies.get('user')
          })
    }, [])
-console.log(auth);
+
    const { state, dispatch } = useContext(Store);
    const { cart } = state;
    const [cartItemsCount, setCartItemsCount] = useState(0);
@@ -69,6 +70,10 @@ console.log(auth);
                               <a href="#"><i className="fab fa-youtube"></i></a>
                            </li>
                            <li>
+                              <Link href="#"><IoMdNotificationsOutline size={25}></IoMdNotificationsOutline></Link>
+                           </li>
+                           <div id="counter-notification">{2}</div>
+                           <li>
                               <a href="#"><i className="fab fa-instagram"></i></a>
                            </li>
                            <li className="has-dropdown">
@@ -98,7 +103,7 @@ console.log(auth);
                                     </>
                                     :
                                     <>
-                                       {auth.user.role == 'DOCTOR'
+                                       {auth.token && auth.user && auth.user.role == 'DOCTOR'
                                           ? <li><Link href="#" onClick={() => { router.push('/user/doctor') }}> Profile</Link></li>
                                           : <li><Link href="#" onClick={() => { router.push('/user/edit-profile') }}> Profile</Link></li>
                                        }
@@ -127,7 +132,7 @@ console.log(auth);
                         <div className="nav">
                            <nav>
                               <ul id="menu-main-menu" className="menu">
-                                 {auth.token && auth.user.role === "ADMIN" &&
+                                 {auth.user && auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">
@@ -161,7 +166,7 @@ console.log(auth);
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href='#' onClick={() => { router.push("/admin/users") }} aria-current="page">Users</a></li>
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/admin/sport-type">Sport Types</Link></li>
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/admin/sport-sub-type">Sport Sub Types</Link></li>
-                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">other</a></li>
+                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/event-calendar-sports">Event Calendar for Sports</Link></li>
                                        </ul>
                                     </li>
                                  }
@@ -173,7 +178,7 @@ console.log(auth);
                                        <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
-                                       {auth.user != null && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${cookies.get('user')._id}`}>Training Videos</Link></li>}
+                                       {auth.user != undefined && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${cookies.get('user')._id}`}>Training Videos</Link></li>}
                                        <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li>
                                     </ul>
                                  </li>
