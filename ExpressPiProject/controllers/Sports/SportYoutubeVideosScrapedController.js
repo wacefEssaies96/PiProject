@@ -106,3 +106,16 @@ exports.findAll = (req, res) => {
         .then(videos => res.json(videos))
         .catch(err => res.status(400).json('Error: ' + err));
 }
+
+//get videos by user id 
+exports.findVideosByUser = (req, res) => {
+    User.findOne({ _id: req.params.id })
+        .then(user => {
+            if (user.subTypeSport) {
+                res.json(user.subTypeSport.SportYoutubeVideosScraped.listVideos)
+            } else {
+                res.json({ message: "user don't have sport sub type videos" })
+            }
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+}

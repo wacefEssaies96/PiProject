@@ -50,6 +50,8 @@ const EventCalendarSportRouter = require("./routes/Sports/EventCalendarSportRout
 const sportNotificationRouter = require("./routes/Sports/sendSportNotificationRouter")
 // sport ratings routes
 const sportRatingRouter = require("./routes/Sports/RatingSportRouter")
+// sport progress routes
+const sportPprogressRouter = require("./routes/Sports/ProgressSportRouter")
 
 var app = express();
 
@@ -93,6 +95,7 @@ app.use('/api/scrapedYoutubeVideos', SportVideosScrapedRouter)
 app.use('/api/eventCalendarSport', EventCalendarSportRouter)
 app.use('/api/sportsNotif', sportNotificationRouter)
 app.use('/api/sportsRating', sportRatingRouter)
+app.use('/api/sportsProgress', sportPprogressRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

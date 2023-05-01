@@ -120,16 +120,126 @@ exports.findRateById = (req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 }
 
-// //delete a SportSubType by id
+//get all user Rates with user id
+exports.findUserRatesById = (req, res) => {
+    RatingModel.find({ "user._id": req.params.id })
+        .then(rates => res.json(rates))
+        .catch(err => res.status(400).json('Error: ' + err));
+}
+
+//delete a Rate by id
 exports.deleteRate = async (req, res) => {
     RatingModel.findByIdAndDelete(req.params.id)
-        .then(async () => {
-            res.json('rate deleted!')
+        .then(async (rate) => {
+            console.log('rate deleted!')
+
+            let sport = null
+            //find sportsubtype by title
+            try {
+                sport = await SportSubTypeModel.find({ title: rate.sportSubType.title });
+                if (!sport) {
+                    console.log("sportsubtype not found");
+                }
+            } catch (err) {
+                console.log("Internal server error");
+            }
+
+            //get all rates
+            RatingModel.find({ "sportSubType.title": rate.sportSubType.title })
+                .then((ratings) => {
+                    let total = 0
+                    let nbr = ratings.length
+                    for (let index = 0; index < nbr; index++) {
+                        total += ratings[index].rating
+                    }
+                    let average = 0
+                    if (nbr) {
+                        average = total / (nbr)
+                    }
+
+                    console.log(nbr);
+                    console.log(total);
+                    console.log(average);
+                    // update sportsubtype
+                    try {
+                        const newSportSubType = sport[0];
+                        if (average === 0) {
+                            newSportSubType.averageRating = 0
+                        } else {
+                            newSportSubType.averageRating = average
+                        }
+
+                        // Update the SportSubType in the database
+                        SportSubTypeModel.findByIdAndUpdate(sport[0]._id, newSportSubType, { new: true })
+                            .then(sport => res.json({ "deletedRate": rate, "updatedSportSubType": sport }))
+                            .catch(err => console.log(err))
+
+                    } catch (err) {
+                        console.error(err);
+                        res.status(500).json({ error: 'Failed to update SportSubType' });
+                    }
+                })
         })
         .catch(err => res.status(400).json('Error: ' + err));
 }
 
-// //update a SportSubType
+//delete all user Rates for a specific sportsubtype by id
+exports.deleteAllRates = async (req, res) => {
+    RatingModel.deleteMany({ "sportSubType.title": req.params.title, "user._id": req.params.id })
+        .then(async (rates) => {
+            console.log('All rates deleted!')
+
+            let sport = null
+            //find sportsubtype by title
+            try {
+                sport = await SportSubTypeModel.find({ title: req.params.title });
+                if (!sport) {
+                    console.log("sportsubtype not found");
+                }
+            } catch (err) {
+                console.log("Internal server error");
+            }
+
+            //get all rates
+            RatingModel.find({ "sportSubType.title": req.params.title })
+                .then((ratings) => {
+                    let total = 0
+                    let nbr = ratings.length
+                    for (let index = 0; index < nbr; index++) {
+                        total += ratings[index].rating
+                    }
+                    let average = 0
+                    if (nbr) {
+                        average = total / (nbr)
+                    }
+
+                    console.log(nbr);
+                    console.log(total);
+                    console.log(average);
+                    // update sportsubtype
+                    try {
+                        const newSportSubType = sport[0];
+                        if (average === 0) {
+                            newSportSubType.averageRating = 0
+                        } else {
+                            newSportSubType.averageRating = average
+                        }
+
+                        // Update the SportSubType in the database
+                        SportSubTypeModel.findByIdAndUpdate(sport[0]._id, newSportSubType, { new: true })
+                            .then(sport => res.json({ "deletedRates": rates, "updatedSportSubType": sport }))
+                            .catch(err => console.log(err))
+
+                    } catch (err) {
+                        console.error(err);
+                        res.status(500).json({ error: 'Failed to update SportSubType' });
+                    }
+                })
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+}
+
+//update a Rate
 exports.updateRate = async (req, res) => {
 
     const { userId, sportSutTypeTitle } = req.params

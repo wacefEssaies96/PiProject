@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SportRating from '../SportRating';
 
 const CardSportType = (props) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -6,7 +7,7 @@ const CardSportType = (props) => {
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
     }
-    
+
     return (
         < div className="col-12 col-lg-6 col-md-6" >
             <article
@@ -26,9 +27,14 @@ const CardSportType = (props) => {
                     </div>
                 </div>
                 <div className="post-info">
-                    <h2 className="post-title">
-                        {props.sT?.title}
-                    </h2>
+                    <div className='d-flex justify-content-between'>
+                        <h2 className="post-title">
+                            {props.sT?.title}
+                        </h2>
+                        <div style={{ marginRight:"10px", marginTop:"5px" }} className="wd-stars">
+                            <SportRating sportSubType={props.sT}/>
+                        </div>
+                    </div>
                     <div>
                         {isExpanded ? props.sT?.definitionHistory : props.sT?.definitionHistory.slice(0, 100)}
                         <div className="wd-blog-bottom-meta">
