@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+const articleSchema = require('../article/articleschema');
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,7 +23,8 @@ const userSchema = new mongoose.Schema(
     account_Verified: Boolean,
     speciality: String,
     code: Number,
-    two_factor: Boolean
+    two_factor: Boolean,
+    articles:[articleSchema]
   },
   { timestamps: true }
 )

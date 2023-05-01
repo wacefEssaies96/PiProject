@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon node ./bin/www"
+    "start": "nodemon node app.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
@@ -42,6 +42,7 @@
     "request-promise": "^4.2.6",
     "routes": "^2.1.0",
     "slug": "^8.2.2",
+    "socket.io": "^4.6.1",
     "speakeasy": "^2.0.0",
     "twilio": "^4.8.0",
     "usetube": "^2.2.2",

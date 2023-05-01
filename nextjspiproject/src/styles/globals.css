@@ -609,11 +609,15 @@ body .is-layout-flex>* {
 
 .button {
   background-color: #dd9933;
-  margin: 20px 20px 0 0;
+  margin: 20px 20px 20px 0;
 }
 
 .button:hover {
   background-color: #eeaf50;
+}
+
+.ck.ck-editor__main>.ck-editor__editable {
+  min-height: 200px;
 }
 
 .dictaphone {
@@ -928,5 +932,36 @@ body .is-layout-flex>* {
 @media only screen and (max-width: 1000px) {
   .article-container {
     flex-direction: column;
+  }
+}
+
+.notification-option {
+  width: 200px;
+  position: fixed;
+  min-height: fit-content;
+  max-height: 500px;
+  /* left: 0, !important; */
+  /* right:-70% !important; */
+  margin-right: 200px !important;
+  top: 25px !important;
+  z-index: 1000 !important;
+  color: #000000;
+  overflow: auto !important;
+  overflow-y: scroll;
+}
+
+.new-notif {
+  animation: clocking-bell 1s ease-in-out infinite;
+}
+
+@keyframes clocking-bell {
+  0% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(-20deg);
   }
 }

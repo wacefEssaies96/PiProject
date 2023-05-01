@@ -4,11 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
+var http = require('http');
 require('dotenv').config();
 
 var mongoose = require('mongoose');
 var cors = require('cors');
-const bodyParser = require('body-parser');
 
 require('dotenv').config();
 //Routes Meals and auth
@@ -22,6 +22,8 @@ var sportSubTypeRouter = require('./routes/Sports/sportSubTypeRoutes');
 var sportSubTypeTitlesScrapedRouter = require('./routes/Sports/sprotSubTypesTitlesScrapedRouter');
 // routers Articles and category-subcategory
 var articleRouter = require('./routes/article/article');
+var commentRouter = require('./routes/article/comment');
+var notificationRouter = require('./routes/article/notification');
 var categoryRouter = require('./routes/article/category');
 var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
@@ -37,7 +39,7 @@ const orderRouter = require('./routes/e-commerce/Order');
 //send email route 
 var resetPassword = require('./routes/resetPasswordRoute')
 // morphology route
-const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
+const morphologyRoute = require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");
 const otherAppsAuthRouter = require("./routes/otherappsauth");
 
@@ -58,9 +60,10 @@ app.use(passport.initialize());
 // app.use(passport.session());
 
 //Routes
+app.use('/api/notifications', notificationRouter);
+app.use('/api/comment', commentRouter);
 app.use('/api/admin/products', productRouter);
 app.use('/api/admin/orders', orderRouter);
-// app.use("/li", linkedInAuthRouter);
 app.use('/', otherAppsAuthRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
@@ -76,7 +79,7 @@ app.use('/api/clinic', ClinicRouter);
 app.use('/api/app', appointmentRouter);
 app.use('/api/appuser', UserappointmentRouter);
 app.use('/api', resetPassword);
-app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
+app.use('/api/sportSubTypes/uploads', express.static('uploads/SportSubTypesDemVideos'))
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
 app.use('/api/get-your-morphology', morphologyRoute)
 
@@ -105,4 +108,9 @@ app.use(function (err, req, res, next) {
   res.status(500).send({ error: err });
 });
 
+app.set('port', 3030);
+var server = http.createServer(app);
+server.listen(3030);
+const { io } = require("./utils/socketjs");
+io.attach(server);
 module.exports = app;

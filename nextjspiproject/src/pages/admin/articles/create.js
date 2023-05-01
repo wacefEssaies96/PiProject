@@ -7,7 +7,7 @@ export default function Create() {
     return (
         <div style={{ minHeight: '600px' }}>
             <Suspense fallback={<SpinnerLoading></SpinnerLoading>}>
-                <ArticleForm></ArticleForm>
+                <ArticleForm user="admin"></ArticleForm>
                 <ChatGPT></ChatGPT>
             </Suspense>
         </div>

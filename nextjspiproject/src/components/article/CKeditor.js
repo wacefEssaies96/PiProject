@@ -24,6 +24,7 @@ export default function CKeditor({ change, editorLoaded, name, value }) {
                         const data = editor.getData();
                         change(() => data)
                     }}
+                    style={{height:"200px"}}
                 />
             ) : (
                 <SpinnerLoading></SpinnerLoading>

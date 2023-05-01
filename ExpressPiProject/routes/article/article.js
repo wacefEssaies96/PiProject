@@ -37,6 +37,17 @@ router.post('/get-prompt-result', controller.openai);
 // Find Article by title
 router.get('/find-by-title/:title', controller.findArticleByTitle);
 
+// Find own Article
+router.get('/find-own-articles/:id', controller.findAllMine);
+
+// approve Article
+router.get('/approve/:userid/:articleid', controller.approve);
+// reject Article
+router.get('/reject/:userid/:articleid', controller.reject);
+
+// send Request Article
+router.get('/send-request/:userid/:articleid', controller.sendRequest);
+
 // Dynamic search with paginator
 router.get('/search', controller.searchArticle);
 

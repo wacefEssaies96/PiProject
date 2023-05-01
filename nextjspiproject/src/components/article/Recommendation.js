@@ -22,7 +22,7 @@ export default function Recommendation({ show, handleClose, recommendation, cont
                 <div>
                     {content.map((item, index)=>{
                         return(
-                            <p>{item}</p>
+                            <p key={index}>{item}</p>
                         )
                     })}
                 </div>

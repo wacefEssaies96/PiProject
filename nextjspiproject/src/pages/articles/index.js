@@ -1,9 +1,11 @@
-import Article from "@/components/article/Article";
-import Sidebar from "@/components/article/Sidebar";
+import PageSpinnerLoading from "@/components/layouts/PageSpinnerLoading";
+import SpinnerLoading from "@/components/layouts/SpinnerLoading";
 import { fetchData } from "@/services/mix";
 import axios from "axios";
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 
+const Article = lazy(() => import('@/components/article/Article'))
+const Sidebar = lazy(() => import('@/components/article/Sidebar'))
 
 export default function Index(props) {
     const [articles, setArticles] = useState(props.articles)
@@ -22,7 +24,7 @@ export default function Index(props) {
             })
             setArticles(response.data.docs)
             setTotalPages(response.data.totalPages)
-           
+
         } catch (err) {
             console.error(err)
         }
@@ -51,7 +53,9 @@ export default function Index(props) {
                         {articles.map((element, index) => {
                             return (
                                 <div key={index} className="col-12 col-lg-6 col-md-6">
-                                    <Article key={element._id} article={element}></Article>
+                                    <Suspense fallback={<PageSpinnerLoading></PageSpinnerLoading>}>
+                                        <Article key={element._id} article={element}></Article>
+                                    </Suspense>
                                 </div>
                             )
                         })}
@@ -81,7 +85,9 @@ export default function Index(props) {
                     </div>
                 </div>
                 <div className="col-12 col-lg-4">
+                <Suspense fallback={<SpinnerLoading></SpinnerLoading>}>
                     <Sidebar query={query} setQuery={setQuery} handleSearch={handleSearch} categories={props.categories}></Sidebar>
+                </Suspense>
                 </div>
             </div>
         </>

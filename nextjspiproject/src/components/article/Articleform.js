@@ -1,11 +1,12 @@
 import { submitArticle } from "@/services/article";
 import { fetchData } from "@/services/mix";
 import { useRouter } from "next/router";
-import { useEffect, useState, lazy } from "react"
+import { useEffect, useState, lazy, Suspense } from "react"
 import { Alert, Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
 import SpinnerLoading from "../layouts/PageSpinnerLoading";
 import Recommendations from "./Recommendations";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import PageSpinnerLoading from "../layouts/PageSpinnerLoading";
 const CKeditor = lazy(() => import('./CKeditor'))
 
 export default function ArticleForm(props) {
@@ -68,7 +69,11 @@ export default function ArticleForm(props) {
     const form = event.currentTarget;
     if (form.checkValidity() === true) {
       await submitArticle(event, operationMode, data)
-      router.push('/admin/articles')
+      if (props.user == 'admin')
+        router.push('/admin/articles')
+      else
+        router.push('/articles/my-articles')
+
     }
     setValidated(true);
   }
@@ -116,7 +121,7 @@ export default function ArticleForm(props) {
     }
   }, [])
 
-  const handleSpeech = () =>{
+  const handleSpeech = () => {
     SpeechRecognition.startListening()
     setShowTranscript(true)
   }
@@ -134,7 +139,7 @@ export default function ArticleForm(props) {
       }
       {
         showTranscript &&
-        <Alert className="transcript" variant="warning" onClose={()=>{setShowTranscript(false); resetTranscript()}} show={showTranscript} dismissible>
+        <Alert className="transcript" variant="warning" onClose={() => { setShowTranscript(false); resetTranscript() }} show={showTranscript} dismissible>
           <Alert.Heading>Dictaphone</Alert.Heading>
           <p>
             {transcript}
@@ -232,10 +237,10 @@ export default function ArticleForm(props) {
               </Row>
             </Form.Group>
             <Form.Group>
-              <Form.Control placeholder="Description" defaultValue={article.description} as="textarea" name="description" style={{ height: '100px' }} required minLength={10} maxLength={200}></Form.Control>
+              <Form.Control placeholder="Description" defaultValue={article.description} as="textarea" name="description" style={{ minHeight: '100px' }} required minLength={10} maxLength={1000}></Form.Control>
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
-                Please write a description, minimum length : 10, maximum length : 200.
+                Please write a description, minimum length : 10, maximum length : 1000.
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
@@ -254,13 +259,15 @@ export default function ArticleForm(props) {
                 Please write a content, minimum length : 50.
               </Form.Control.Feedback>
             </Form.Group>
-            <Recommendations show={showViewRecommendations} handleClose={handleCloseViewRecommendations} recommendations={recommendation}></Recommendations>
+            <Suspense fallback={<PageSpinnerLoading></PageSpinnerLoading>}>
+              <Recommendations show={showViewRecommendations} handleClose={handleCloseViewRecommendations} recommendations={recommendation}></Recommendations>
+            </Suspense>
 
           </Stack>
-          <button className="btn btn-outline-success" type="submit">Submit</button>
+          <button className="btn button" type="submit">Submit</button>
           {recommendation.length > 1 &&
             <>
-              <button className="btn btn-outline-success" type="button" onClick={() => handleShowViewRecommendations()}>View recommendations</button>
+              <button className="btn button" type="button" onClick={() => handleShowViewRecommendations()}>View recommendations</button>
             </>
           }
         </Form>

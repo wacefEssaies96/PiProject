@@ -1,10 +1,13 @@
 const Article = require('../../models/article/article');
 const Category = require('../../models/article/category');
+const User = require('../../models/Users/user');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const slug = require('slug');
 const { Configuration, OpenAIApi } = require("openai");
-const paginate = require('mongoose-paginate-v2')
+const Notification = require('../../models/article/notification');
+const { Socket } = require('../../utils/socketjs');
+
 
 
 // Create and Save a new Article
@@ -42,8 +45,13 @@ exports.create = async (req, res) => {
             });
             // Save article in the database
             newArticle.save()
-                .then(data => {
-                    res.send({ message: "Article was created successfully.", data });
+                .then((article) => {
+                    User.findById(req.body.user).then(user => {
+                        user.articles.push(article);
+                        User.findByIdAndUpdate(user._id, user, { new: true })
+                            .then(updatedUser => res.send({ message: "Article was created successfully.", article }))
+                    });
+
                 })
                 .catch(err => {
                     res.status(500).send({
@@ -53,10 +61,35 @@ exports.create = async (req, res) => {
         }
     }
 }
+// Retrieve all Articles from the database.
+exports.findAllMine = (req, res) => {
+    const id = req.params.id
+    User.findById(id).then(data => res.send({ response: data.articles }))
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while creating the article."
+            });
+        });
+}
 
 // Retrieve all Articles from the database.
 exports.findAll = (req, res) => {
     Article.find()
+        .then(
+            data => {
+                res.send(data);
+                return;
+            })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while fetching data."
+            });
+        })
+}
+
+exports.findAllNotifications = (req, res) => {
+    const userId = req.params.userid;
+    Notification.find({ user: userId })
         .then(
             data => {
                 res.send(data);
@@ -93,8 +126,7 @@ exports.findArticleByTitle = (req, res) => {
 
 // Search article
 exports.searchArticle = async (req, res) => {
-    const { query, page , limit = 2 } = req.query
-
+    const { query, page, limit = 10 } = req.query
     const options = {
         page,
         limit,
@@ -102,12 +134,10 @@ exports.searchArticle = async (req, res) => {
             locale: 'en'
         }
     }
-
     const regexQuery = new RegExp(query, 'i')
-
     try {
         const articles = await Article.paginate(
-            { title: regexQuery },
+            { title: regexQuery, status: 'published' },
             options
         )
         res.json(articles)
@@ -163,12 +193,13 @@ exports.update = async (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     Article.findByIdAndRemove(id)
-        .then(data => {
+        .then(async (data) => {
             if (!data) {
                 res.status(404).send({
                     message: `Cannot delete Article with id=${id}. Maybe Article was not found!`
                 });
             } else {
+                await User.updateMany({}, { $pull: { articles: { _id: id } } })
                 res.send({
                     message: "Article was deleted successfully!"
                 });
@@ -184,10 +215,8 @@ exports.delete = (req, res) => {
 // Delete all articles from the database.
 exports.deleteAll = (req, res) => {
     Article.deleteMany()
-        .then(data => {
-            res.send({
-                message: `${data.deletedCount} Article(s) were deleted successfully!`
-            });
+        .then(async (data) => {
+            res.send({ message: `${data.deletedCount} Article(s) were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
@@ -248,17 +277,6 @@ exports.scrapFromWired = async (req, res) => {
         });
     });
     res.send({ articles: articles })
-
-    //  Extract texts from the most rated article and send it to next js
-    // const a = await axios.get('https://www.wired.com' + articles[0].link)
-    // $ = cheerio.load(a.data)
-    // let texts = ''
-    // $('.paywall').each((i, el) => {
-    //     const text = $(el).text();
-    //     if (text.length > 200)
-    //         texts = texts + ' ' + text
-    // });
-    // res.send({ text: texts })
 }
 exports.scrapOneFromWired = async (req, res) => {
 
@@ -273,6 +291,61 @@ exports.scrapOneFromWired = async (req, res) => {
     });
     res.send({ text: texts })
 }
+
+exports.approve = async (req, res) => {
+    const userid = req.params.userid;
+    const articleid = req.params.articleid;
+    let article = await Article.findById(articleid)
+    article.status = 'published'
+    await article.save()
+    const user = await User.findOneAndUpdate(
+        { 'articles._id': articleid },
+        { $set: { 'articles.$.status': 'published' } }
+    )
+    const notification = new Notification({
+        user: user._id,
+        content: `Your article titled ${article.title} has been approved and published successfully.`
+    })
+    Socket.emit('notification', {
+        message: `Your article titled ${article.title} has been approved and published successfully.`,
+        userId: user._id
+    });
+    await notification.save()
+    res.send({ message: 'Article published successfully !' })
+}
+exports.reject = async (req, res) => {
+    const articleid = req.params.articleid;
+    let article = await Article.findById(articleid)
+    article.status = 'draft'
+    await article.save()
+    const user = await User.findOneAndUpdate(
+        { 'articles._id': articleid },
+        { $set: { 'articles.$.status': 'draft' } }
+    )
+    const notification = new Notification({
+        user: user._id,
+        content: `Your article titled ${article.title} has been rejected.`
+    })
+    Socket.emit('notification', {
+        message: `Your article titled ${article.title} has been rejected.`,
+        userId: user._id
+    });
+    await notification.save()
+    res.send({ message: 'Article rejected !' })
+}
+exports.sendRequest = async (req, res) => {
+    const userid = req.params.userid;
+    const articleid = req.params.articleid;
+    let article = await Article.findById(articleid)
+    article.status = 'request'
+    await article.save()
+    await User.findOneAndUpdate(
+        { _id: userid, 'articles._id': articleid },
+        { $set: { 'articles.$.status': 'request' } }
+    )
+    res.send({ message: 'Request sent to admin, please wait until they check your request !' })
+}
+
 
 exports.openai = async (req, res) => {
     const configuration = new Configuration({

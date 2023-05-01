@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Modal, Button } from "react-bootstrap";
 import Recommendation from './Recommendation';
 import PageSpinnerLoading from '../layouts/PageSpinnerLoading';
-// import Recommendation from '@/components/article/Recommendation';
+import { generateKey } from '@/services/mix';
 
 const Recommendations = ({ show, handleClose, recommendations }) => {
 
@@ -35,16 +35,15 @@ const Recommendations = ({ show, handleClose, recommendations }) => {
           <Modal.Title>Recommendations</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {isLoading && <PageSpinnerLoading></PageSpinnerLoading>}
-
+          {isLoading && <PageSpinnerLoading></PageSpinnerLoading>}
           <Recommendation show={showViewRecommendation} handleClose={handleCloseViewRecommendation} recommendation={rec} content={content}></Recommendation>
           {recommendations.map((recommendation, index) => {
             return (
               <div onClick={() => handleShowViewRecommendation(recommendation)} key={index} className='d-flex' style={{ cursor: 'pointer' }}>
-                <div style={{ margin: '0 20px 20px 0' }}>
+                <div style={{ margin: '0 20px 20px 0' }} key={generateKey('div-image')}>
                   <img style={{ 'float': 'right', width: '200px' }} key={recommendation.picture} src={recommendation.picture} />
                 </div>
-                <div>
+                <div key={generateKey('div-recom')}>
                   <h5 key={recommendation.title}>{recommendation.title}</h5>
                   <p key={recommendation.author}>{recommendation.author}</p>
                   <p key={recommendation.time}>{recommendation.time}</p>
@@ -61,7 +60,7 @@ const Recommendations = ({ show, handleClose, recommendations }) => {
             Close
           </Button>
         </Modal.Footer>
-      </Modal>  
+      </Modal>
     </>
 
   )

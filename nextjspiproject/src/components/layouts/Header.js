@@ -5,19 +5,28 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
-
+import { io } from 'socket.io-client'
+import toast from 'react-hot-toast';
+import Toast from './Toast'
+import axios from 'axios'
 
 function Header() {
    const cookies = new Cookies()
-
+   const socket = io.connect(`${process.env.backurl}`)
    const router = useRouter()
    const [auth, setAuth] = useState({
       token: null,
       user: null,
    })
+   const [newNotif, setNewNotif] = useState(false)
+   const [notifications, setNotifications] = useState([])
    const logout = () => {
       cookies.remove('token')
       cookies.remove('user')
+      setAuth({
+         token: null,
+         user: null,
+      })
       window.location = '/'
    }
    const getUser = async () => {
@@ -27,6 +36,10 @@ function Header() {
          auth.user = data
       }
    }
+   const getNotifications = async () => {
+      const response = await axios.get(`${process.env.backurl}/api/notifications/find/${cookies.get('user')._id}`)
+      setNotifications(response.data)
+   }
    useEffect(() => {
       getUser()
       setAuth(
@@ -34,16 +47,25 @@ function Header() {
             token: cookies.get('token'),
             user: cookies.get('user')
          })
+      getNotifications()
+      socket.on('notification', async (data) => {
+         if (data.userId == auth.user._id) {
+            setNewNotif(true)
+            toast(data.message)
+            await getNotifications()
+         }
+      });
    }, [])
 
    const { state, dispatch } = useContext(Store);
    const { cart } = state;
    const [cartItemsCount, setCartItemsCount] = useState(0);
    useEffect(() => {
-     setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
+      setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantityy, 0));
    }, [cart.cartItems]);
    return (
       <>
+         <Toast></Toast>
          <div className="wd-top-nav">
             <div className="container">
                <div className="wd-header-top-inner">
@@ -70,6 +92,23 @@ function Header() {
                            </li>
                            <li>
                               <a href="#"><i className="fab fa-instagram"></i></a>
+                           </li>
+                           <li className="has-dropdown">
+                              {!newNotif
+                                 ? <a href="#"><i className="fa fa-bell-o" aria-hidden="true"></i></a>
+                                 : <a href="#"onMouseLeave={()=>setNewNotif(false)}><i className="fa fa-bell-o new-notif" aria-hidden="true"></i></a>
+                              }
+                              <ul className="notification-option">
+                                 {notifications.length > 0 && notifications.map((element, index) => {
+                                    return (
+                                       <div key={element._id}>
+                                          <li key={element.content}>{element.content}</li>
+                                          <hr key={index}></hr>
+                                       </div>
+                                    )
+                                 })}
+
+                              </ul>
                            </li>
                            <li className="has-dropdown">
                               <a href="#">
@@ -144,7 +183,7 @@ function Header() {
                                              <a onClick={() => { router.push("/recipes") }} >Recipes (User)</a>
                                           </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
-                                             <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles (Admin)</a>
+                                             <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles</a>
                                           </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/Products") }} aria-current="page">Products (Admin)</a>
@@ -167,18 +206,20 @@ function Header() {
                                  }
                                  <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="/" aria-current="page">Home</a>
                                     <ul className="sub-menu">
-                                       <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Homepage One</a></li>
-                                       <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">Home Page Two</a></li>
-                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">Homepage Three</a></li>
-                                       <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li>
+                                       {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Homepage One</a></li> */}
+                                       {/* <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">Home Page Two</a></li>
+                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">Homepage Three</a></li> */}
+                                       {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li> */}
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
-                                       <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li>
+                                       {/* <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li> */}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
                                     <ul className="sub-menu">
-                                       <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
+                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles">Home</Link></li>
+                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles/my-articles">My articles</Link></li>
+                                       {/* <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
                                        <li id="menu-item-1726" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1726"><a href="#">Blog Single</a>
                                           <ul className="sub-menu">
                                              <li id="menu-item-1725" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1725"><a href="#">Standard</a></li>
@@ -187,7 +228,7 @@ function Header() {
                                              <li id="menu-item-1724" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1724"><a href="#">Quote</a></li>
                                              <li id="menu-item-1723" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1723"><a href="#">Link</a></li>
                                           </ul>
-                                       </li>
+                                       </li> */}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>

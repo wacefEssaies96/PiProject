@@ -1,26 +1,30 @@
-import Sidebar from "@/components/article/Sidebar";
-import SingleArticle from "@/components/article/SingleArticle";
+import PageSpinnerLoading from "@/components/layouts/PageSpinnerLoading";
 import { fetchData } from "@/services/mix";
+import { Suspense, lazy } from "react";
+import nextCookie from 'next-cookies'
 
-export default function OneArticle({ article, categories }) {
+const SingleArticle = lazy(() => import('@/components/article/SingleArticle'))
+
+export default function OneArticle({ article, comments, user }) {
 
     return (
         <div className="article-container">
-            <SingleArticle article={article}></SingleArticle>
-            <Sidebar categories={categories}></Sidebar>
+            <Suspense fallback={<PageSpinnerLoading></PageSpinnerLoading>}>
+                <SingleArticle article={article} comments={comments} user={user}></SingleArticle>
+            </Suspense>
         </div>
     )
-
 }
 
 export async function getServerSideProps(context) {
     const data = await fetchData(`${process.env.backurl}/api/admin/articles/find-by-title/${context.query.title}`);
-    const categories = await fetchData(`${process.env.backurl}/api/admin/subcategories/find-all`)
-
+    const comments = await fetchData(`${process.env.backurl}/api/comment/find/${data._id}`)
+    const { user } = nextCookie(context)
     return {
         props: {
             article: data,
-            categories: categories
+            comments: comments,
+            user: user
         }
     }
 }
