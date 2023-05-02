@@ -43,7 +43,7 @@ export default function SingleArticle({ article, comments, user }) {
                     <div dangerouslySetInnerHTML={{ __html: article.content }}></div>
 
                 </div>
-                {article.status == 'published' &&
+                {article.status == 'published' || user &&
                     <>
                         <div className="post-details-tags-social">
                             <div className="row">
@@ -105,11 +105,14 @@ export default function SingleArticle({ article, comments, user }) {
                                                                         <span className="entry-date" key={element.data}><i className="far fa-calendar-alt" key={generateKey('calendar-alt')}></i> {element.date}</span>
                                                                     </div>
                                                                     <div className="comment-meta-reply">
-                                                                        {user._id == element.user._id &&
-                                                                            <button className="btn" onClick={async () => { await deleteData(`${process.env.backurl}/api/comment/delete/${element._id}`); await refreshComment() }} type="button">
-                                                                                <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
-                                                                            </button>
-                                                                        }
+                                                                        {user && <>
+                                                                            {user._id == element.user._id &&
+                                                                                <button className="btn" onClick={async () => { await deleteData(`${process.env.backurl}/api/comment/delete/${element._id}`); await refreshComment() }} type="button">
+                                                                                    <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+                                                                                </button>
+                                                                            }
+                                                                        </>}
+
                                                                     </div>
                                                                 </div>
                                                                 <div className="comment">

@@ -34,6 +34,14 @@ function Header() {
          let res = await fetch(`${process.env.backurl}/api/users/findOne/${cookies.get('user')._id}`)
          let data = await res.json()
          auth.user = data
+         getNotifications()
+         socket.on('notification', async (data) => {
+            if (data.userId == auth.user._id) {
+               setNewNotif(true)
+               toast(data.message)
+               await getNotifications()
+            }
+         });
       }
    }
    const getNotifications = async () => {
@@ -47,14 +55,6 @@ function Header() {
             token: cookies.get('token'),
             user: cookies.get('user')
          })
-      getNotifications()
-      socket.on('notification', async (data) => {
-         if (data.userId == auth.user._id) {
-            setNewNotif(true)
-            toast(data.message)
-            await getNotifications()
-         }
-      });
    }, [])
 
    const { state, dispatch } = useContext(Store);
@@ -96,7 +96,7 @@ function Header() {
                            <li className="has-dropdown">
                               {!newNotif
                                  ? <a href="#"><i className="fa fa-bell-o" aria-hidden="true"></i></a>
-                                 : <a href="#"onMouseLeave={()=>setNewNotif(false)}><i className="fa fa-bell-o new-notif" aria-hidden="true"></i></a>
+                                 : <a href="#" onMouseLeave={() => setNewNotif(false)}><i className="fa fa-bell-o new-notif" aria-hidden="true"></i></a>
                               }
                               <ul className="notification-option">
                                  {notifications.length > 0 && notifications.map((element, index) => {
@@ -218,7 +218,8 @@ function Header() {
                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles">Home</Link></li>
-                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles/my-articles">My articles</Link></li>
+                                      
+                                      {auth.user != null && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles/my-articles">My articles</Link></li>} 
                                        {/* <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
                                        <li id="menu-item-1726" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1726"><a href="#">Blog Single</a>
                                           <ul className="sub-menu">
