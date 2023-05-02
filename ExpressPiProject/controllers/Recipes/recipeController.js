@@ -21,7 +21,7 @@ exports.findAllRecipes = (req, res) => {
 // Find Validated Recipe 
 exports.findValidatedRecipes = (req, res) => {
   
-  Recipe.find({validated:true})
+  Recipe.find({validated:true}).populate('user')
     .then(data => {
       if (data[0])
         res.send(data);
@@ -42,7 +42,7 @@ exports.findOneRecipe = (req, res) => {
     res.status(400).send({ message: "Id of recipe is empty!" });
   }
   const id = req.params.id;
-  Recipe.findById(id)
+  Recipe.findById(id).populate('meals').populate('user')
     .then(data => {
       if (data)
         res.send(data);
@@ -90,7 +90,7 @@ exports.findValidated_MyRecipes = (req, res) => {
       { user: userId },
       { user: { $ne :userId},validated: true }
     ]
-    })
+    }).populate('user')
     .then(data => {
       if (data[0])
         res.send(data);

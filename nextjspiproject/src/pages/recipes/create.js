@@ -1,3 +1,4 @@
+import { fetchData } from '@/services/mix';
 import {  Suspense,lazy } from 'react'
 
 const RecipeForm = lazy(() => import('@/components/recipes/RecipeForm'))

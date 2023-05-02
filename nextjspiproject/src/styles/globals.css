@@ -1,13 +1,30 @@
 /* template */
+.centerMydiv {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+.redBOLD{
+  color:red;
+  font-weight: bold;
+}
+.greenBOLD{
+  color: #016837;
+  font-weight: bold;
+}
 .txtCenter{
   text-align: center;
+}
+.img-container {
+  height: 200px; /* set the height to a specific value */
+  width: 100%; /* enable scrolling when content exceeds container's height */
 }
 .paragraph-container {
   height: 100px; /* set the height to a specific value */
   overflow: auto; /* enable scrolling when content exceeds container's height */
 }
 .meals-container{
-  height: 250px; /* set the height to a specific value */
+  height: 500px; /* set the height to a specific value */
   overflow: auto; /* enable scrolling when content exceeds container's height */
 }
 .greenBtn{

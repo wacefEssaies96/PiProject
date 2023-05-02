@@ -7,7 +7,7 @@ const SportSubType = require("../../models/Sports/SubTypeSportModel")
 
 const url = "https://www.leadershipandsport.com/types-of-sports/";
 
-cron.schedule("* */23 * * *", async (req, res) => {
+cron.schedule(" 0 0 * * 0 ", async (req, res) => {
     try {
         await axios.get(url)
             .then(urlRes => {

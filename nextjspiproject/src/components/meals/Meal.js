@@ -19,7 +19,7 @@ export default function Meal({ mealsdb }) {
       filterColumn =typefilter;
     }
     const filteredList = list.filter((item) =>
-      item[filterColumn].toLowerCase().includes(searchQuery)
+        item[filterColumn] && item[filterColumn].toString().toLowerCase().includes(searchQuery)
     );
     if(searchQuery!=""){
       setFiltered(filteredList);
@@ -91,35 +91,49 @@ export default function Meal({ mealsdb }) {
                             <p></p>
                         </div>
                     </div>
-                    <hr/>
-                    <Row className="sectionCenter">
                     
-                    <Col md={12}
-                        className="txtCenter" >
-                        Search type: 
-                        &nbsp;
-                        <select 
-                        className="greenBtn"   
-                            onChange={(event) =>{
-                            setTypefilter(event.target.value);
-                            setSearch("")
-                            setShowfiltered(false)
-                            }
-                            }
-                            >
-                            <option value="FoodCategory"> Category </option>
-                            <option value="FoodItem"> Food </option>
-                            <option value="calories_100g"> Calorie 100 g/ml </option>
-                        </select>
-                        &nbsp;
-                        Search value: 
-                        &nbsp;
-                        <input 
-                        className="greenBtn"   
-                        onChange={filterList} placeholder="search" value={search} type="text"/>
-                    </Col>
-                    </Row>
-                    <hr/>
+                    <div className="container">
+                    <div className="row">
+
+                        <div className="sidebar">
+                            <div  className="widget widget_search"><h4 className="widget-title txtCenter"> Filter List </h4>
+
+                            <Row >
+                            <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
+                                Search type :
+                                <br/>
+                            <select 
+                                className="greenBtn"   
+                                onChange={(event) =>{
+                                    setTypefilter(event.target.value);
+                                    setSearch("")
+                                    setShowfiltered(false)
+                                }
+                                }
+                                >
+                                <option value="FoodCategory"> Category </option>
+                                <option value="FoodItem"> Food </option>
+                                <option value="calories_100g"> Calorie 100 g/ml </option>
+                                </select>
+                            </div>
+                            
+                            
+                            <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
+                                Search value :
+                                <br/>
+                                <input 
+                                className="greenBtn"   
+                                onChange={filterList} placeholder="search" value={search} type="text"/>
+                            </div>
+
+                            </Row>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    </div>
+                    
                     <div className="wd-feature-products meals-container">
                         <div className="row">
                             {showfiltered ?

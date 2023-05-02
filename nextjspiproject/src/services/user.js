@@ -1,8 +1,18 @@
 import { success, errorAlert } from "@/services/alerts"
 import axios from "axios";
+// import { useRouter } from "next/router";
+import { Cookies } from "react-cookie";
+
 
 export const submitUser = async (data, operationMode) => {
-
+    const cookies = new Cookies();
+    
+    // if(cookies.get('user')["_id"] == data.target.id.value){
+    //     console.log("same user")
+    // //     var u = await fetchData(`${process.env.backurl}/api/users/findOne/${cookies.get('user')["_id"]}`);
+    // //     cookies.set('user', u, { maxAge: 60 * 60 * 24 })
+    // //     console.log( " user cookies "+cookies.get('user')+"u "+u)
+    // }
     let formData = new FormData();
     formData.append('fullname', data.target.fullname.value);
     formData.append('email', data.target.email.value);
@@ -23,12 +33,33 @@ export const submitUser = async (data, operationMode) => {
     operationMode === 'Create'
         ?
         axios.post(`${process.env.backurl}/api/users/Create`, formData)
-            .then((data) => { if (data.data) { success(data.data.message); window.location = "/admin/users" } })
+            .then((data) => { if (data.data) { success(data.data.message); 
+                window.location = "/admin/users" } })
             .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } })
         : axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
-            .then((data2) => { if (data2.data) { success(data2.data.message); window.location = "/admin/users" } })
+            .then(async (data2) => { 
+                if (data2.data) { 
+                    
+                    
+                    // cookies.remove('user')
+                      // const router = useRouter()
+
+    //   window.location.reload()
+      // router.replace(router.asPath);
+                    //change profile
+                    // if(cookies.get('user')["_id"] == data.target.id.value){
+                    //     console.log("same user")
+                    //     var u = await fetchData(`${process.env.backurl}/api/users/findOne/${cookies.get('user')["_id"]}`);
+                    //     cookies.set('user', u, { maxAge: 60 * 60 * 24 })
+                    //     console.log( " user cookies "+cookies.get('user')+"u "+u)
+                    // }
+                    success(data2.data.message);
+                    // window.location = "/admin/users" 
+                } 
+            })
             .catch((error2) => { if (error2.response) { errorAlert(error2.response.data.message) } })
     
+            
 }
 
 export const verifyAccount = async (data, id) => {

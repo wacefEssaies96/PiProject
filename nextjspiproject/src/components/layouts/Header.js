@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
-import { errorAlert } from '@/services/alerts'
 
 
 function Header() {
@@ -24,18 +23,17 @@ function Header() {
    const getUser = async () => {
       if (cookies.get('user')) {
          let res = await fetch(`${process.env.backurl}/api/users/findOne/${cookies.get('user')._id}`)
-         // .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } }) 
          let data = await res.json()
          auth.user = data
       }
    }
    useEffect(() => {
-      getUser()
       setAuth(
          {
             token: cookies.get('token'),
             user: cookies.get('user')
          })
+      getUser()
    }, [])
 
    const { state, dispatch } = useContext(Store);
@@ -100,7 +98,7 @@ function Header() {
                                     </>
                                     :
                                     <>
-                                       { auth.user && auth.user.role == 'DOCTOR'
+                                       {auth.user.role == 'DOCTOR'
                                           ? <li><Link href="#" onClick={() => { router.push('/user/doctor') }}> Profile</Link></li>
                                           : <li><Link href="#" onClick={() => { router.push('/user/edit-profile') }}> Profile</Link></li>
                                        }
@@ -129,7 +127,7 @@ function Header() {
                         <div className="nav">
                            <nav>
                               <ul id="menu-main-menu" className="menu">
-                                 {auth.token && auth.user &&  auth.user.role === "ADMIN" &&
+                                 {auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">

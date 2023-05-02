@@ -150,83 +150,103 @@ export default function Index({ catMeals,meals,mealsdb }) {
         </div>
         
         <hr/>
-        <Row className="sectionCenter">
-          <Col md={4}
-            className=" txtCenter greenBtn" >
-            <Link href={`/admin/meals/create`}>Create new meal</Link>
-          </Col>
-          <Col md={4} 
-              className="txtCenter" >
-            <Button
-            className="greenBtn"
-             onClick={() => getdataMeal()}>Get meals</Button>
-          </Col>
-          <Col md={4} 
-              className="txtCenter" >
-            <select 
-              className="greenBtn"            
-              onClick={(event) => refreshCategory(event.target.value)}>
-              {catlist.map((catMeal, index1) => (
-                <option
-                key={index1} value={catMeal.hrefCatMeals}>
-                  {catMeal.nameCatMeals}
-                </option>
-              ))}
-            </select>
-          </Col>
-        </Row>
-        <hr/>
-        <Row className="sectionCenter">
-          <Col md={4} 
-              className="txtCenter"    >
-              <select 
-              className="greenBtn"    
-                onChange={(event) => showServingFilter(event.target.value)}
-                >
-                <option value="100g"> Serving_size_100g </option>
-                <option value="portion"> serving_size_portion </option>
-                <option value="oz"> serving_size_oz </option>
-              </select>
-            </Col>
-          <Col md={4}
-              className="txtCenter" >
-            Search type : 
-            &nbsp;
-            <select 
-              className="greenBtn"   
-                onChange={(event) =>{
-                  setTypefilter(event.target.value);
-                  setSearch("")
-                  setShowfiltered(false)
-                }
-                }
-                >
-                <option value="FoodCategory"> Category </option>
-                <option value="FoodItem"> Food </option>
-                <option value="calories_100g"> Calorie 100 g/ml </option>
-                <option value="calories_portion"> Calorie Portion </option>
-                <option value="calories_oz"> Calorie Oz </option>
-              </select>
-              &nbsp;
-              </Col>
-          <Col md={4}>
-            Search value : 
-            &nbsp;
-            <input 
-              className="greenBtn"   
-              onChange={filterList} placeholder="search" value={search} type="text"/>
-          </Col>
-        </Row>
-        <hr/>
-      <Table striped bordered hover size="sm" style={{width:"80%",margin:"0 10%"}} className="woocommerce-product-attributes shop_attributes">
+        <div className="container">
+          <div className="row">
+
+              <div className=" col-12 col-lg-4 sidebar">
+                <div className="widget widget_search"><h4 className="widget-title txtCenter">Add New Meal</h4>
+                  <div className=" txtCenter greenBtn centerMydiv" >
+                    <Link href={`/admin/meals/create`}>Create new meal</Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className=" col-12 col-lg-4 sidebar">
+                <div  className="widget widget_search"><h4 className="widget-title txtCenter"> Meals from dataBase</h4>
+                  <div className=" txtCenter  centerMydiv" >
+                    <Button className="greenBtn"
+                    onClick={() => getdataMeal()}>Get meals</Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className=" col-12 col-lg-4 sidebar">
+                <div  className="widget widget_search"><h4 className="widget-title txtCenter"> Meals from Scraping</h4>
+                  <div className=" txtCenter  centerMydiv" >
+                    <select 
+                      className="greenBtn"            
+                      onClick={(event) => refreshCategory(event.target.value)}>
+                      {catlist.map((catMeal, index1) => (
+                        <option
+                        key={index1} value={catMeal.hrefCatMeals}>
+                          {catMeal.nameCatMeals}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="sidebar">
+                <div  className="widget widget_search"><h4 className="widget-title txtCenter"> Filter List </h4>
+
+                <Row >
+                    <div className=" txtCenter  centerMydiv  col-12 col-lg-4 " >
+                      <select 
+                      className="greenBtn"    
+                        onChange={(event) => showServingFilter(event.target.value)}
+                        >
+                        <option value="100g"> Serving_size_100g </option>
+                        <option value="portion"> serving_size_portion </option>
+                        <option value="oz"> serving_size_oz </option>
+                      </select>
+                    </div>
+                  <div className=" txtCenter  centerMydiv  col-12 col-lg-4 " >
+                    Search type :
+                    <br/>
+                  <select 
+                    className="greenBtn"   
+                      onChange={(event) =>{
+                        setTypefilter(event.target.value);
+                        setSearch("")
+                        setShowfiltered(false)
+                      }
+                      }
+                      >
+                      <option value="FoodCategory"> Category </option>
+                      <option value="FoodItem"> Food </option>
+                      <option value="calories_100g"> Calorie 100 g/ml </option>
+                      <option value="calories_portion"> Calorie Portion </option>
+                      <option value="calories_oz"> Calorie Oz </option>
+                    </select>
+                  </div>
+                  
+                
+                  <div className=" txtCenter  centerMydiv  col-12 col-lg-4 " >
+                    Search value :
+                    <br/>
+                    <input 
+                      className="greenBtn"   
+                      onChange={filterList} placeholder="search" value={search} type="text"/>
+                  </div>
+
+                  </Row>
+
+                </div>
+              </div>
+
+          </div>
+        </div>
+        
+      <Table striped bordered hover size="sm"  className="woocommerce-product-attributes shop_attributes">
         <thead>
           <tr className="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_conditions">
             <th>Picture</th>
-            <th className="woocommerce-product-attributes-item__label">FoodCategory</th>
-            <th className="woocommerce-product-attributes-item__label">FoodItem</th>
-            {showServing_100g ? <><th className="woocommerce-product-attributes-item__label">Serving_size_100 g/ml</th><th className="woocommerce-product-attributes-item__label">calories_100 g/ml</th></>:
-            showServing_portion ? <><th className="woocommerce-product-attributes-item__label">Serving_portion</th><th className="woocommerce-product-attributes-item__label">calories_portion</th></>:
-            showServing_oz ? <><th className="woocommerce-product-attributes-item__label">Serving_size_oz</th><th className="woocommerce-product-attributes-item__label">calories_oz</th></>:
+            <th className="woocommerce-product-attributes-item__label">Food<br/>Category</th>
+            <th className="woocommerce-product-attributes-item__label">Food<br/>Item</th>
+            {showServing_100g ? <><th className="woocommerce-product-attributes-item__label">Serving Size<br/>100 g/ml</th><th className="woocommerce-product-attributes-item__label">Calories<br/>100 g/ml</th></>:
+            showServing_portion ? <><th className="woocommerce-product-attributes-item__label">Serving<br/>Portion</th><th className="woocommerce-product-attributes-item__label">Calories<br/>Portion</th></>:
+            showServing_oz ? <><th className="woocommerce-product-attributes-item__label">Serving Size<br/>Oz</th><th className="woocommerce-product-attributes-item__label">Calories<br/>Oz</th></>:
             <><th className="woocommerce-product-attributes-item__label">Serving</th><th className="woocommerce-product-attributes-item__label">calories</th></>  }
             <th>Actions</th>
           </tr>
