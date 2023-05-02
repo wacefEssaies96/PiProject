@@ -11,6 +11,7 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 
 require('dotenv').config();
+var VerifyImgRouter = require('./routes/Img/VerifyImgRouter');
 //Routes Meals and auth
 var mealRouter = require('./routes/Meals/mealRoutes');
 var recipeRouter = require('./routes/Recipe/recipeRoutes');
@@ -68,6 +69,7 @@ app.use('/', otherAppsAuthRouter);
 app.use('/api/sportTypes', sportTypeRouter);
 app.use('/api/sportSubTypes', sportSubTypeRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/Img', VerifyImgRouter);
 app.use('/api/meal', mealRouter);
 app.use('/api/recipe', recipeRouter);
 app.use('/api/auth', authRouter);

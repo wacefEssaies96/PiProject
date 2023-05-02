@@ -8,30 +8,45 @@ const cookies = new Cookies();
 
 export const submitRecipe = async (data, operationMode) => {
     
-    // console.log("imgRecipe "+data.target.file[0])
+    let mm =data.target.meals.value
+    .split(",");
+    let formDataRecipe = new FormData();
+    formDataRecipe.append('name', data.target.name.value.trim());
+    formDataRecipe.append('validated', data.target.validated.value);
+    formDataRecipe.append('description', data.target.description.value);
+    formDataRecipe.append('meals', mm);
+    formDataRecipe.append('quantity', ((data.target.quantity.value).split(",")));
+    formDataRecipe.append('user', cookies.get('user')["_id"]);
 
-    // let imgRecipe;
-    // if (data.target.imgRecipe.files[0] !== undefined)
-    // {
+
+    if (data.target.imgRecipe.files[0] !== undefined)
+    
+        formDataRecipe.append('imgRecipe', data.target.imgRecipe.files[0]);
+
     //     imgRecipe= data.target.imgRecipe.files[0];
     //     console.log("imgRecipe"+JSON.stringify(data.target))
-    // }
-    // else
-    //     imgRecipe= data.target.pathImg.value;
     
+    else
+        formDataRecipe.append('imgRecipe', data.target.pathImg.value);
+        
+    //     console.log("formDataRecipe "+JSON.stringify(formDataRecipe))
 
-    let formDataRecipe = {
-        'name': data.target.name.value.trim(),
-        'validated': data.target.validated.value,
-        'name': data.target.name.value,
-        'description': data.target.description.value,
-        'meals': (data.target.meals.value).split(","),
-        'quantity': (data.target.quantity.value).split(","),
-        // 'imgRecipe' : imgRecipe,
-        'user': cookies.get('user')["_id"]
-    }
+        for (const [name, value] of formDataRecipe.entries()) {
+            console.log("name "+name+"value "+value);
+          }
+        // imgRecipe= data.target.pathImg.value;
 
-console.log(" formDataRecipe "+JSON.stringify(formDataRecipe))
+    // let formDataRecipe = {
+    //     'name': data.target.name.value.trim(),
+    //     'validated': data.target.validated.value,
+    //     'description': data.target.description.value,
+    //     'meals': (data.target.meals.value).split(","),
+    //     'quantity': (data.target.quantity.value).split(","),
+    //     // 'imgRecipe' : imgRecipe,
+    //     'user': cookies.get('user')["_id"]
+    // }
+
+// console.log(" formDataRecipe "+JSON.stringify(formDataRecipe))
     operationMode === 'Create'
         ? axios.post(`${process.env.backurl}/api/recipe/Create`, formDataRecipe)
         .then((data) => { if (data.data) { success(data.data.message);

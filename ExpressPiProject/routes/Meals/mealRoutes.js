@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const meal = require("../../controllers/Meals/mealController.js");
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 // Retrieve all Meals
 router.get("/findAll", meal.findAllMeals);
@@ -14,9 +16,9 @@ router.get("/Category/:cat", meal.findMealsOfCategory);
 router.get("/Details/:food", meal.findMealByName);
 
 // Create a new Meal
-router.post("/Create", meal.createMeal);
+router.post("/Create",upload.single('imgMeal'), meal.createMeal);
 // Update a Meal with id
-router.put("/Update/:id", meal.updateMeal);
+router.put("/Update/:id",upload.single('imgMeal'), meal.updateMeal);
 // Delete a Meal with id
 router.delete("/:id", meal.deleteMeal);
 // Scrap Category Meals

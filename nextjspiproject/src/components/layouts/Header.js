@@ -49,12 +49,12 @@ function Header() {
       setNotifications(response.data)
    }
    useEffect(() => {
-      getUser()
       setAuth(
          {
             token: cookies.get('token'),
             user: cookies.get('user')
          })
+      getUser()
    }, [])
 
    const { state, dispatch } = useContext(Store);

@@ -10,6 +10,56 @@
   border: solid green 3px;
   width: 250px;
   border-radius: 30px;
+}
+
+.centerMydiv {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.redBOLD {
+  color: red;
+  font-weight: bold;
+}
+
+.greenBOLD {
+  color: #016837;
+  font-weight: bold;
+}
+
+.txtCenter {
+  text-align: center;
+}
+
+.img-container {
+  height: 200px;
+  /* set the height to a specific value */
+  width: 100%;
+  /* enable scrolling when content exceeds container's height */
+}
+
+.paragraph-container {
+  height: 100px;
+  /* set the height to a specific value */
+  overflow: auto;
+  /* enable scrolling when content exceeds container's height */
+}
+
+.meals-container {
+  height: 500px;
+  /* set the height to a specific value */
+  overflow: auto;
+  /* enable scrolling when content exceeds container's height */
+}
+
+.greenBtn {
+  text-align: center;
+  background-color: white;
+  color: green;
+  border: solid green 3px;
+  width: 250px;
+  border-radius: 30px;
 
 }
 
@@ -958,9 +1008,11 @@ body .is-layout-flex>* {
   0% {
     transform: rotate(-20deg);
   }
+
   50% {
     transform: rotate(20deg);
   }
+
   100% {
     transform: rotate(-20deg);
   }
