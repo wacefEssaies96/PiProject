@@ -257,6 +257,46 @@ function Header() {
                                     </ul>
                                  </li>
                                  <li id="menu-item-1747" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="#">Contact Us</a></li>
+                                 {auth.user && auth.user.role == "DOCTOR" ? (
+   <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
+       <a href="#">Health</a>
+       <ul className="sub-menu">
+           <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767">
+               <a href="/clinic/ClinicDoctor">Clinics</a>
+           </li>
+           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+               <a href="/appointments/appointments">Manage appointments</a>
+           </li>
+       </ul>
+   </li>
+) : auth.user && auth.user.role == "USER" ? (
+   <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
+       <a href="#">Health</a>
+       <ul className="sub-menu">
+           <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767">
+               <a href="/clinic/ClinicDoctor">Clinics</a>
+           </li>
+           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+               <a href="/appointments/BookPage">Appointments</a>
+           </li>
+           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+               <a href="#">Propose an appointment</a>
+           </li>
+       </ul>
+   </li>
+) :auth.user &&   auth.user.role == "ADMIN" ? (
+   <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
+       <a href="#">Admin</a>
+       <ul className="sub-menu">
+           <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767">
+               <a href="clinic/clinicPage">Manage Clinics</a>
+           </li>
+           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+               <a href="#">Manage Appointments</a>
+           </li>
+       </ul>
+   </li>
+): null }
                               </ul>                        </nav>
                         </div>
                         <div className="side-cart">

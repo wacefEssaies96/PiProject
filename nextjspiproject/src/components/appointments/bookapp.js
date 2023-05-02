@@ -6,100 +6,86 @@ import { NavLink } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
 import { useRouter } from 'next/router';
+import axios from "axios";
+import { Alert } from 'react-bootstrap';
+// import sgMail from '@sendgrid/mail';
+// import { cp } from 'fs';
 
 
 
-
-      
     function Book({user,appointment}){
-        
-    const [appointments, setAppointments] = useState([appointment]);
+
+    const [appointments, setAppointments] = useState([]);
+  
     const [currentPage, setCurrentPage] = useState(1);
     const [appointmentsPerPage, setAppointmentsPerPage] = useState(5);
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
+    const [reserved, setReserved]= useState(false);
+
+//    let  API_KEY = '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'
+//    sgMail.setApiKey(API_KEY);
+
     const handleClick = () => {
         setShowForm(true);
       }
 
-
-        const handleAdd = () => {
-  
-  
-            // Utilisez la méthode push pour naviguer vers la page ajoutform
-            router.push('/appointments/AjoutAppointments');
-          };
-    // useEffect(()=>{
-    //     fetch(`${process.env.backurl}/api/app/findapp`)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         setAppointments(data);
-    //     });
-    // }, []);
+    useEffect(()=>{
+        fetch(`${process.env.backurl}/api/app/NotReserfindapp`)
+        .then((response) => response.json())
+        .then((data) => {
+            setAppointments(data);
+        });
+    }, []);
 
 
     
-    // const handleUpdate = (id) => {
-    //     // const clinic = clinics.find((clinic) => clinic._id === id);
-    //     // if(clinic){
+     
+  function extractDate(createAt) {
+    const date = new Date(createAt);
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const day = date.getDate();
+    const dateString = `${monthNames[monthIndex]} ${day}, ${year}`;
+    return dateString;
+  }
+      
+    
+    const handleBookAppointment = async (app) => {
+        try {
+          const response = await axios.get(`${process.env.backurl}/api/app/resapp/${app._id}`);
+          const message=`your appointment has been booked successfully on ${extractDate(app.Date)} at ${app.Hour} with doctor ${app.fullname} Speciality ( ${app.speciality} )`
+          const email= user.email
+
+          var data = {
+            message : message,
+            email : email
+          }
+          console.log("response1  avant ")
+
+          const response1 = await axios.post(`${process.env.backurl}/api/app/sendMailAppointment`,data);
+
+          console.log("response1 "+response1)
+          setReserved(true);
+          
+          console.log('Sending email to:', email);
+
+           console.log('email sent successfully')
+
+            window.location.reload()
+          } catch (error) {
+            console.log(error);
+          }
+          }
+          
+          const indexOfLastAppointment = currentPage * appointmentsPerPage;
+          const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
+          var currentAppointments=-1;
+          
+          if(appointments.length>0)
+            currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
             
-    //     // }
-    //     // const name = prompt(`Enter new clinic name (current: ${clinic.Name}):`);
-    //     // const address = prompt(`Enter new clinic address (current: ${clinic.Adress}):`);
-    //     // const phone = prompt(`Enter new clinic phone number (current: ${clinic.phone_number}):`);
-    
-    //     // fetch(`${process.env.backurl}/api/clinic/update/${id}`, {
-    //     //     method: "PUT",
-    //     //     headers: {
-    //     //         "Content-Type": "application/json",
-    //     //     },
-    //     //     body: JSON.stringify({
-    //     //         Name: name || clinic.Name,
-    //     //         Adress: address || clinic.Adress,
-    //     //         phone_number: phone || clinic.phone_number,
-    //     //     }),
-    //     // })
-    //     //     .then((response) => response.json())
-    //     //     .then((data) => {
-    //     //         const index = clinics.findIndex((clinic) => clinic._id === id);
-    //     //         const updatedClinics = [...clinics];
-    //     //         updatedClinics[index] = data;
-    //     //         setClinics(updatedClinics);
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         console.error(error);
-    //     //         alert("Failed to update clinic");
-    //     //     });
-
-
-    //     router.push(`/clinic/edit/${id}`);
-    // };
-    
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this appointment?")) {
-            fetch(`${process.env.backurl}/api/app/delapp/${id}`,{
-                method: 'DELETE'
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                alert(data.message);
-                setAppointments(appointments.filter((app) => app._id !== id));
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("Failed to delete appointment");
-            });
-            console.log(id)
-        }
-    };
-    
-
-    const indexOfLastAppointment = currentPage * appointmentsPerPage;
-    const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
-    // const currentAppointments=1;
-    
-    const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
-
     
    
     const pageNumbers = [];
@@ -122,23 +108,20 @@ import { useRouter } from 'next/router';
 
     return(
         <div className='container'>  
+         {reserved && (
+                <Alert variant="success" onClose={() => setReserved(false)} dismissible>
+                    <Alert.Heading>Appointment Booked Successfully!</Alert.Heading>
+                    <p>
+                        You have successfully booked an appointment.
+                    </p>
+                </Alert> )}
             <div className="wishlist-title ">
                 <h2>List of Appointments</h2>
                							
             </div>
             
-            {/* <a href="/appointments/AjoutAppointments" class=" float-end"  style={{color: '#016837'}}>Add an appointment</a> */}
-            <div className='container'>
-                <div>{user._id}</div>
-            <div>{user.speciality}</div> 
-            <div>{user.fullname}</div>
-            <div><img style={{ height: '2rem', width: '2rem' }}
-                                          src={`${process.env.backurl}/${user.image}`}
-                                          onError={(e) => { e.target.src = `${process.env.backurl}/uploads/User/altUser.png` }}
-                                          alt="verifiy img"
-                                       /></div>
- 
-  </div>
+       
+  
 
 
             <div className="table-responsive">
@@ -150,36 +133,21 @@ import { useRouter } from 'next/router';
                             <th>Date</th>
                             <th>Hour</th>
                             <th>Duration</th>
-                            <th>User</th>
+                            <th>FullName</th>
+                            <th>Speciality</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {currentAppointments.map(app => (
+                        {currentAppointments.length>0 && currentAppointments.map(app => (
                             <tr >
-                                <td key={app.Date}>{app.Date}</td>
+                                <td key={app.Date}>{extractDate(app.Date)}</td>
                                 <td key={app.Hour}>{app.Hour}</td>
                                 <td key={app.Duration}>{app.Duration}</td>
-                                <td key={app.user}>{app.user}</td>
-                                {/* <td>
-                                 <button
-                                        className="btn border border-danger   btn-sm" 
-                                        onClick={() => handleDelete(app._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                    
-                                    </td> */}
-                                    
-                                    {/* <button className="btn btn-primary" onClick={handleAdd}>Add Clinic</button> */}
-                                     {/* <NavLink to="/ajout-form" activeClassName="active">
-                                     <button onClick={handleClick}>Ajouter</button>
-                                       {showForm && <AjoutForm />}
-                                     </NavLink> 
-                                    //    */}
-                                    {/* <td>
-                                        <Link className="btn btn-outline-secondary me-3 ms-3" href={`/appointments/edit/${app._id}`}>Edit</Link>
-                                        
-                                    </td> */}
+                                <td key={app.fullname}>{app.fullname}</td>
+
+                                <td key={app.speciality}>{app.speciality}</td>
+                                <td><button className="btn btn-warning" onClick={()=>handleBookAppointment(app)}>Book</button> </td>
+                              
                             </tr>
                         ))}
                     </tbody>

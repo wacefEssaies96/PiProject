@@ -6,18 +6,18 @@ export const handleUpdateOrAdd  = async (data, operationMode) => {
    let u =null
 
    if(cookies.get('user')){
-    let u = cookies.get('user')["_id"]
+     u = cookies.get('user')["_id"]
    }
-    let op= {
-         
-        'Date':moment(data.target.Date.value).toDate(),
-        
-        'Hour':data.target.Hour.value ,
-        'Duration': data.target.Duration.value ,
-        'user': u
-       
-    }
-   
+   let op = {
+    'Date': moment(data.target.Date.value, 'YYYY-MM-DD').toDate(),
+    'Hour': data.target.Hour.value,
+    'Duration': data.target.Duration.value,
+    'user': u,
+    'reserved': false,
+    'fullname': u.fullname,
+    'speciality': u.speciality,
+  };
+  console.log(op)
     // let options = new FormData()
     // options.append('Name', data.target.Name.value)
     // options.append('Adress', data.target.Adress.value)

@@ -13,11 +13,14 @@ export async function getServerSideProps(ctx) {
   const { user} = nextCookie(ctx)
   if (user) {
     const id = user._id
+    
     const res = await fetch(`${process.env.backurl}/api/users/findOne/${id}`)
     const c= await res.json()
-    const res2 = await fetch(`${process.env.backurl}/api/app/docapp/${id}`)
-      const c2= await res2.json()
     
+    const res2 = await fetch(`${process.env.backurl}/api/app/fi/${id}`)
+    const c2= await res2.json()
+    
+    //console.log(c2)
     return {
       props: {
         user: c,
@@ -25,8 +28,9 @@ export async function getServerSideProps(ctx) {
       }
     }
   }
+
   const res3 = await fetch(`${process.env.backurl}/api/app/findapp`)
-     const c3= await res3.json()
+  const c3= await res3.json()
   return {
     props:{
       app:c3

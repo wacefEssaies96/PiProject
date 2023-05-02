@@ -6,75 +6,48 @@ import { NavLink } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
 import { useRouter } from 'next/router';
+import axios from "axios";
+
+
 
 
 
 
       
-    function Appointments({user,appointment}){
+function Appointments({user,appointment}) {
         
     const [appointments, setAppointments] = useState(appointment);
     const [currentPage, setCurrentPage] = useState(1);
     const [appointmentsPerPage, setAppointmentsPerPage] = useState(5);
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
+    const [newAppointment, setNewAppointment] = useState(null);
+    
+  function extractDate(createAt) {
+    const date = new Date(createAt);
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const day = date.getDate();
+    const dateString = `${monthNames[monthIndex]} ${day}, ${year}`;
+    return dateString;
+  }
+    // useEffect(() => {
+    //   if (appointment) {
+    //     setAppointments([appointment]);
+    //   }
+    // }, [appointment]);
+    // useEffect(() => {
+    //     if (newAppointment) {
+    //       setAppointments([...appointments, newAppointment]);
+    //       setNewAppointment(null);
+    //     }
+    //   }, [newAppointment, appointments]);
+    
     const handleClick = () => {
-        setShowForm(true);
-      }
+      setShowForm(true);
+    }
 
-
-        const handleAdd = () => {
-  
-  
-            // Utilisez la méthode push pour naviguer vers la page ajoutform
-            router.push('/appointments/AjoutAppointments');
-          };
-    // useEffect(()=>{
-    //     fetch(`${process.env.backurl}/api/app/findapp`)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         setAppointments(data);
-    //     });
-    // }, []);
-
-
-    
-    // const handleUpdate = (id) => {
-    //     // const clinic = clinics.find((clinic) => clinic._id === id);
-    //     // if(clinic){
-            
-    //     // }
-    //     // const name = prompt(`Enter new clinic name (current: ${clinic.Name}):`);
-    //     // const address = prompt(`Enter new clinic address (current: ${clinic.Adress}):`);
-    //     // const phone = prompt(`Enter new clinic phone number (current: ${clinic.phone_number}):`);
-    
-    //     // fetch(`${process.env.backurl}/api/clinic/update/${id}`, {
-    //     //     method: "PUT",
-    //     //     headers: {
-    //     //         "Content-Type": "application/json",
-    //     //     },
-    //     //     body: JSON.stringify({
-    //     //         Name: name || clinic.Name,
-    //     //         Adress: address || clinic.Adress,
-    //     //         phone_number: phone || clinic.phone_number,
-    //     //     }),
-    //     // })
-    //     //     .then((response) => response.json())
-    //     //     .then((data) => {
-    //     //         const index = clinics.findIndex((clinic) => clinic._id === id);
-    //     //         const updatedClinics = [...clinics];
-    //     //         updatedClinics[index] = data;
-    //     //         setClinics(updatedClinics);
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         console.error(error);
-    //     //         alert("Failed to update clinic");
-    //     //     });
-
-
-    //     router.push(`/clinic/edit/${id}`);
-    // };
-    
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this appointment?")) {
             fetch(`${process.env.backurl}/api/app/delapp/${id}`,{
@@ -92,13 +65,13 @@ import { useRouter } from 'next/router';
             console.log(id)
         }
     };
-    
+
 
     const indexOfLastAppointment = currentPage * appointmentsPerPage;
     const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
     // const currentAppointments=1;
     
-    const currentAppointments = appointments && appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+    const currentAppointments = Array.isArray(appointments) ? appointments.slice(indexOfFirstAppointment, indexOfLastAppointment) : [];
 
     
    
@@ -127,7 +100,7 @@ import { useRouter } from 'next/router';
                							
             </div>
             
-            <a href="/appointments/AjoutAppointments" class=" float-end"  style={{color: '#016837'}}>Add an appointment</a>
+            <a href="/appointments/AjoutAppointments" className=" float-end"  style={{color: '#016837'}}>Add an appointment</a>
             {/* <div className='container'>
             <div>{user.speciality}</div>
             <div>{user.fullname}</div>
@@ -145,7 +118,7 @@ import { useRouter } from 'next/router';
                 
                 <table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr >
                             <th>Date</th>
                             <th>Hour</th>
                             <th>Duration</th>
@@ -153,29 +126,26 @@ import { useRouter } from 'next/router';
                     </thead>
                     <tbody>
                         {currentAppointments.map(app => (
-                            <tr >
-                                <td key={app.Date}>{app.Date}</td>
-                                <td key={app.Hour}>{app.Hour}</td>
-                                <td key={app.Duration}>{app.Duration}</td>
+                            <tr key={app._id} >
+                                <td >{extractDate(app.Date)}</td>
+                                <td >{app.Hour}</td>
+                                <td >{app.Duration}</td>
                                 <td>
+                                    {app.reserved 
+                                    ?
+                                    <>Reserved</>
+                                    :
+                                    <>
                                  <button
                                         className="btn border border-danger   btn-sm" 
                                         onClick={() => handleDelete(app._id)}
                                     >
                                         Delete
                                     </button>
-                                    
-                                    </td>
-                                    <td>
-                                    {/* <button className="btn btn-primary" onClick={handleAdd}>Add Clinic</button> */}
-                                     {/* <NavLink to="/ajout-form" activeClassName="active">
-                                     <button onClick={handleClick}>Ajouter</button>
-                                       {showForm && <AjoutForm />}
-                                     </NavLink> 
-                                       */}
                                         <Link className="btn btn-outline-secondary me-3 ms-3" href={`/appointments/edit/${app._id}`}>Edit</Link>
-                                        
-                                    </td>
+                                        </>
+                                    }
+                                </td>
                             </tr>
                         ))}
                     </tbody>

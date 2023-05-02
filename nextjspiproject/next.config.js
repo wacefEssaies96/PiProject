@@ -3,5 +3,7 @@ const nextConfig = {
   env: {
     backurl: 'http://localhost:3030',
   }
+  
 }
+
 module.exports = nextConfig

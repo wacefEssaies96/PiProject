@@ -65,6 +65,12 @@ export default function Document() {
         <link rel="preload" as="font" id="rs-icon-set-fa-icon-woff" type="font/woff2" crossOrigin="anonymous" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/fonts/fontawesome-webfont3e6e.woff2" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-fa-icon-css" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/css/font-awesome.css" type="text/css" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-pe-7s-css" href="/wp-content/plugins/revslider/public/assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" type="text/css" media="all" />
+        <link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""
+/>
       </Head>
       <body className="home page-template-default page page-id-148 wp-embed-responsive weefly-main theme-weefly woocommerce-no-js wpb-js-composer js-comp-ver-6.9.0 vc_responsive">
         <Main />
