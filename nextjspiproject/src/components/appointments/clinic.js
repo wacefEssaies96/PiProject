@@ -39,41 +39,7 @@ import { useRouter } from 'next/router';
 
 
     
-    // const handleUpdate = (id) => {
-    //     // const clinic = clinics.find((clinic) => clinic._id === id);
-    //     // if(clinic){
-            
-    //     // }
-    //     // const name = prompt(`Enter new clinic name (current: ${clinic.Name}):`);
-    //     // const address = prompt(`Enter new clinic address (current: ${clinic.Adress}):`);
-    //     // const phone = prompt(`Enter new clinic phone number (current: ${clinic.phone_number}):`);
-    
-    //     // fetch(`${process.env.backurl}/api/clinic/update/${id}`, {
-    //     //     method: "PUT",
-    //     //     headers: {
-    //     //         "Content-Type": "application/json",
-    //     //     },
-    //     //     body: JSON.stringify({
-    //     //         Name: name || clinic.Name,
-    //     //         Adress: address || clinic.Adress,
-    //     //         phone_number: phone || clinic.phone_number,
-    //     //     }),
-    //     // })
-    //     //     .then((response) => response.json())
-    //     //     .then((data) => {
-    //     //         const index = clinics.findIndex((clinic) => clinic._id === id);
-    //     //         const updatedClinics = [...clinics];
-    //     //         updatedClinics[index] = data;
-    //     //         setClinics(updatedClinics);
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         console.error(error);
-    //     //         alert("Failed to update clinic");
-    //     //     });
-
-
-    //     router.push(`/clinic/edit/${id}`);
-    // };
+   
     
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this clinic?")) {
@@ -117,7 +83,10 @@ import { useRouter } from 'next/router';
     });
 
     return(
+        
+
         <div className='container'>  
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
             <div className="wishlist-title ">
                 <h2>List of Clinics</h2>
                							
@@ -136,8 +105,7 @@ import { useRouter } from 'next/router';
                         {currentClinics.map(clinic => (
                             <tr key={clinic._id}>
                                 <td key={clinic.Name}>{clinic.Name}</td>
-                                {/* <td key={clinic.Adress}>{clinic.Adress}</td> */}
-                                <td key={clinic.Adress}><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clinic.Adress)}`} target="_blank">{clinic.Adress}</a></td>
+                                 <td key={clinic.Adress}>{clinic.Adress}</td> 
 
                                 <td key={clinic.phone_number}>{clinic.phone_number}</td>
                                 <td>
@@ -150,14 +118,9 @@ import { useRouter } from 'next/router';
                                     
                                     </td>
                                     <td>
-                                    {/* <button className="btn btn-primary" onClick={handleAdd}>Add Clinic</button> */}
-                                     {/* <NavLink to="/ajout-form" activeClassName="active">
-                                     <button onClick={handleClick}>Ajouter</button>
-                                       {showForm && <AjoutForm />}
-                                     </NavLink> 
-                                       */}
+                                   
                                         <Link className="btn btn-outline-secondary me-3 ms-3" href={`/clinic/edit/${clinic._id}`}>Edit</Link>
-                                        {/* <button className="btn btn-primary" onClick={handleUpdate(clinic._id)}>Edit Clinic</button>  */}
+                                        
                                     </td>
                             </tr>
                         ))}

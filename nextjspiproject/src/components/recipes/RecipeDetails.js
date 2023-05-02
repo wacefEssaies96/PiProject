@@ -1,13 +1,16 @@
 import { deleteData, fetchData } from "@/services/mix";
 import { useRouter } from "next/router";
+import { Cookies } from 'react-cookie'
 import { useEffect, useState } from "react"
 import { Table,Button, Container, Form, Stack } from "react-bootstrap"
 
+const cookies = new Cookies();
 export default function RecipeDetails(props) {
   const router = useRouter()
   
   // const [operationMode, setOperationMode] = useState('Create')
   const [listMeal, setListMeal] = useState([])
+  const [listMealoneTime, setListMealoneTime] = useState(true)
 
   const [recipe, setRecipe] = useState({
     name : "",
@@ -33,11 +36,16 @@ export default function RecipeDetails(props) {
    const refresh =()=>{
       
       // setRecipe({...recipe,melas:[]})
-      // setRecipe({...recipe,melas:props.recipe.meals})
-      for (let i in props.recipe.meals){
-         addToListMeals(props.recipe.meals[i])
+      setRecipe({...recipe,melas:props.recipe.meals})
+      for (let i in recipe.meals){
+        // console.log(" meals : "+recipe.meals)
+        if (listMealoneTime) {
+          addToListMeals(recipe.meals[i])
+        }
+
          // console.log("addToListMeals "+props.recipe.meals[i].calories_100g)
       }
+      setListMealoneTime(false)
    }
   useEffect(() => {
     if (props.recipe !== undefined) {
@@ -128,31 +136,18 @@ export default function RecipeDetails(props) {
               <p key={recipe.description} className="post-excerpt">
               {recipe.description}                
               </p>
+              {cookies.get('user') && recipe.user == cookies.get('user')["_id"] &&
               <div className="wd-blog-bottom-meta">
                  <div className="wd-author-meta">
                     <div className="wd-post_date">
                        <a href={`/recipes/edit/${recipe._id}`} className="btn wd-btn-round-2">Edit</a>
                     </div>
                     <div className="wd-post_date">
-                    {/* <div class="quantity">
-					<input type="button" value="-" class="minus btn btn-outline-secondary"/>
-					<input
-						type="number"
-						id="quantity_6407f5d94259b"
-						class="input-text qty text"
-						step="1"
-						min="1"
-						max="99999"
-						name="quantity"
-						value="1"
-						title="Qty"
-						size="4" />
-					<input type="button" value="+" class="plus btn btn-outline-secondary"/>
-				</div> */}
                         <Button onClick={() => deleteOneRecipe(recipe._id)} className="btn wd-btn-round-2">Delete</Button>
                     </div>
                  </div>
               </div>
+              }
            </div>
         </article>
      </div> 
@@ -203,7 +198,7 @@ export default function RecipeDetails(props) {
         </td>
         <td key={meal.FoodItem} className="woocommerce-product-attributes-item__value">{meal.FoodItem}</td>
         <td key={meal.calories_100g}  className="woocommerce-product-attributes-item__value">{meal.calories_100g}</td>
-        <td  className="woocommerce-product-attributes-item__value">{ (extractValue(meal.calories_100g)/recipe.totalCalorie*100).toFixed(2)} %</td>
+        <td  className="woocommerce-product-attributes-item__value">{ (extractValue(meal.calories_100g)*recipe.quantity[index]/recipe.totalCalorie*100).toFixed(2)} %</td>
 
 
       </tr>

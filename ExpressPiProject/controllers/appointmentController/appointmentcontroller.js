@@ -1,9 +1,11 @@
 const app = require('../../app');
+const User = require('../../models/Users/user');
 const appointmentdb= require('../../models/appointment/appointment')
 const moment = require('moment');
 
 
-exports.create = (req, res) => {
+
+exports.create = async (req, res) => {
   // Valider la requête
   if (!req.body) {
     res.status(400).send({ message: "Le contenu ne peut pas être vide !" });
@@ -11,12 +13,18 @@ exports.create = (req, res) => {
   }
 
 
-
+  var u = []
   // Créer un nouvel objet rendez-vous
+  if(req.body.user!=null)
+  {
+    u= await User.findById(req.body.user)
+  }
   const appointment = new appointmentdb({
     Date: req.body.Date,
     Hour: req.body.Hour,
     Duration: req.body.Duration,
+    user: u,
+    reserved: false
   })
   // Enregistrer le rendez-vous dans la base de données
   appointment.save()
@@ -141,4 +149,36 @@ exports.findAppointmentById = async (req, res) => {
             err.message || "An error occurred while removing all appointments."
         });
       });
+  };
+
+  exports.findDoctor = async (req, res) => {
+    const id = req.params.id;
+  
+    try {
+      const appointment = await appointmentdb.findOne({'user':id});
+  
+      if (!appointment) {
+        return res.status(404).send({ message: "appointment not found" });
+      }
+  
+      res.send(appointment);
+    } catch (err) {
+      res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
+  exports.finda = async (req, res) => {
+    const id = req.params.id;
+  
+    try {
+      const appointment = await appointmentdb.findOne({'reserved':false});
+  
+      if (!appointment) {
+        return res.status(404).send({ message: "appointment not found" });
+      }
+  
+      res.send(appointment);
+    } catch (err) {
+      res.status(500).send({ message: "Internal server error" });
+    }
   };

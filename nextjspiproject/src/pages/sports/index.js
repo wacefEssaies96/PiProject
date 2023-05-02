@@ -4,12 +4,10 @@ import { Form, Button, Card } from "react-bootstrap";
 import { BiBlock, BiCheck } from 'react-icons/bi'
 import axios from "axios"
 import { useEffect, useState } from "react";
-import Success from "@/components/layouts/SuccessMsg";
 
 const StartNowFormPage = () => {
 
     const [userImage, setUserImage] = useState('')
-    const [showAlert, setShowAlert] = useState(false)
     const [validated, setValidated] = useState(false)
     const [res, setRes] = useState('')
 
@@ -22,18 +20,9 @@ const StartNowFormPage = () => {
             const formData = new FormData()
             formData.append('userImage', e.target.userImage.files[0])
             const response = await axios.post(`${process.env.backurl}/api/get-your-morphology/getYourMorphologyType`, formData)
-            if (!showAlert) {
-                setRes(response.data)
-                setShowAlert(true)
-            }
+            setRes(response.data)
         }
     }
-
-    useEffect(() => {
-        setTimeout(() => {
-            setShowAlert(false)
-        }, 2000);
-    }, [showAlert])
 
     const handleUserImage = (e) => {
         setUserImage(e.target.files[0])
@@ -52,7 +41,6 @@ const StartNowFormPage = () => {
                     </div>
                 </div>
                 <div className="container d-flex justify-content-center">
-                    {showAlert && (<Success message="Your image is sent successfully, please wait for the result..."></Success>)}
                     <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit} style={{ padding: "5%" }}>
                         <Form.Group className="mb-3">
                             <Form.Label htmlFor="floatingInput" style={{ fontWeight: "bold", color: "#d93" }}>Your Full Body Picture</Form.Label>
@@ -72,10 +60,9 @@ const StartNowFormPage = () => {
                         </Link>
                     </Form>
                     {res != '' &&
-                        <Card style={{ width: '40%', height:"70%", marginTop:"5%" }}>
+                        <Card style={{ width: '40%', height: "70%", marginTop: "5%" }}>
                             <Card.Body>
                                 <Card.Title>Your Shoulder width : {res} cm</Card.Title>
-                                <Card.Title>Your Waist  width : {res} cm</Card.Title>
                                 <Card.Title>Your Hips width : {res} cm</Card.Title>
                             </Card.Body>
                             <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button">See you body shape type</Button>

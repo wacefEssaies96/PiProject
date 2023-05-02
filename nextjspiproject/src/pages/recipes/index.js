@@ -176,7 +176,7 @@ export default function Index({ Myrecipesdb,recipesdb ,user}) {
       <div id="weefly_recent_post-1" className="widget widget_weefly_recent_post"><h4 className="widget-title">My Recipes</h4>
         <div className="widget-posts">
           <ul>
-            {
+            {mylist.length>0 &&
               mylist.slice(-3).map((recipe, index)=> {
                 return(
               <li className="widget-post">

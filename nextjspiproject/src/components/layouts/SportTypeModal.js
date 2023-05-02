@@ -23,6 +23,14 @@ export default function MyVerticallyCenteredModal({ show, onHide, title }) {
             loadDetails()
     }, [change])
 
+    const deleteDetails = () => {
+        setSportTypeByTitle({
+            title:'',
+            advantages:[],
+            sportSubType:[]
+        })
+    }
+
     return (
         <Modal
             show={show}
@@ -54,7 +62,8 @@ export default function MyVerticallyCenteredModal({ show, onHide, title }) {
                     </Modal.Body>
                 </>}
             <Modal.Footer>
-                <Button onClick={onHide}>Close</Button>
+                <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={onHide}>Close</Button>
+                {/* <Button className='btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' onClick={deleteDetails}>Reset</Button> */}
             </Modal.Footer>
         </Modal>
     );

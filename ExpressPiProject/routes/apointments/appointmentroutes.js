@@ -14,5 +14,9 @@ router.delete("/delapp/:id", appointments.delete);
 
 router.get("/getapp/:id", appointments.findAppointmentById);
 
+router.get("/docapp/:id", appointments.findDoctor);
+router.get("/fi", appointments.finda);
+
+
 router.delete("/del", appointments.deleteAll)
 module.exports= router;

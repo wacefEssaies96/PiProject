@@ -9,7 +9,7 @@ export const submitCategory = async (event, subcategories, operation) => {
     const options = {
         method: method,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', 
         },
         body: JSONdata,
     }

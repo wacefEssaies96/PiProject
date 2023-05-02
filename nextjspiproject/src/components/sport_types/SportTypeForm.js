@@ -253,10 +253,18 @@ export default function SportTypeForm({ sportType }) {
                 setADVObj({ titles: str1 + str2 })
                 console.log(advObj.titles);
             }
+        } else {
+            if (sportSubTypesDeFaultValueInput.titles.search(title) !== -1) {
+                let str1 = sportSubTypesDeFaultValueInput.titles.substring(0, sportSubTypesDeFaultValueInput.titles.search(title) - 2)
+                let str2 = sportSubTypesDeFaultValueInput.titles.substring(title.length + sportSubTypesDeFaultValueInput.titles.search(title), sportSubTypesDeFaultValueInput.titles.length)
+                console.log(str1, str2)
+                setSportSubTypesDeFaultValueInput({ titles: str1 + str2 })
+                console.log(sportSubTypesDeFaultValueInput.titles);
+            }
         }
     }
     const passSportSubTypes = async (title) => {
-
+        console.log("work");
         setSportSubTypesDeFaultValueInput(prevObj => {
             if (!prevObj.titles.includes(title)) {
                 return {
@@ -267,7 +275,7 @@ export default function SportTypeForm({ sportType }) {
             }
         })
     }
-
+console.log(sportSubTypesDeFaultValueInput);
     return (
         <div className="container" style={{ padding: "5%" }}>
             {showAlert && <Success message={`Sport Type ${operation}ed Successfully !`}></Success>}
@@ -366,7 +374,7 @@ export default function SportTypeForm({ sportType }) {
                                 <Card style={{ width: '25%', marginLeft:"35%", height:"10%"}}>
                                     <Card.Body>
                                         <Card.Title>{t}</Card.Title>
-                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passSportSubTypes(t)}>Choose this</Button>
                                         <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("SubTypes", t)}>Remove</Button><br/><br/><br/>
                                     </Card.Body>
                                 </Card>

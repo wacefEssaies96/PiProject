@@ -22,6 +22,7 @@ export default function AppointmentForm(props) {
         Date: new Date(),
         Hour: "",
         Duration: "",
+
        
     })
     const [validated, setValidated] = useState(false);
@@ -37,6 +38,7 @@ export default function AppointmentForm(props) {
             ...appointments,
             Date: date
         });
+        console.log("date " + moment(date).toDate())
     }
    
 
@@ -87,16 +89,35 @@ export default function AppointmentForm(props) {
                                         <Form.Group className="mb-3">
                                             <Form.Label>Date</Form.Label>
                                             {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="Date" placeholder="Name" required  /> */}
+                                            { 
+                                            operationMode === 'Add'
+                                            ?
                                             <DatePicker
+                                                
+                        
                                                 selected={appointments.Date}
-                                                onChange={date => handleDateChange(date)}
+                                                onChange={ (e)=>handleDateChange(e)}
                                                 dateFormat="dd/MM/yyyy"
                                                 placeholderText="Choose a date"
                                                 name="Date"
                                                 id="vb_name"
                                                 className="form-control"
                                                 required
-                                            />                              
+                                            />  
+                                            :
+                                            <DatePicker
+                                                
+                        
+                                                value={appointments.Date}
+                                                
+                                                onChange={ (e)=>handleDateChange(e)}
+                                                dateFormat="dd/MM/yyyy"
+                                                placeholderText="Choose a date"
+                                                name="Date"
+                                                id="vb_name"
+                                                className="form-control"
+                                                required
+                                            />  }                            
                                             {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="Date" placeholder="Name" required  /> */}
                                             <Form.Control.Feedback type='invalid'>
                                                 {'Please enter the Date'}
@@ -126,12 +147,12 @@ export default function AppointmentForm(props) {
 
                                         <Form.Group className="mb-3">
                                             <Form.Label>Duration</Form.Label>
-                                            <Form.Control
+                                            <Form.Control  
                                                             defaultValue={appointments.Duration}
                                                             name="Duration"
                                                             type="text"
                                                             placeholder="e.g. 1h30min"
-                                                            pattern="([1-9]|[1-9][0-9]+)h([0-5]?[0-9]?)min" // ajout du pattern
+                                                           // ajout du pattern
                                                             required
                                                         />
                                             <Form.Control.Feedback type="valid">

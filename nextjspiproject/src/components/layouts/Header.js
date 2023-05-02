@@ -143,6 +143,21 @@ function Header() {
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768">
                                              <a onClick={() => { router.push("/recipes") }} >Recipes (User)</a>
                                           </li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/admin/Products") }} aria-current="page">Products (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/admin/orders") }} aria-current="page">Orders (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/clinic/clinicPage") }} aria-current="page">Clinic (Admin)</a>
+                                          </li>
+                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                             <a onClick={() => { router.push("/appointments/appointments") }} aria-current="page">Appointements (Admin)</a>
+                                          </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href='#' onClick={() => { router.push("/admin/users") }} aria-current="page">Users</a></li>
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/admin/sport-type">Sport Types</Link></li>
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/admin/sport-sub-type">Sport Sub Types</Link></li>

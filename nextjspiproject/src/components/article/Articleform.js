@@ -257,10 +257,10 @@ export default function ArticleForm(props) {
             <Recommendations show={showViewRecommendations} handleClose={handleCloseViewRecommendations} recommendations={recommendation}></Recommendations>
 
           </Stack>
-          <button className="btn button" type="submit">Submit</button>
+          <button className="btn btn-outline-success" type="submit">Submit</button>
           {recommendation.length > 1 &&
             <>
-              <button className="btn button" type="button" onClick={() => handleShowViewRecommendations()}>View recommendations</button>
+              <button className="btn btn-outline-success" type="button" onClick={() => handleShowViewRecommendations()}>View recommendations</button>
             </>
           }
         </Form>
