@@ -1,11 +1,20 @@
-const express = require('express');
-const router = express.Router();
+const NotificationController = require("../../controllers/Sports/sendSportNotificationController");
+var express = require('express');
+var router = express.Router();
 
-const notification = require('../../controllers/Sports/sendSportNotificationController');
+//Create
+// router.post("/addProgress", ProgressController.insertAndUpdateProgress);
 
-module.exports = function(io) {
-  // Define routes and pass io object to controller
-  router.post('/notification', notification(io));
+// Retrieve all getPushRequests
+router.get("/getPushRequests", NotificationController.getPushRequests);
 
-  return router;
-};
+// Retrieve all progresses by userId
+// router.get("/getAllUserProgresses/:userId", ProgressController.findAllByUser);
+
+// // update progress
+// router.put("/update", ProgressController.updateProgress);
+
+// // delete progress
+// router.delete("/delete/:id", ProgressController.deleteProgress);
+
+module.exports = router;

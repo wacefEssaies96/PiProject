@@ -1,16 +1,24 @@
 import AddSportRating from "@/components/AddSportRating";
 import { fetchSubTypeData } from "@/services/SportSubTypeServices";
-import { postProgress, updateProgress } from "@/services/sportProgress";
+import { deleteProgress, postProgress } from "@/services/sportProgress";
 import Head from "next/head"
 import { useEffect, useState } from "react";
 import { Button, Carousel, ProgressBar } from "react-bootstrap";
+import Confetti from "react-confetti";
+import useWindowSize from 'react-use/lib/useWindowSize'
 
-const VideosPage = ({ user, videos, ratesUser }) => {
+const VideosPage = ({ user, videos, ratesUser, allUserProgresses }) => {
 
     const [storedRating, setStoredRating] = useState(null)
-    const [filled, setFilled] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState(0)
+    const [disable, setDisable] = useState(false)
+    const [disableCancel, setDisableCancel] = useState(false)
+    const { width, height } = useWindowSize()
+    const [percent, setPercent] = useState(0)
+
+    useEffect(() => {
+        setPercent(progress);
+    }, [progress]);
 
     useEffect(() => {
         if (ratesUser) {
@@ -22,39 +30,39 @@ const VideosPage = ({ user, videos, ratesUser }) => {
             average = total / ratesUser.length
             setStoredRating(average)
         }
+
+        if (allUserProgresses) {
+            let totalProgress = 0
+            for (let index = 0; index < allUserProgresses.length; index++) {
+                totalProgress += allUserProgresses[index].progress
+            }
+            setProgress(totalProgress)
+        }
     }, [])
 
-    useEffect(() => {
-        if (filled < 100 && isRunning) {
-            setTimeout(() => setFilled(prev => prev += 2), 50)
-        }
-    }, [filled, isRunning])
-
     const handleStart = async (videoId) => {
-        await postProgress(user._id, videoId)
+        if (progress < 100) {
+            let newProgress = progress + 10
+            setProgress(newProgress)
+            console.log(allUserProgresses);
+            for (let index = 0; index < allUserProgresses.length; index++) {
+                console.log(allUserProgresses[index].video === videoId);
+                if (allUserProgresses[index].video === videoId) {
+                    setDisable(true)
+                }
+            }
+            await postProgress(user._id, videoId)
+        }
     }
 
-    // Track the current progress of the video being watched by the user
-    const onProgress = (event) => {
-        setProgress(event.target.getCurrentTime());
-    };
-
-    // Send update requests to your server that contain the current progress of the video being watched by the user
-    // useEffect(() => {
-    //     for (let index = 0; index < videos.length; index++) {
-    //         (function (i) {
-    //             setInterval(async () => {
-    //                 await updateProgress(user._id, videos[i].videoId)
-    //             }, 5000);
-    //         })(index);
-    //     }
-    // }, [progress]);
-
-    const handleEdit = () => {
-        setIsRunning(true)
-        if (filled < 100 && isRunning) {
-            setProgress(10)
-            setTimeout(() => setFilled(prev => prev += 10), 50)
+    const handleDelete = async (id) => {
+        for (let index = 0; index < allUserProgresses.length; index++) {
+            if (allUserProgresses[index].video === id) {
+                let videoId = allUserProgresses[index]._id
+                await deleteProgress(videoId)
+                setProgress(prev => prev - 10)
+                setDisableCancel(true)
+            }
         }
     }
 
@@ -64,6 +72,7 @@ const VideosPage = ({ user, videos, ratesUser }) => {
                 <title>Sport Videos | Page</title>
                 <meta name='keywords' content='Sports' />
             </Head>
+            {progress === 100 && <Confetti width={width} height={height} style={{ position: "fixed" }} />}
             <div className=" vc_custom_1578545547251 wd-section-heading-wrapper text-center">
                 <div className="wd-service-heading wd-section-heading">
                     <span className="heading-subtitle">Sport PlayList</span>
@@ -73,7 +82,7 @@ const VideosPage = ({ user, videos, ratesUser }) => {
                     </h3>
                 </div><br /><br />
             </div>
-            <Carousel variant="dark">
+            <Carousel onSlid={() => setDisable(false)} variant="dark">
                 {videos.length > 0 && videos.map((v, i) =>
                     <Carousel.Item key={i}>
                         <div className="row ">
@@ -92,9 +101,9 @@ const VideosPage = ({ user, videos, ratesUser }) => {
                             </div>
                         </div>
                         <div style={{ width: "70%", paddingLeft: "410px", paddingTop: "3%" }}>
-                            <ProgressBar animated now={filled} label={`${progress}%`} variant="success" /><br />
-                            <Button variant="success" onClick={() => handleStart(v.videoId)}>Start</Button>
-                            <Button variant="success" onClick={handleEdit}>Start Video 1</Button>
+                            <ProgressBar animated now={percent} label={`${percent}%`} variant="success" /><br />
+                            <p>Click on the button to start your training video</p><Button disabled={disable} variant="success" onClick={() => handleStart(v.videoId)}>Start</Button>
+                            <Button disabled={disableCancel} variant="danger" onClick={() => handleDelete(v.videoId)}>Cancel</Button>
                         </div>
                         <div className="wd-shop-details">
                             <div className="wd-shop-slider-main">
@@ -109,7 +118,7 @@ const VideosPage = ({ user, videos, ratesUser }) => {
                                                 <div className="wd-shop-details-title-wrapper">
                                                     <div className="wd-shop-product-title">
                                                         <div style={{ marginLeft: "-300px" }} className="embed-responsive embed-responsive-21by9">
-                                                            <iframe onProgress={onProgress} className="embed-responsive-item" src={`https://www.youtube.com/embed/${v.videoId}`} title="YouTube video" allowFullScreen></iframe>
+                                                            <iframe className="embed-responsive-item" src={`https://www.youtube.com/embed/${v.videoId}`} title="YouTube video" allowFullScreen></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -136,12 +145,14 @@ export async function getServerSideProps(context) {
     const user = await fetchSubTypeData(`${process.env.backurl}/api/users/findOne/${id}`)
     const data = await fetchSubTypeData(`${process.env.backurl}/api/scrapedYoutubeVideos/userVideos/${id}`)
     const rates = await fetchSubTypeData(`${process.env.backurl}/api/sportsRating/userRates/${id}`)
+    const allUserProgresses = await fetchSubTypeData(`${process.env.backurl}/api/sportsProgress/getAllUserProgresses/${id}`)
 
     return {
         props: {
             user: user,
             videos: data,
-            ratesUser: rates
+            ratesUser: rates,
+            allUserProgresses: allUserProgresses
         }
     }
 }

@@ -8,7 +8,7 @@ export const postProgress = async (userId, videoId) => {
         body: JSON.stringify({
             videoId: videoId,
             userId: userId,
-            progress: 0
+            progress: 10
         }),
 
     }
@@ -33,4 +33,12 @@ export const updateProgress = async (userId, videoId) => {
     const res = await fetch(`${process.env.backurl}/api/sportsProgress/update`, options)
     const result = await res.json()
     return result
+}
+
+export const deleteProgress = async (videoId) => {
+    const res = await fetch(`${process.env.backurl}/api/sportsProgress/delete/${videoId}`, {
+        method: 'DELETE'
+    })
+    const data = await res.json()
+    return data
 }

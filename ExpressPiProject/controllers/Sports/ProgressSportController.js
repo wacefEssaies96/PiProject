@@ -37,57 +37,65 @@ exports.insertAndUpdateProgress = async (req, res) => {
         console.log("Internal server error");
     }
 
-    // remove the unique constraint on the email attribute
-    // ProgressModel.collection.dropIndex('user.email_1', (err, result) => {
-    //     if (err) {
-    //         console.error(err);
-    //     } else {
-    //         console.log(result);
-    //     }
-    // });
-
-    // Call the videos.list method of the YouTube Data API to get the duration of the video
-    youtube.videos.list(
-        {
-            part: 'contentDetails',
-            id: videoId,
-        },
-        (err, response) => {
-            if (err) {
-                console.log(`Error getting video details: ${err}`);
-                return;
+    ProgressModel.find({ "user._id": req.params.userId })
+        .then(progresses => {
+            let totalprog = 0
+            for (let index = 0; index < progresses.length; index++) {
+                totalprog += progresses[index].progress
             }
+            if (totalprog < 100) {
+                // Call the videos.list method of the YouTube Data API to get the duration of the video
+                youtube.videos.list(
+                    {
+                        part: 'contentDetails',
+                        id: videoId,
+                    },
+                    (err, response) => {
+                        if (err) {
+                            console.log(`Error getting video details: ${err}`);
+                            return;
+                        }
 
-            // Extract the duration from the response
-            const duration = response.data.items[0].contentDetails.duration;
+                        // Extract the duration from the response
+                        const duration = response.data.items[0].contentDetails.duration;
 
-            // Convert the duration to seconds
-            totalDuration = convertDurationToSeconds(duration);
+                        // Convert the duration to seconds
+                        totalDuration = convertDurationToSeconds(duration);
 
-            console.log(`Total duration of the video: ${totalDuration} seconds`);
+                        console.log(`Total duration of the video: ${totalDuration} seconds`);
 
-            var newProgress = new ProgressModel({
-                user: user,
-                video: videoId,
-                progress: progress,
-                totalDuration: totalDuration
-            })
+                        var newProgress = new ProgressModel({
+                            user: user,
+                            video: videoId,
+                            progress: progress,
+                            totalDuration: totalDuration
+                        })
 
-            newProgress.save()
-                .then(data => res.send(data))
-                .catch(err => {
-                    console.log({
-                        message:
-                            err.message || "Some error occurred while creating the Progress!"
-                    });
-                });
-        }
-    );
+                        newProgress.save()
+                            .then(data => res.send(data))
+                            .catch(err => {
+                                console.log({
+                                    message:
+                                        err.message || "Some error occurred while creating the Progress!"
+                                });
+                            });
+                    }
+                );
+            }
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
 };
 
 //get all Progress 
 exports.findAll = (req, res) => {
     ProgressModel.find()
+        .then(progresses => res.json(progresses))
+        .catch(err => res.status(400).json('Error: ' + err));
+}
+
+//get all Progress of a single user by userId
+exports.findAllByUser = (req, res) => {
+    ProgressModel.find({ "user._id": req.params.userId })
         .then(progresses => res.json(progresses))
         .catch(err => res.status(400).json('Error: ' + err));
 }
@@ -135,4 +143,13 @@ exports.updateProgress = async (req, res) => {
             res.status(500).json({ error: 'Could not update progress' });
         }
     }
+}
+
+//delete a progress by id
+exports.deleteProgress = async (req, res) => {
+    ProgressModel.findByIdAndDelete(req.params.id)
+        .then(() => {
+            res.send('Progress deleted!')
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
 }

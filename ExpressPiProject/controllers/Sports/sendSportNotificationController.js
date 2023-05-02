@@ -1,9 +1,9 @@
-module.exports = function (io) {
-    return function (req, res) {
-        // Process request
-        // ...
-console.log("work");
-        // Emit event to client
-        io.emit('event', data);
-    };
-};
+const EventModel = require("../../models/Sports/EventCalendarSportModel")
+
+exports.getPushRequests = (req, res) => {
+    let events = []
+    EventModel.find()
+        .then(event => events = event)
+        .catch(err => res.status(400).json('Error: ' + err));
+        
+}

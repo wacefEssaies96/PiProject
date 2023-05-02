@@ -5,12 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext } from 'react';
 import { Store } from '@/utils/Store';
-import { IoMdNotificationsOutline } from 'react-icons/io';
 
 
 function Header() {
    const cookies = new Cookies()
-
    const router = useRouter()
    const [auth, setAuth] = useState({
       token: null,
@@ -19,6 +17,10 @@ function Header() {
    const logout = () => {
       cookies.remove('token')
       cookies.remove('user')
+      setAuth({
+         token: null,
+         user: null,
+      })
       window.location = '/'
    }
    const getUser = async () => {
@@ -69,10 +71,6 @@ function Header() {
                            <li>
                               <a href="#"><i className="fab fa-youtube"></i></a>
                            </li>
-                           <li>
-                              <Link href="#"><IoMdNotificationsOutline size={25}></IoMdNotificationsOutline></Link>
-                           </li>
-                           <div id="counter-notification">{2}</div>
                            <li>
                               <a href="#"><i className="fab fa-instagram"></i></a>
                            </li>
@@ -149,7 +147,7 @@ function Header() {
                                              <a onClick={() => { router.push("/recipes") }} >Recipes (User)</a>
                                           </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
-                                             <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles (Admin)</a>
+                                             <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles</a>
                                           </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/Products") }} aria-current="page">Products (Admin)</a>
@@ -167,6 +165,7 @@ function Header() {
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/admin/sport-type">Sport Types</Link></li>
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/admin/sport-sub-type">Sport Sub Types</Link></li>
                                           <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/event-calendar-sports">Event Calendar for Sports</Link></li>
+                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/sport-progress">List of Sport Progress</Link></li>
                                        </ul>
                                     </li>
                                  }
@@ -175,13 +174,15 @@ function Header() {
                                        <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Home Page</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
-                                       {auth.user != undefined && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${cookies.get('user')._id}`}>Training Videos</Link></li>}
-                                       {cookies.get('user') && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/videos/${cookies.get('user')._id}`}>Sport Videos</Link></li>}
+                                       {auth.user != undefined && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${auth.user._id}`}>Training Videos</Link></li>}
+                                       {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/videos/${auth.user._id}`}>Sport Videos</Link></li>}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
                                     <ul className="sub-menu">
-                                       <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
+                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles">Home</Link></li>
+                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles/my-articles">My articles</Link></li>
+                                       {/* <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
                                        <li id="menu-item-1726" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1726"><a href="#">Blog Single</a>
                                           <ul className="sub-menu">
                                              <li id="menu-item-1725" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1725"><a href="#">Standard</a></li>
@@ -190,7 +191,7 @@ function Header() {
                                              <li id="menu-item-1724" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1724"><a href="#">Quote</a></li>
                                              <li id="menu-item-1723" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1723"><a href="#">Link</a></li>
                                           </ul>
-                                       </li>
+                                       </li> */}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>
