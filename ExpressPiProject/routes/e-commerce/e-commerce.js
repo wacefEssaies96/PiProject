@@ -21,5 +21,6 @@ router.delete('/:id', productController.deleteProductById);
 router.get('/find/:id', productController.getProductById);
 
 router.get('/search/:name', productController.searchByName);
-
+router.get('/scrap/products/', productController.scrap);
+router.get('/scrap/productsN', productController.scrapeProductNamesAndSlugs);
 module.exports = router;

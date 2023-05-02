@@ -14,10 +14,15 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+
 export default function Index({ products }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [priceFilter, setPriceFilter] = useState(null);
+  const [priceFilterValue, setPriceFilterValue] = useState('');
+  const [priceRange, setPriceRange] = useState([0, 500]);
 
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
@@ -43,8 +48,10 @@ export default function Index({ products }) {
     .filter((product) =>
       categoryFilter ? product.category === categoryFilter : true
     )
-    .filter((product) => (priceFilter ? product.price <= priceFilter : true));
-
+    .filter(
+      (product) =>
+        product.price >= priceRange[0] && product.price <= priceRange[1]
+    );
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -52,9 +59,9 @@ export default function Index({ products }) {
   const handleCategoryFilterChange = (event) => {
     setCategoryFilter(event.target.value);
   };
-
-  const handlePriceFilterChange = (event) => {
-    setPriceFilter(event.target.value);
+  const handlePriceRangeChange = (value) => {
+    setPriceRange(value);
+    setPriceFilter(value[1]);
   };
 
   return (
@@ -72,20 +79,42 @@ export default function Index({ products }) {
               className="form-control mt-2"
             >
               <option value="">All categories</option>
+              <option value="Complément alimentaire">
+                Complément alimentaire
+              </option>
+              <option value="Protein Bars">Protein Bars</option>
+              <option value="Energy Drinks">Energy Drinks</option>
+              <option value="Weight Management">Weight Management</option>
+              <option value="Meal Replacement">Meal Replacement</option>
+              <option value="Vitamins and Supplements">
+                Vitamins and Supplements
+              </option>
+              <option value="Snacks and Treats">Snacks and Treats</option>
+              <option value="Sports Nutrition">Sports Nutrition</option>
+              <option value="Gluten-Free">Gluten-Free</option>
+              <option value="Organic">Organic</option>
+              <option value="Non-GMO">Non-GMO</option>
             </select>
           </div>
           <div className="mb-4 bg-light p-3 border rounded">
-            <h5 className="font-weight-bold mb-2">Price</h5>
+            <h5 className="font-weight-bold mb-2">Price range</h5>
             <hr className="mb-0" />
-            <select
-              value={priceFilter || ''}
-              onChange={handlePriceFilterChange}
-              className="form-control mt-2"
-            >
-              <option value="">All prices</option>
-            </select>
+            <Slider
+              range
+              min={0}
+              max={500}
+              value={priceRange}
+              onChange={handlePriceRangeChange}
+            />
+            <div className="mt-2 d-flex justify-content-between">
+              <span>{priceRange[0]}dt</span>
+              <span>{priceRange[1]}dt</span>
+            </div>
           </div>
+          {/* <Col md={3}> */}
         </Col>
+        {/* </Col> */}
+
         <Col md={9}>
           <div className="d-flex justify-content-center align-items-center mb-4">
             <input
@@ -110,6 +139,7 @@ export default function Index({ products }) {
           </Row>
         </Col>
       </Row>
+      {/* <FeaturedProducts /> */}
     </Container>
   );
 }

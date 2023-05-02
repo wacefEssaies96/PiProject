@@ -27,16 +27,15 @@ var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointments/clinicroutes');
 //routes appointments
-var appointmentRouter = require('./routes/apointments/appointmentroutes')
+var appointmentRouter = require('./routes/apointments/appointmentroutes');
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
-
+const productController = require('./controllers/e-commerce/produit');
 const orderRouter = require('./routes/e-commerce/Order');
-//send email route 
-var resetPassword = require('./routes/resetPasswordRoute')
+//send email route
+var resetPassword = require('./routes/resetPasswordRoute');
 // morphology route
-const morphologyRoute= require('./routes/Sports/getYourMorphologyRouter')
-const otherAppsAuthRouter = require("./routes/otherappsauth");
+const morphologyRoute = require('./routes/Sports/getYourMorphologyRouter');
 
 const otherAppsAuthRouter = require('./routes/otherappsauth');
 
@@ -73,9 +72,12 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/clinic', ClinicRouter);
 app.use('/api/app', appointmentRouter);
 app.use('/api', resetPassword);
-app.use('/api/sportSubTypes/uploads',express.static('uploads/SportSubTypesDemVideos'))
-app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
-app.use('/api/get-your-morphology', morphologyRoute)
+app.use(
+  '/api/sportSubTypes/uploads',
+  express.static('uploads/SportSubTypesDemVideos')
+);
+app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter);
+app.use('/api/get-your-morphology', morphologyRoute);
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

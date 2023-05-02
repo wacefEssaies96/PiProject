@@ -5,13 +5,13 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-
+import nextCookie from 'next-cookies';
 //import { getError } from '../utils/error';
 
 import { Store } from '@/utils/Store';
 import { Container, Form, Button } from 'react-bootstrap';
 import CheckoutWizard from '@/components/e-commerce/checkoutWizard';
-export default function PlaceOrderScreen() {
+export default function PlaceOrderScreen(context) {
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
   const { cartItems, shippingAddress, paymentMethod } = cart;
@@ -19,7 +19,7 @@ export default function PlaceOrderScreen() {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
   const itemsPrice = round2(
-    cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+    cartItems.reduce((a, c) => a + c.quantityy * c.price, 0)
   ); // 123.4567 => 123.46
 
   const shippingPrice = itemsPrice > 200 ? 0 : 7;
@@ -38,9 +38,11 @@ export default function PlaceOrderScreen() {
   const placeOrderHandler = async () => {
     try {
       setLoading(true);
+      const { user } = nextCookie(context);
       const { data } = await axios.post(
         `${process.env.backurl}/api/admin/orders`,
         {
+          userId: user._id,
           orderItems: cartItems,
           shippingAddress,
           paymentMethod,
@@ -50,6 +52,8 @@ export default function PlaceOrderScreen() {
           totalPrice,
         }
       );
+      //  console.log(data);
+      //console.log(data.order._id);
       setLoading(false);
       dispatch({ type: 'CART_CLEAR_ITEMS' });
       Cookies.set(
@@ -59,7 +63,7 @@ export default function PlaceOrderScreen() {
           cartItems: [],
         })
       );
-      router.push(`e-commerce/order/${data._id}`);
+      router.push(`/order/${data.order._id}`);
     } catch (err) {
       setLoading(false);
       toast.error('erreur');
@@ -132,10 +136,10 @@ export default function PlaceOrderScreen() {
                           {item.name}
                         </Link>
                       </td>
-                      <td className="text-right">{item.quantity}</td>
+                      <td className="text-right">{item.quantityy}</td>
                       <td className="text-right">{item.price}dt</td>
                       <td className="text-right">
-                        {item.quantity * item.price}dt
+                        {item.quantityy * item.price}dt
                       </td>
                     </tr>
                   ))}
