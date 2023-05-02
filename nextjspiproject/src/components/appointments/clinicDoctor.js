@@ -7,7 +7,7 @@ import { Route } from 'react-router-dom';
 
 import { useRouter } from 'next/router';
 import Map from "./Map";
-import MapModal from "./mapmodel";
+// import MapModal from "./mapmodel";
 import dynamic from 'next/dynamic';
 
 

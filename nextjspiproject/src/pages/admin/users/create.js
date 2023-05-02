@@ -1,4 +1,4 @@
-import withAuth from '@/utils/Withauth';
+import withAuth from '@/components/Withauth';
 import { lazy } from 'react';
 
 const UsersForm = lazy(() => import('@/components/users/UsersForm'));
