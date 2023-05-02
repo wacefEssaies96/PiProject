@@ -43,7 +43,18 @@ var resetPassword = require('./routes/resetPasswordRoute')
 const morphologyRoute = require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");
 const otherAppsAuthRouter = require("./routes/otherappsauth");
-
+// body shapes scraped routes
+const BodyShapesScrapedRouter = require("./routes/Sports/bodyShapesScrapedRouter")
+// sport youtube videos scraped routes
+const SportVideosScrapedRouter = require("./routes/Sports/sportVideosScrapedRouter")
+// sport events calendar sport routes
+const EventCalendarSportRouter = require("./routes/Sports/EventCalendarSportRouter")
+// sport notification routes
+const sportNotificationRouter = require("./routes/Sports/sendSportNotificationRouter")
+// sport ratings routes
+const sportRatingRouter = require("./routes/Sports/RatingSportRouter")
+// sport progress routes
+const sportPprogressRouter = require("./routes/Sports/ProgressSportRouter")
 
 var app = express();
 
@@ -84,6 +95,12 @@ app.use('/api', resetPassword);
 app.use('/api/sportSubTypes/uploads', express.static('uploads/SportSubTypesDemVideos'))
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
 app.use('/api/get-your-morphology', morphologyRoute)
+app.use('/api/store', BodyShapesScrapedRouter)
+app.use('/api/scrapedYoutubeVideos', SportVideosScrapedRouter)
+app.use('/api/eventCalendarSport', EventCalendarSportRouter)
+app.use('/api/sportsNotif', sportNotificationRouter)
+app.use('/api/sportsRating', sportRatingRouter)
+app.use('/api/sportsProgress', sportPprogressRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

@@ -1017,3 +1017,29 @@ body .is-layout-flex>* {
     transform: rotate(-20deg);
   }
 }
+
+#sportTypeForYou {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/sportTypeForYou.jpg);
+  background-size: cover;
+}
+
+#form-calendar {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/calendar.jpeg);
+  background-size: cover;
+}
+
+#counter-notification {
+  width: 20px;
+  height: 20px;
+  background-color: #dd9933;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

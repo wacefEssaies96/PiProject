@@ -137,7 +137,7 @@ function Header() {
                                     </>
                                     :
                                     <>
-                                       {auth.user.role == 'DOCTOR'
+                                       {auth.token && auth.user && auth.user.role == 'DOCTOR'
                                           ? <li><Link href="#" onClick={() => { router.push('/user/doctor') }}> Profile</Link></li>
                                           : <li><Link href="#" onClick={() => { router.push('/user/edit-profile') }}> Profile</Link></li>
                                        }
@@ -166,7 +166,7 @@ function Header() {
                         <div className="nav">
                            <nav>
                               <ul id="menu-main-menu" className="menu">
-                                 {auth.token && auth.user.role === "ADMIN" &&
+                                 {auth.user && auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">
@@ -200,19 +200,18 @@ function Header() {
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href='#' onClick={() => { router.push("/admin/users") }} aria-current="page">Users</a></li>
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/admin/sport-type">Sport Types</Link></li>
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/admin/sport-sub-type">Sport Sub Types</Link></li>
-                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">other</a></li>
+                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/event-calendar-sports">Event Calendar for Sports</Link></li>
+                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/sport-progress">List of Sport Progress</Link></li>
                                        </ul>
                                     </li>
                                  }
                                  <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="/" aria-current="page">Home</a>
                                     <ul className="sub-menu">
-                                       {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Homepage One</a></li> */}
-                                       {/* <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><a href="#">Home Page Two</a></li>
-                                       <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><a href="#">Homepage Three</a></li> */}
-                                       {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="index.html" aria-current="page">Homepage One</a></li> */}
+                                       <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Home Page</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
-                                       {/* <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><a href="#">Homepage Four</a></li> */}
+                                       {auth.user != undefined && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${auth.user._id}`}>Training Videos</Link></li>}
+                                       {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/videos/${auth.user._id}`}>Sport Videos</Link></li>}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>

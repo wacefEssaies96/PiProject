@@ -16,7 +16,8 @@ export default function Register(props) {
         weight: 0,
         address: '',
         disease: '',
-        gender: ''
+        gender: '', 
+        dateOfBirth: ''
     })
     const [operationMode, setOperationMode] = useState('Add')
     const [showAlert, setShowAlert] = useState(false)
@@ -118,6 +119,16 @@ export default function Register(props) {
                                         </Form.Control.Feedback>
                                         <Form.Control.Feedback type='invalid'>
                                             {'Please enter your email address correctly'}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Date of Birth</Form.Label>
+                                        <Form.Control defaultValue={registerData.dateOfBirth} name="dateOfBirth" type="date" placeholder="dateOfBirth" required />
+                                        <Form.Control.Feedback type="valid">
+                                            You did it!
+                                        </Form.Control.Feedback>
+                                        <Form.Control.Feedback type='invalid'>
+                                            {'Please enter your Date of Birth !'}
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group>

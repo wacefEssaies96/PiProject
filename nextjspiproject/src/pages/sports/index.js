@@ -1,15 +1,35 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Placeholder, Row, Col, Toast } from "react-bootstrap";
 import { BiBlock, BiCheck } from 'react-icons/bi'
 import axios from "axios"
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Cookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 
 const StartNowFormPage = () => {
 
     const [userImage, setUserImage] = useState('')
     const [validated, setValidated] = useState(false)
     const [res, setRes] = useState('')
+    const [showA, setShowA] = useState(true);
+    const router = useRouter();
+    const [userId, setUserId] = useState(null);
+    const cookies = new Cookies()
+    const [user, setUser] = useState(cookies.get('user'))
+    const [cookies2] = useCookies(['user']);
+
+    useEffect(() => {
+        setUser(cookies.get('user'))
+        // Get user ID from cookie
+        if (user) {
+            const userIdFromCookie = user._id;
+            setUserId(userIdFromCookie);
+        }
+    }, []);
+
+    const toggleShowA = () => setShowA(!showA);
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -27,6 +47,16 @@ const StartNowFormPage = () => {
     const handleUserImage = (e) => {
         setUserImage(e.target.files[0])
     }
+
+    const handleClick = () => {
+        // Pass data as query parameters in the URL
+        if (userId) {
+            router.push({
+                pathname: `/sports/body-shape-result/${userId}`,
+                query: { shouldersWidth: res.shoulderWidth, hipsWidth: res.hipsWidth },
+            });
+        }
+    };
 
     return (
         <div style={{ marginTop: "2%", marginBottom: "2%" }}>
@@ -62,10 +92,40 @@ const StartNowFormPage = () => {
                     {res != '' &&
                         <Card style={{ width: '40%', height: "70%", marginTop: "5%" }}>
                             <Card.Body>
-                                <Card.Title>Your Shoulder width : {res} cm</Card.Title>
-                                <Card.Title>Your Hips width : {res} cm</Card.Title>
+                                <Card.Title>RESULT</Card.Title>
+                                <Card.Text>Your Shoulder width : {res.shoulderWidth} cm</Card.Text>
+                                <Card.Text>Your Hips width : {res.hipsWidth} cm</Card.Text>
                             </Card.Body>
-                            <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button">See you body shape type</Button>
+                            <Button className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" onClick={handleClick}><Link href={`/sports/body-shape-result/${userId}`}>See you body shape type</Link></Button>
+                        </Card>}
+                    {validated || res === '' &&
+                        <Card style={{ width: '40%', height: "70%", marginTop: "5%" }}>
+                            <Card.Body>
+                                <Row>
+                                    <Col md={10} className="mb-2">
+                                        <Toast show={showA} onClose={toggleShowA}>
+                                            <Toast.Header>
+                                                <img
+                                                    src="holder.js/20x20?text=%20"
+                                                    className="rounded me-2"
+                                                    alt=""
+                                                />
+                                                <strong className="me-auto">Information</strong>
+                                                <small>Now</small>
+                                            </Toast.Header>
+                                            <Toast.Body>Please Enter your image to see the result !</Toast.Body>
+                                        </Toast>
+                                    </Col>
+                                </Row>
+                                <Placeholder as={Card.Title} animation="glow">
+                                    <Placeholder xs={6} />
+                                </Placeholder>
+                                <Placeholder as={Card.Text} animation="glow">
+                                    <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+                                    <Placeholder xs={6} /> <Placeholder xs={8} />
+                                </Placeholder>
+                                <Placeholder.Button bg="light" className="btn btn-md wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" xs={10} />
+                            </Card.Body>
                         </Card>
                     }
                 </div>

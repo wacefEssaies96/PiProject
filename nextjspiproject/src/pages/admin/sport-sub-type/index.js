@@ -1,16 +1,16 @@
 import Head from 'next/head'
 import { BiPlus, BiEdit, BiTrashAlt } from 'react-icons/bi'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { deleteSportSubType, fetchSubTypeData } from '@/services/SportSubTypeServices'
 import styles from '../../../styles/Home.module.css'
-import { Alert, Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import CustomModal from '@/components/layouts/CustomModal'
+import { toast } from 'react-toastify';
 
 export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
 
   const [listSportSubTypes, setListSportSubTypes] = useState(sportSubTypes)
-  const [showAlert, setShowAlert] = useState(false)
   const [id, setId] = useState(null)
   const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
   const [deleteMessage, setDeleteMessage] = useState(null)
@@ -33,23 +33,25 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
   const submitDelete = async (id) => {
     await deleteSportSubType(id)
     const listAfterDelete = await fetch(`${process.env.backurl}/api/sportSubTypes/getAllSportSubTypes`)
-    setSportSubTypeMessage(`The sport sub-type '${sportSubTypes.find((x) => x._id === id).title}' was deleted successfully.`)
+    toast.success(`The sport sub-type '${sportSubTypes.find((x) => x._id === id).title}' was deleted successfully!`, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    })
     const resList = await listAfterDelete.json()
     setListSportSubTypes(resList)
     setDisplayConfirmationModal(false)
-    setShowAlert(true)
   }
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowAlert(false)
-    }, 3000);
-  }, [showAlert])
 
   const searchTitleDynamic = async (title) => {
     return await sportSubTypes.filter((x) => {
       let t = x.title.toLowerCase().includes(title.toLowerCase())
-      if(t) {
+      if (t) {
         return x
       }
     })
@@ -79,8 +81,6 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
         <form className="d-flex float-end" role="search">
           <input onChange={handleChange} className="form-control mx-5" style={{ width: "280px" }} type="search" placeholder="Search for sport subtype by Title" aria-label="Search" />
         </form><br /><br />
-
-        {showAlert && <Alert variant="success">{sportSubTypeMessage}</Alert>}
         <Table striped bordered hover size="sm">
           <thead>
             <tr className='text-center'>
@@ -91,13 +91,13 @@ export default function SportSubTypesAdminHomePage({ sportSubTypes }) {
             </tr>
           </thead>
           <tbody>
-            {listSportSubTypes.length>0 && listSportSubTypes.map(subType => {
+            {listSportSubTypes.length > 0 && listSportSubTypes.map(subType => {
               return (
                 <tr>
-                  <td style={{textAlign: "center"}} key={subType.title}>{subType.title}</td>
+                  <td style={{ textAlign: "center" }} key={subType.title}>{subType.title}</td>
                   <td key={subType.demoVideo}>{subType.demoVideo}</td>
                   <td key={subType.definitionHistory}>{subType.definitionHistory}</td>
-                  <td style={{textAlign: "center"}} key={subType._id} className='px-16 py-2 flex justify-content-center'>
+                  <td style={{ textAlign: "center" }} key={subType._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/sport-sub-type/edit/${subType._id}`}>
                       <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
                     </Link>

@@ -53,7 +53,6 @@ export const loginService = async ({ token, user }) => {
   // Cookie will expire after 24h
   cookies.set('token', token, { maxAge: 60 * 60 * 24 })
   cookies.set('user', user, { maxAge: 60 * 60 * 24 })
-
 }
 
 export const resetPassword = async (data, id, token) => {

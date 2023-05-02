@@ -2,20 +2,15 @@ import { postSportType } from "@/services/SportTypeService"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Alert, Button, Card, Carousel, Form } from "react-bootstrap"
+import { Button, Card, Carousel, Form } from "react-bootstrap"
 import { BiBlock, BiCheck } from "react-icons/bi"
-import Success from "../layouts/SuccessMsg"
 import axios from "axios"
+import { toast } from 'react-toastify';
 
 export default function SportTypeForm({ sportType }) {
     const [operation, setOperationMode] = useState('Add')
     const router = useRouter()
-    const [showAlert, setShowAlert] = useState(false)
-    const [showAlertErrorSubTypes, setShowAlertErrorSubTypes] = useState(false)
-    const [errorMsg, setErrorMsg] = useState(null)
-    const [errorMsgSubTypes, setErrorMsgSubTypes] = useState(null)
     const [validated, setValidated] = useState(false)
-    const [showAlertError, setShowAlertError] = useState(false)
     const [sportTypeTitle, setSportTypetitle] = useState([])
     const [sTADV, setSportTypeADV] = useState([])
     const [sTTitles, setSportSTTitles] = useState([])
@@ -26,9 +21,9 @@ export default function SportTypeForm({ sportType }) {
         sportSubTypes4: []
     })
     const [advObj, setADVObj] = useState({ titles: '', paragraphes: '' })
-    const [searchForTitle, setSearchForTitle] = useState([])
     const [sportSubTypesDeFaultValueInput, setSportSubTypesDeFaultValueInput] = useState({ titles: '' })
     const [showError, setShowError] = useState(false)
+
     const submit = async (e) => {
         e.preventDefault()
         const form = e.currentTarget
@@ -65,7 +60,7 @@ export default function SportTypeForm({ sportType }) {
             if (response.data != null) {
                 selectedSubTypes.push(response.data)
             }
-            else {
+            else if (response.data === null) {
                 setShowError(true)
             }
         });
@@ -74,44 +69,79 @@ export default function SportTypeForm({ sportType }) {
         const resFindByTitle = await findBySportTypeByTitle.json()
 
         if (operation === 'Add') {
-
             if (resFindByTitle == null) {
                 if (form.checkValidity() === true) {
                     let tableST = []
                     if (showError) {
-                        setShowAlertErrorSubTypes(true)
-                        setErrorMsgSubTypes(`The Sport Sub Type title does not exist in the database !`)
+                        toast.error('The Sport Sub Type title does not exist in the database !', {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
                     }
                     for (let index = 0; index < selectedSubTypes.length; index++) {
                         const findBySportSubTypeByTitle = await fetch(`${process.env.backurl}/api/sportSubTypes/titleSubType/${selectedSubTypes[index].title}`)
                         const resFindByTitleSubType = await findBySportSubTypeByTitle.json()
                         console.log(resFindByTitleSubType);
                         if (resFindByTitleSubType === null) {
-                            setShowAlertErrorSubTypes(true)
-                            setErrorMsgSubTypes(`The Sport Sub Type title ${selectedSubTypes[index].title} does not exist in the database !`)
+                            toast.error(`The Sport Sub Type title ${selectedSubTypes[index].title} does not exist in the database !`, {
+                                position: "top-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
                         } else {
                             tableST.push(resFindByTitleSubType)
                         }
                     }
                     await postSportType(e, operation, advantages, selectedSubTypes)
-                    setShowAlert(true)
-                    setTimeout(() => {
-                        setShowAlert(false)
-                        router.push('/admin/sport-type')
-                    }, 3000)
+                    toast.success('Sport Type Added Successfully!', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    })
+                    router.push('/admin/sport-type')
                 }
             } else {
-                setShowAlertError(true)
-                setErrorMsg("This Sport Type title already existes in the database !")
+                toast.error("This Sport Type title already existes in the database !", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } else {
             e.preventDefault()
             await postSportType(e, operation, advUpdate, selectedSubTypes)
-            setShowAlert(true)
-            setTimeout(() => {
-                setShowAlert(false)
-                router.push('/admin/sport-type')
-            }, 3000)
+            toast.success('Sport Type Updated Successfully!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            router.push('/admin/sport-type')
         }
     }
 
@@ -125,7 +155,6 @@ export default function SportTypeForm({ sportType }) {
     }, []);
 
     const sportTypeAdvAndSubType = async (e) => {
-
         switch (e.target.value) {
             case "Individual Sports":
                 {
@@ -207,7 +236,6 @@ export default function SportTypeForm({ sportType }) {
                     break;
                 }
         }
-
     }
 
     useEffect(() => {
@@ -218,18 +246,6 @@ export default function SportTypeForm({ sportType }) {
             })
         }
     }, [])
-
-    useEffect(() => {
-        setTimeout(() => {
-            setShowAlertError(false)
-        }, 10000);
-    }, [showAlertError])
-
-    useEffect(() => {
-        setTimeout(() => {
-            setShowAlertErrorSubTypes(false)
-        }, 10000);
-    }, [showAlertErrorSubTypes])
 
     const passADV = (obj) => {
         setADVObj(prevObj => {
@@ -264,7 +280,6 @@ export default function SportTypeForm({ sportType }) {
         }
     }
     const passSportSubTypes = async (title) => {
-        console.log("work");
         setSportSubTypesDeFaultValueInput(prevObj => {
             if (!prevObj.titles.includes(title)) {
                 return {
@@ -275,10 +290,9 @@ export default function SportTypeForm({ sportType }) {
             }
         })
     }
-console.log(sportSubTypesDeFaultValueInput);
+
     return (
         <div className="container" style={{ padding: "5%" }}>
-            {showAlert && <Success message={`Sport Type ${operation}ed Successfully !`}></Success>}
             <Form noValidate validated={validated} onSubmit={submit}>
                 <Form.Control defaultValue={sportType._id} name="id" type="hidden" />
                 <Form.Group className="mb-3">
@@ -286,10 +300,9 @@ console.log(sportSubTypesDeFaultValueInput);
                     <Form.Select onChange={sportTypeAdvAndSubType} required defaultValue={sportType.title} name="title" >
                         {sportTypeTitle.map((t, i) => <option key={i}>{t}</option>)}
                     </Form.Select>
-                    {!errorMsg && <Form.Control.Feedback type="valid">
+                    <Form.Control.Feedback type="valid">
                         You did it!
-                    </Form.Control.Feedback>}
-                    {showAlertError && (<Alert variant="danger">{errorMsg}</Alert>)}
+                    </Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>
                         Please enter a sport type title !
                     </Form.Control.Feedback>
@@ -308,29 +321,16 @@ console.log(sportSubTypesDeFaultValueInput);
                         Please enter sport sub-type advantages !
                     </Form.Control.Feedback>
                 </Form.Group>
-                {/* <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
-                    {sTADV && sTADV.map((o, i) =>
-                        <Card key={i} style={{ width: '15rem' }}>
-                            <Card.Body>
-                                <Card.Title>{Object.keys(o)[0]}</Card.Title>
-                                <Card.Text>{Object.values(o)[0]}</Card.Text>
-                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
-                                <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("Advantages", Object.keys(o)[0])}>Remove</Button>
-
-                            </Card.Body>
-                        </Card>)
-                    }
-                </Form.Group > */}
                 <Form.Group>
                     <Carousel variant="dark">
                         {sTADV && sTADV.map((o, i) =>
                             <Carousel.Item key={i}>
-                                <Card style={{ width: '50%', marginLeft:"25%", height:"10%"}}>
+                                <Card style={{ width: '50%', marginLeft: "25%", height: "10%" }}>
                                     <Card.Body>
                                         <Card.Title>{Object.keys(o)[0]}</Card.Title>
                                         <Card.Text>{Object.values(o)[0]}</Card.Text>
                                         <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passADV(o)}>Choose this</Button>
-                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("Advantages", Object.keys(o)[0])}>Remove</Button><br/><br/><br/>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("Advantages", Object.keys(o)[0])}>Remove</Button><br /><br /><br />
                                     </Card.Body>
                                 </Card>
                             </Carousel.Item>)}
@@ -348,18 +348,6 @@ console.log(sportSubTypesDeFaultValueInput);
                     <Form.Control.Feedback type='invalid'>
                         Please enter sport sub-types !
                     </Form.Control.Feedback>
-                    {/* <Form.Group className="d-flex flex-wrap flex-row justify-content-between">
-                        {sTTitles && sTTitles.map((t, i) =>
-                            <Card key={i} style={{ width: '15rem' }}>
-                                <Card.Body>
-                                    <Card.Title>{t}</Card.Title>
-                                    <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passSportSubTypes(t)}>Choose this</Button>
-                                </Card.Body>
-                            </Card>)
-                        }
-                    </Form.Group > */}
-                    {showError && (<Alert variant="danger">{errorMsgSubTypes}</Alert>)}
-                    {showAlertErrorSubTypes && (<Alert variant="danger">{errorMsgSubTypes}</Alert>)}
                     <Form.Control.Feedback type='invalid'>
                         Please select sport subtypes !
                     </Form.Control.Feedback>
@@ -371,11 +359,11 @@ console.log(sportSubTypesDeFaultValueInput);
                     <Carousel variant="dark">
                         {sTTitles && sTTitles.map((t, i) =>
                             <Carousel.Item key={i}>
-                                <Card style={{ width: '25%', marginLeft:"35%", height:"10%"}}>
+                                <Card style={{ width: '25%', marginLeft: "35%", height: "10%" }}>
                                     <Card.Body>
                                         <Card.Title>{t}</Card.Title>
                                         <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => passSportSubTypes(t)}>Choose this</Button>
-                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("SubTypes", t)}>Remove</Button><br/><br/><br/>
+                                        <Button style={{ backgroundColor: "#dd9933", borderColor: "#dd9933" }} onClick={() => removeFromInput("SubTypes", t)}>Remove</Button><br /><br /><br />
                                     </Card.Body>
                                 </Card>
                             </Carousel.Item>)}

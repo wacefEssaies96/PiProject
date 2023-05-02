@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const articleSchema = require('../article/articleschema');
+const SubTypeSportSchema = require('../Sports/SubTypeSportSchema');
+const EventCalendarSportSchema = require('../Sports/EventCalendarSportSchema');
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,7 +26,12 @@ const userSchema = new mongoose.Schema(
     speciality: String,
     code: Number,
     two_factor: Boolean,
-    articles:[articleSchema]
+    articles:[articleSchema],
+    morphology: String,
+    subTypeSport: {
+      type: SubTypeSportSchema
+    },
+    SportEvents: [EventCalendarSportSchema]
   },
   { timestamps: true }
 )

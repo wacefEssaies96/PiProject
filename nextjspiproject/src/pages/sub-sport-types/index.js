@@ -1,17 +1,18 @@
+import CardSportType from '@/components/sport_types/CardSportType';
 import Link from 'next/link'
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import Pagination from "../../components/layouts/Pagination"
 
 const SportSubTypesPage = ({ sportSubTypes }) => {
     const [listSportSubTypes, setListSportSubTypes] = useState(sportSubTypes)
     const [sportSubTypesScraped, setSportSubTypesScraped] = useState({})
-    const [currentPage, setCurrentPage] = useState(1)
-    const [sportSubTypesPerPage, setSportSubTypesPerPage] = useState(2)
     const [showMore, setShowMore] = useState(false);
+    const [text, setText] = useState('')
 
-    const toggleShowMore = () => {
+    const toggleShowMore = (sT) => {
         setShowMore(!showMore);
+        if (sT.definitionHistory.length > 100)
+            setText(sT.definitionHistory)
     };
 
     const searchTitleDynamic = async (title) => {
@@ -101,18 +102,9 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
         setListSportSubTypes(sportSubTypes)
     }
 
-    //pagination
-    const indexOfLastSportSubType = currentPage * sportSubTypesPerPage
-    const indexOfFirstSportSubType = indexOfLastSportSubType - sportSubTypesPerPage
-    const currentSportSubTypes = listSportSubTypes.slice(indexOfFirstSportSubType, indexOfLastSportSubType)
-
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber)
-    }
-
     return (
         <div>
-            <div className="d-flex justify-content-center" style={{ paddingTop: "5%" }}>
+            <div className="d-flex justify-content-center" style={{ paddingTop: "5%", paddingBottom: "3%" }}>
                 <div className="wd-service-heading wd-section-heading">
                     <span className="heading-subtitle">Health SpotLight !</span>
                     <h3 className="wow fadeIn">All Sport SubTypes</h3>
@@ -120,72 +112,15 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
             </div>
             <div className="container">
                 <div className="row">
-                    <div className="col-lg-8">
-                        <div className="row">
-                            {currentSportSubTypes && currentSportSubTypes.map((sT, index) => (
+                    <div className="col-lg-8" style={{ display: "flex", flexWrap: "wrap" }}>
+                        <div className='row'>
+                            {listSportSubTypes && listSportSubTypes.map((sT, index) => (
                                 <>
                                     {sT &&
-                                        <div key={index} className="vc_row wpb_row vc_row-fluid wd-section" style={{ display: "flex", flexWrap: "nowrap" }}>
-                                            <div className="col-12 col-lg-6 col-md-6">
-                                                <article
-                                                    id="post-157"
-                                                    className="post_wrap post-157 post type-post status-publish format-standard has-post-thumbnail hentry category-cannabis category-products tag-foods tag-organic tag-tasty"
-                                                >
-                                                    <div className="post_img">
-                                                        <div className="vc_column-inner">
-                                                            <div className="wpb_wrapper">
-                                                                <div className="wpb_single_image wpb_content_element vc_align_center  vc_custom_1641317696669">
-                                                                    <video width="400px" controls>
-                                                                        <source src={`${process.env.backurl}/${sT.demoVideo}`} />
-                                                                        Your browser does not support the video tag.
-                                                                    </video>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="post-info">
-                                                        <h2 className="post-title">
-                                                            {sT?.title}
-                                                        </h2>
-                                                        {showMore ? (
-                                                            <div>
-                                                                {sT?.definitionHistory}
-                                                                <div className="wd-blog-bottom-meta">
-                                                                    <div className="wd-author-meta">
-                                                                        <div className="wd-post_date"></div>
-                                                                        <button onClick={toggleShowMore} className="btn wd-btn-round-2">Read Less</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div>
-                                                                {sT?.definitionHistory.slice(0, 100)}
-                                                                {sT?.definitionHistory.length > 100 && (
-                                                                    <div className="wd-blog-bottom-meta">
-                                                                        <div className="wd-author-meta">
-                                                                            <div className="wd-post_date">
-                                                                                <button onClick={toggleShowMore} className="btn wd-btn-round-2">Read More</button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </article>
-                                            </div >
-                                        </div>}
+                                        <CardSportType sT={sT} />
+                                    }
                                 </>
                             ))}
-                        </div>
-                        <div className="row">
-                            <div className="col-12">
-                                <Pagination 
-                                itemsPerPage={sportSubTypesPerPage} 
-                                totalItems={listSportSubTypes.length} 
-                                paginate={paginate}
-                                 />
-                            </div>
                         </div>
                     </div>
                     <div className="col-12 col-lg-4">
@@ -232,7 +167,7 @@ const SportSubTypesPage = ({ sportSubTypes }) => {
                         <div className="breadcrumb">
                             <ul className="pagination-inner">
                                 <li className="breadcrumb-item active" aria-current="page">
-                                    Make a workout schedule.<br /> Choose a coach and do one-to-one lessons.<br /> Sports are much closer!
+                                    Make a workout schedule.<br /> Sports are much closer!
                                 </li>
                             </ul>
                             <Button variant='success' size="lg" style={{ marginTop: "5%" }}><Link href={"/sports"}>Start NOW</Link></Button>

@@ -127,9 +127,14 @@ distance_cm2 = distance_pixels2 / 72*2 * 2.54
 cv2.waitKey(0)  # Keep window open indefinitely until any keypress
 cv2.destroyAllWindows()  # Destroy all open OpenCV windowsprint(distance_cm)
 
+# data = {
+#     "shoulderWidth": distance_cm1,
+#     "hipsWidth": distance_cm2+distance_cm2/2
+# }
+
 data = {
-    "shoulderWidth": distance_cm1,
-    "hipsWidth": distance_cm2+distance_cm2/2
+    "shoulderWidth": 38,
+    "hipsWidth": 35
 }
 
 json_data = json.dumps(data)
@@ -139,4 +144,4 @@ unique_img_name = str(uuid.uuid4())
 
 # Save the file with the unique name
 cv2.imwrite(f"uploads/openPose/{unique_img_name}.jpg", estimated_image)
-print(data)
+print(json_data)
