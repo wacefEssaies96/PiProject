@@ -8,6 +8,7 @@ export default function Index({ products }) {
 
   const refresh = async () =>
     setList(await fetchData(`${process.env.backurl}/api/admin/products`));
+
   const deleteOneProduct = async (id) =>
     deleteData(`${process.env.backurl}/api/admin/products/${id}`).then(refresh);
 

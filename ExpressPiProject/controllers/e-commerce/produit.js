@@ -2,6 +2,139 @@ const Product = require('../../models/e-commerce/product');
 // CREATE a new product
 
 // Create the multer middleware
+const axios = require('axios');
+const cheerio = require('cheerio');
+const pretty = require('pretty');
+const { createPool } = require('generic-pool');
+
+// async function scrap(req, res) {
+//   try {
+//     const { product } = req.params;
+//     const url = `https://protein-shop-tunisia.tn/produit/${product}`;
+
+//     const response = await axios.get(url);
+//     const $ = cheerio.load(response.data);
+
+//     const name = $('h1[itemprop=name]').text().trim();
+//     const price = $('.woocommerce-Price-amount.amount').text().trim();
+//     const description = $('.woocommerce-product-details__short-description')
+//       .text()
+//       .trim();
+
+//     res.status(200).json({ name, price, description });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal server error');
+//   }
+// }
+
+async function scrap(req, res) {
+  try {
+    const categories = [
+      //'proteines',
+      // 'carbohydrates',
+      // 'acides-amines',
+      'acides-gras',
+    ];
+    const productsByCategory = {};
+
+    const requests = categories.map(async (category) => {
+      const url = `https://protein-shop-tunisia.tn/categorie-produit/nutrition-sportive/${category.toLowerCase()}/`;
+      const response = await axios.get(url);
+      const $ = cheerio.load(response.data);
+
+      const products = [];
+
+      const productEls = $('.product-grid-item');
+
+      for (const el of productEls) {
+        const name = $(el).find('.product-title').text();
+        const url = $(el).find('.product-title a').attr('href');
+        const matches = url.match(/\/produit\/(.+?)\/?$/);
+        const slug = matches[1]
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .toLowerCase();
+
+        const productResponse = await axios.get(
+          `https://protein-shop-tunisia.tn/produit/${slug}`,
+          { timeout: 30000 }
+        );
+        const productHtml = productResponse.data;
+        const $$ = cheerio.load(productHtml);
+        const description = $$(
+          '.woocommerce-product-details__short-description'
+        )
+          .text()
+          .trim();
+        const image = $$('.woocommerce-product-gallery__image a img').attr(
+          'src'
+        );
+        products.push({ name, slug, description, image });
+      }
+
+      productsByCategory[category] = products;
+    });
+
+    await Promise.all(requests);
+
+    res.send(productsByCategory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error scraping website');
+  }
+}
+// async function handleScrapRequest(req, res) {
+//   try {
+//     const result = await scrap();
+//     res.json(result);
+//   } catch (error) {
+//     console.error(error);
+//     //res.status(500).send('Error scraping website');
+//   }
+// }
+async function scrapeProductNamesAndSlugs(req, res) {
+  try {
+    const categories = [
+      'proteines',
+      'carbohydrates',
+      'acides-amines',
+      'acides-gras',
+    ];
+    const productsByCategory = {};
+
+    const requests = categories.map(async (category) => {
+      const url = `https://protein-shop-tunisia.tn/categorie-produit/nutrition-sportive/${category.toLowerCase()}/`;
+      const response = await axios.get(url);
+      const $ = cheerio.load(response.data);
+
+      const products = [];
+
+      const productEls = $('.product-grid-item');
+
+      for (const el of productEls) {
+        const name = $(el).find('.product-title').text();
+        const url = $(el).find('.product-title a').attr('href');
+        const matches = url.match(/\/produit\/(.+?)\/?$/);
+        const slug = matches[1]
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .toLowerCase();
+
+        products.push({ name, slug });
+      }
+
+      productsByCategory[category] = products;
+    });
+
+    await Promise.all(requests);
+
+    res.send(productsByCategory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error scraping website');
+  }
+}
 
 async function createProduct(req, res) {
   const {
@@ -158,4 +291,7 @@ module.exports = {
   deleteProductById,
   searchByName,
   getByType,
+  scrap,
+  // handleScrapRequest,
+  scrapeProductNamesAndSlugs,
 };

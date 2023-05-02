@@ -1,12 +1,10 @@
-import withAuth from '@/components/Withauth'
-import { lazy } from 'react'
+import withAuth from '@/utils/Withauth';
+import { lazy } from 'react';
 
-const UsersForm = lazy(() => import('@/components/users/UsersForm'))
+const UsersForm = lazy(() => import('@/components/users/UsersForm'));
 
 function Create() {
-    return (
-        <UsersForm></UsersForm>
-    )
+  return <UsersForm></UsersForm>;
 }
 
-export default withAuth(Create)
+export default withAuth(Create);

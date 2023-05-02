@@ -30,15 +30,15 @@ var subcategoryRouter = require('./routes/article/subcategory');
 // routes Clinics
 var ClinicRouter = require('./routes/apointments/clinicroutes');
 //routes appointments
-var appointmentRouter = require('./routes/apointments/appointmentroutes')
+var appointmentRouter = require('./routes/apointments/appointmentroutes');
 //routes userapp
-var UserappointmentRouter = require('./routes/apointments/appuserroutes')
+var UserappointmentRouter = require('./routes/apointments/appuserroutes');
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
-
+const productController = require('./controllers/e-commerce/produit');
 const orderRouter = require('./routes/e-commerce/Order');
-//send email route 
-var resetPassword = require('./routes/resetPasswordRoute')
+//send email route
+var resetPassword = require('./routes/resetPasswordRoute');
 // morphology route
 const morphologyRoute = require('./routes/Sports/getYourMorphologyRouter')
 // const otherAppsAuthRouter = require("./routes/otherappsauth");

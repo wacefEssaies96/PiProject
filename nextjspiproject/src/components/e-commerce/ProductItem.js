@@ -17,7 +17,6 @@ const ProductItem = ({ product, addToCartHandler }) => {
       <Card.Body className="d-flex flex-column justify-content-between">
         <div>
           <Card.Title>{product.name}</Card.Title>
-          <Card.Text>{product.description}</Card.Text>
         </div>
         <div>
           <h4 className="font-weight-bold mb-3">${product.price.toFixed(2)}</h4>

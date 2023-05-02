@@ -33,10 +33,10 @@ function Index({ users }) {
   }
 
   const approve = async (e) => {
-    e.preventDefault()
-    await verifyAccount(e.target.email.value, e.target.id.value)
-    await refresh()
-  }
+    e.preventDefault();
+    await verifyAccount(e.target.email.value, e.target.id.value);
+    await refresh();
+  };
 
   const deleteOneUser = async (id) => confirmDelete(`${process.env.backurl}/api/users/${id}`,users).then(refresh)
 
@@ -174,7 +174,7 @@ function Index({ users }) {
         </tbody>
       </Table>
     </Container>
-  )
+  );
 }
 
 export async function getServerSideProps() {
@@ -182,9 +182,9 @@ export async function getServerSideProps() {
   
   return {
     props: {
-      users: data
-    }
-  }
+      users: data,
+    },
+  };
 }
 
-export default withAuth(Index)
+export default withAuth(Index);
