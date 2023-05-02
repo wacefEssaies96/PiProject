@@ -9,4 +9,4 @@ function ClinicsPage() {
   );
 }
 
-export default ClinicDocs ;
+export default ClinicsPage ;

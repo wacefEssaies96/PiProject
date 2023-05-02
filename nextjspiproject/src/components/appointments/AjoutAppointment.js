@@ -12,34 +12,51 @@ import moment from 'moment';
 
 
 export default function AppointmentForm(props) {
+    const [selectedDate, setSelectedDate] = useState("");
     const cookies = new Cookies()
     const router = useRouter()
-    const [operationMode, setOperationMode] = useState('Create')
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
     
+    const [validated, setValidated] = useState(false);
+    const [operationMode, setOperationMode] = useState('Create')
     const [appointments, setAppointments] = useState({
         Date: new Date(),
         Hour: "",
-        Duration: "",
+        Duration: "00h00min",
 
        
     })
-    const [validated, setValidated] = useState(false);
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        setValidated(true);
-        await handleUpdateOrAdd (event, operationMode)
-    }
     const handleDateChange = (date) => {
+        // const formattedDate = `${("0" + date.getDate()).slice(-2)}/${
+        //     ("0" + (date.getMonth() + 1)).slice(-2)
+        //   }/${date.getFullYear()}`;
         setAppointments({
             ...appointments,
-            Date: date
-        });
-        console.log("date " + moment(date).toDate())
+             Date: date
+     });
+      };
+    
+
+
+      const handleSubmit = async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        if (form.checkValidity() === true) {
+            await handleUpdateOrAdd(event, operationMode);
+           
+        } else {
+            event.stopPropagation();
+        }
+        setValidated(true);
     }
+    
+    // const handleDateChange = (date) => {
+    //     setAppointments({
+    //         ...appointments,
+    //         Date: date
+    //     });
+    //     console.log("date " + date)
+      
+    // }
    
 
     
@@ -63,10 +80,10 @@ export default function AppointmentForm(props) {
                                 <li className="breadcrumb-item">
                                     <Link href="/">Home</Link>
                                 </li>
-                                {operationMode === 'Add' ?
+                                {operationMode === 'Add'  ?
                                     <li className="breadcrumb-item active" aria-current="page">
                                         Add
-                                    </li> :
+                                    </li> : 
                                     <li className="breadcrumb-item active" aria-current="page">
                                         Edit 
                                     </li>
@@ -88,14 +105,11 @@ export default function AppointmentForm(props) {
                                         <Form.Control defaultValue={appointments._id} name="id" type="hidden"></Form.Control>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Date</Form.Label>
-                                            {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="Date" placeholder="Name" required  /> */}
-                                            { 
-                                            operationMode === 'Add'
-                                            ?
-                                            <DatePicker
+                                            
+                                        
+                                           <DatePicker
                                                 
-                        
-                                                selected={appointments.Date}
+                                                selected={moment(appointments.Date).toDate()}  value={moment(appointments.Date).format('YYYY-MM-DD')}
                                                 onChange={ (e)=>handleDateChange(e)}
                                                 dateFormat="dd/MM/yyyy"
                                                 placeholderText="Choose a date"
@@ -104,21 +118,14 @@ export default function AppointmentForm(props) {
                                                 className="form-control"
                                                 required
                                             />  
-                                            :
-                                            <DatePicker
-                                                
-                        
-                                                value={appointments.Date}
-                                                
-                                                onChange={ (e)=>handleDateChange(e)}
-                                                dateFormat="dd/MM/yyyy"
-                                                placeholderText="Choose a date"
-                                                name="Date"
-                                                id="vb_name"
-                                                className="form-control"
-                                                required
-                                            />  }                            
-                                            {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="Date" placeholder="Name" required  /> */}
+                                             
+                                                  {/* <DatePicker
+  selected={appointments.Date}
+  onChange={(date) => handleDateChange(date)}
+  dateFormat="dd/mm/yyyy"
+  placeholderText="Select a date" */}
+{/* /> */}
+                                                                {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="text" placeholder="Date" required  /> */}
                                             <Form.Control.Feedback type='invalid'>
                                                 {'Please enter the Date'}
                                             </Form.Control.Feedback>
@@ -130,7 +137,7 @@ export default function AppointmentForm(props) {
                                         <Form.Group className="mb-3">
                                             <Form.Label>Hour</Form.Label>
                                             <Form.Control
-                                                        defaultValue={appointments.Hour}
+                                                       defaultValue={appointments.Hour}
                                                         name="Hour"
                                                         type="Hour"
                                                         placeholder="HH:MM"
@@ -148,18 +155,20 @@ export default function AppointmentForm(props) {
                                         <Form.Group className="mb-3">
                                             <Form.Label>Duration</Form.Label>
                                             <Form.Control  
-                                                            defaultValue={appointments.Duration}
+                                                           defaultValue={appointments.Duration}
                                                             name="Duration"
                                                             type="text"
                                                             placeholder="e.g. 1h30min"
-                                                           // ajout du pattern
+                                                            //value={appointments.Duration || "30min"}
+                                                            pattern="((0|1)[0-9]|[1-9])h([3-9]|[1-5][0-9]?)min"
+// ajout du pattern
                                                             required
                                                         />
                                             <Form.Control.Feedback type="valid">
                                                 You did it!
                                             </Form.Control.Feedback>
                                             <Form.Control.Feedback type='invalid'>
-                                                {'Please enter the duration'}
+                                                   Please enter a duration between 00h30min and 1h30min
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                        
