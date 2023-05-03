@@ -19,12 +19,17 @@ export default function OneArticle({ article, comments, user }) {
 export async function getServerSideProps(context) {
     const data = await fetchData(`${process.env.backurl}/api/admin/articles/find-by-title/${context.query.title}`);
     const comments = await fetchData(`${process.env.backurl}/api/comment/find/${data._id}`)
-    // const { user } = nextCookie(context)
+    let userr = null
+    if (nextCookie(context).hasOwnProperty('user')) {
+        const { user } = nextCookie(context)
+        userr = user
+    }
+    console.log(nextCookie(context))
     return {
         props: {
             article: data,
             comments: comments,
-            // user: user
+            user: userr
         }
     }
 }
