@@ -12,7 +12,7 @@ export const submitRecipe = async (data, operationMode) => {
     .split(",");
     let formDataRecipe = new FormData();
     formDataRecipe.append('name', data.target.name.value.trim());
-    formDataRecipe.append('validated', data.target.validated.value);
+    formDataRecipe.append('validated', data.target.validated.checked);
     formDataRecipe.append('description', data.target.description.value);
     formDataRecipe.append('meals', mm);
     formDataRecipe.append('quantity', ((data.target.quantity.value).split(",")));
@@ -58,4 +58,5 @@ export const submitRecipe = async (data, operationMode) => {
              window.location = "/recipes" 
             } })
         .catch((error2) => { if (error2.response) { errorAlert(error2.response.data.message) } })
-}
+
+    }

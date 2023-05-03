@@ -136,14 +136,15 @@ function Login() {
       </div>
       <div className="container">
         <div className="row no-gutter">
-          <div className="col-md-12">
+          <div className="col-md-10 ">
             <div className="login py-5">
               <div className="row">
                 {!auth.token && (
                   <div className="offset-lg-3 col-lg-6  mx-auto d-block login-page">
                     <div className="login-page">
-                      <p className="sub_title">Need a Health SpotLight account?<a
-                        className="color-litegreen"
+                      <p className="sub_title">Need a Health SpotLight account?
+                      &nbsp;
+                      <a className="color-litegreen"
                         href="/user/doctor-or-user"> Signup here!</a>
                       </p>
                     </div>

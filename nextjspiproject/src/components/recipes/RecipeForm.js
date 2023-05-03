@@ -62,7 +62,7 @@ export default function RecipeForm(props) {
   }
   
   const addqt = async (position,qt) =>{
-    if(qt>0){
+    if(qt>=1){
       listQuantity[position]=qt;
       recipe.quantity = listQuantity;
       calculateTotCal();
@@ -263,14 +263,15 @@ export default function RecipeForm(props) {
                                   min="1"
                                   max="999"
                                   value={listQuantity[index]}
-                                  onChange={() => addqt(index,recipe.quantity[index])}
+                                  onChange={() => addqt(index,listQuantity[index])}
                                   title="Qty"
                                   size="3" />
                                   <input 
-                                  onClick={() => addqt(index,recipe.quantity[index]-1)}
+                                  disabled={listQuantity[index]== 1}
+                                  onClick={() => addqt(index,listQuantity[index]-1)}
                                   type="button" value="-" className="minus btn btn-outline-secondary"/>
                                   <input 
-                                  onClick={() => addqt(index,recipe.quantity[index]+1)}
+                                  onClick={() => addqt(index,listQuantity[index]+1)}
                                   type="button" value="+" className="plus btn btn-outline-secondary"/>
                               </td>
                               <td className="woocommerce-product-attributes-item__value">
@@ -392,11 +393,17 @@ export default function RecipeForm(props) {
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12 col-lg-4 " >
                       <Form.Group>
+                        
+                          <div>
+                            <input type="checkbox"  name="validated" checked={recipe.validated} />
+                            <label for="validated">Publiched</label>
+                          </div>
+                        {/*
                         <Form.Label htmlFor="validated"> Publiched </Form.Label>
-                        <Form.Select required value={recipe.validated} name="validated" onChange={getValidated} >
+                         <Form.Select required value={recipe.validated} name="validated" onChange={getValidated} >
                           <option value="false">False</option>
                           <option value="true">True</option>
-                        </Form.Select>
+                        </Form.Select> */}
                       </Form.Group>
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12  " >

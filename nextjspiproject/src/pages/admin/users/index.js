@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Container, Table, Button, Form, Row } from "react-bootstrap";
+import {  BiEdit, BiTrashAlt } from 'react-icons/bi'
 import { useState } from "react";
 import { deleteData, fetchData } from "@/services/mix";
 import { verifyAccount } from "@/services/user";
 import withAuth from "@/components/Withauth";
+import DeleteModal from "@/components/layouts/DeleteModal";
 
 function Index({ users }) {
 
@@ -14,6 +16,19 @@ function Index({ users }) {
   const [showfilteredUser, setShowfilteredUser] = useState(false);
   const [typefilterUser, setTypefilterUser] = useState();
   const [search, setSearch] = useState("");
+
+  const [id, setId] = useState(null)
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState(null)
+  
+  const showDeleteModal = (id) => {
+    setId(id)
+    setDeleteMessage(`Are you sure you want to delete the user : '${users.find((x) => x._id === id).email}'?`)
+    setDisplayConfirmationModal(true)
+  }
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false)
+  }
 
   const filterListUser = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -39,8 +54,10 @@ function Index({ users }) {
     await verifyAccount(e.target.email.value, e.target.id.value);
     await refresh();
   };
+  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/users/findAll`));
 
-  const deleteOneUser = async (id) => confirmDelete(`${process.env.backurl}/api/users/${id}`,users).then(refresh)
+  const deleteOneUser = async (id) => deleteData(`${process.env.backurl}/api/users/${id}`,users)
+  .then(setDisplayConfirmationModal(false),refresh())
 
   const renderUser = (user, index) =>{
     
@@ -74,10 +91,14 @@ function Index({ users }) {
       <td key={user._id}>
         <Row>
           <div className=" col-12 col-lg-3">
-            <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/users/edit/${user._id}`}>Edit</Link>
+            <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/users/edit/${user._id}`}>
+              <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
+            </Link>
           </div>
           <div className=" col-12 col-lg-3">
-          <Button onClick={() => deleteOneUser(user._id)}  variant="outline-danger">Delete</Button>
+          <Button onClick={() => showDeleteModal(user._id)}  variant="outline-danger">
+            <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+          </Button>
           </div>
           <div className=" col-12 col-lg-3">
             {user.role == "DOCTOR" &&
@@ -240,6 +261,8 @@ function Index({ users }) {
               </div>
           </ul>
       </nav>
+      <DeleteModal showModal={displayConfirmationModal} confirmModal={deleteOneUser} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
+
     </Container>
   );
 }

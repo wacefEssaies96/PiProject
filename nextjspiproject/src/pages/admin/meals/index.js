@@ -1,12 +1,18 @@
-import { Container, Table, Button, Row, Col } from "react-bootstrap";
+import { Container, Table, Button, Row } from "react-bootstrap";
 import { useState } from "react";
 import { deleteData,fetchData } from "@/services/mix";
-import { addMealScrap, fetchMealsUrl } from "@/services/meal";
+import { addMealScrap } from "@/services/meal";
 import Link from "next/link";
+import DeleteModal from "@/components/layouts/DeleteModal";
+import { useRouter } from "next/router";
+import {  BiEdit, BiTrashAlt } from 'react-icons/bi'
 
 
 
-export default function Index({ catMeals,meals,mealsdb }) {
+
+export default function Index({ catMeals,mealsdb }) {
+
+  const router = useRouter();
 
   const [catlist, setCatlist] = useState(catMeals)
   const [list, setList] = useState(mealsdb)
@@ -21,6 +27,18 @@ export default function Index({ catMeals,meals,mealsdb }) {
   const [showServing_portion, setshowServing_portion] = useState(false)
   const [showServing_oz, setshowServing_oz] = useState(false)
   
+  const [id, setId] = useState(null)
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState(null)
+  
+  const showDeleteModal = (id) => {
+    setId(id)
+    setDeleteMessage(`Are you sure you want to delete the  : '${list.find((x) => x._id === id).FoodItem}' from Meals  ?`)
+    setDisplayConfirmationModal(true)
+  }
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false)
+  }
 
 
   const showServingFilter = (filter) =>{
@@ -36,7 +54,11 @@ export default function Index({ catMeals,meals,mealsdb }) {
   }
   const handleSubmit = async (meal) => {
     await addMealScrap(meal)
-    setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
+    window.location = "/admin/meals" 
+
+    // setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
+    
+    // router.replace(router.asPath);
     // setList(await fetchData(`${process.env.backurl}/api/meal/findAll`));
   }
   const verifyMeal = (FoodItem) => {
@@ -72,7 +94,7 @@ export default function Index({ catMeals,meals,mealsdb }) {
     await deleteData(`${process.env.backurl}/api/meal/${id}`)
     setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
     setList(await fetchData(`${process.env.backurl}/api/meal/findAll`));
-  
+    setDisplayConfirmationModal(false)
     }
   const renderMeal = (meal, index) =>{
     
@@ -119,11 +141,15 @@ export default function Index({ catMeals,meals,mealsdb }) {
         >
           {meal._id?
             <>
-              <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/meals/edit/${meal._id}`}>Edit</Link>
+              <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/meals/edit/${meal._id}`}>
+                <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
+              </Link>
               &nbsp;
               {meal.validated ?<></>
                 :
-                <Button onClick={() => deleteOneMeal(meal._id)} variant="outline-danger">Delete</Button>
+                <Button onClick={() => showDeleteModal(meal._id)} variant="outline-danger">
+                  <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+                </Button>
               }
             </>
             :
@@ -329,6 +355,8 @@ export default function Index({ catMeals,meals,mealsdb }) {
               </div>
           </ul>
       </nav>
+      <DeleteModal showModal={displayConfirmationModal} confirmModal={deleteOneMeal} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
+
     </Container>
   )
 }
@@ -340,14 +368,14 @@ export async function getServerSideProps() {
   //// const data = await fetchData(`${process.env.backurl}/api/meal/scrape/${urlcatMeal}`);
 
   catMeals = await fetchData(`${process.env.backurl}/api/meal/scrapeCatMeals`);
-  data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
+  // data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
   const mealsdb = await fetchData(`${process.env.backurl}/api/meal/findAll`);
 
   return {
     props: {
       catMeals: catMeals
-      ,
-      meals: data
+      // ,
+      // meals: data
       ,
       mealsdb : mealsdb
     }
