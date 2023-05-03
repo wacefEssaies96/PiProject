@@ -7,6 +7,8 @@ import withAuth from "@/components/Withauth";
 
 function Index({ users }) {
 
+  
+
   const [list, setList] = useState(users)
   const [filteredUser, setFilteredUser] = useState();
   const [showfilteredUser, setShowfilteredUser] = useState(false);
@@ -92,6 +94,51 @@ function Index({ users }) {
     )
   }
 
+  
+  const [Page, setPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(5);
+  const indexOfLastpage = Page * itemPerPage;
+  const indexOfFirstpage = indexOfLastpage -itemPerPage;
+  const pageNumbers = [];
+  var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
+
+  if(showfilteredUser){
+    for (let i = 1; i <= Math.ceil(filteredUser.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = filteredUser.slice(indexOfFirstpage, indexOfLastpage)
+  }else{
+    for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
+  }
+
+  const renderPageNumbers = pageNumbers.slice(Page-1,Page).map(number => {
+      return (
+          <li
+              key={number}
+              id={number}
+
+              className={Page === number ? "page-item color-picker " : "page-item"}
+              onClick={() => setPage(number)}
+          >
+            {Page === number
+            ?
+            <a className="page-number current " style={{backgroundColor : "#016837",color: "white" }} >{number}  / {pageNumbers.length}</a>
+            :
+              <a className="page-number " >{number} / {pageNumbers.length}</a>
+            }
+          </li>
+      );
+  });
+  const changepage = async (nbr) =>{
+    var newnbr = Page+nbr;
+    if(pageNumbers.includes(newnbr)){
+      setPage(newnbr)
+    }
+  }
+
   return (
     <Container>
       <div className=" wd-section-heading-wrapper text-center">
@@ -160,19 +207,39 @@ function Index({ users }) {
           </tr>
         </thead>
         <tbody>
-          {showfilteredUser ?
+          {currentlist && currentlist.map 
+              ((user, index)=> {
+                  return (renderUser(user, index))
+              })
+          }
+          {/* {showfilteredUser ?
               filteredUser && filteredUser.map
               ((user, index)=> {
                   return (renderUser(user, index))
               })
               :
-              list && list.map 
+              // list && list.map 
+              currentlist && currentlist.map 
               ((user, index)=> {
                   return (renderUser(user, index))
               })
-          } 
+          }  */}
         </tbody>
       </Table>
+
+      <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center ">
+		          <div className="nav-links">
+                {Page != pageNumbers[0] &&
+                  <a class="prev page-numbers "  onClick={()=>changepage(-1)}>&laquo;</a>
+                }
+                {renderPageNumbers}
+                {Page != pageNumbers[pageNumbers.length-1] &&
+                  <a className="next page-numbers" onClick={()=>changepage(1)} >&raquo;</a>
+                }
+              </div>
+          </ul>
+      </nav>
     </Container>
   );
 }

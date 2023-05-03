@@ -1,4 +1,4 @@
-import withAuth from '@/utils/Withauth';
+import withAuth from '@/components/Withauth';
 import { fetchData } from '@/services/mix';
 import { Suspense, lazy } from 'react';
 
