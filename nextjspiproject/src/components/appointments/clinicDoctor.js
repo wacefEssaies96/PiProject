@@ -5,35 +5,34 @@ import Link from "next/link";
 import { NavLink } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
+import MapPage from '../../pages/appointments/map';
+
 import { useRouter } from 'next/router';
-import Map from "./Map";
-import MapModal from "./mapmodel";
-import dynamic from 'next/dynamic';
+
+
 
 
 
       
     function ClinicDocs(){
         
-    const [position, setPosition] = useState([0,0]);
-
+       
     
+        const [selectedClinic, setSelectedClinic] = useState(null);
+        const [selectedAddress, setSelectedAddress] = useState(null);
 
-  
-  const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), {
-    ssr: false,
-  });
-
-  const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), {
-    ssr: false,
-  });
-
-  const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), {
-    ssr: false,
-  });
-  const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
-    ssr: false,
-  });
+        // const handleShowMap = (clinic) => {
+        //     setSelectedClinic(clinic);
+        //     setSelectedAddress(clinic.Adress);
+        //   }
+        const handleShowMap = (address) => {
+            router.push({
+              pathname: '/appointments/map',
+              query: { address: address }
+            });
+          }
+          
+          
 
     const [clinics, setClinics] = useState([]);
     const [add, setAdd] = useState("tunis");
@@ -42,17 +41,10 @@ import dynamic from 'next/dynamic';
     const router = useRouter();
     const [showMap, setShowMap] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState('');
 
-    const handleClick = (Name) => {
-        setSelectedAddress(Name);
-        setShowModal(true);
-      };
+  
     
-      const handleClose = () => {
-        setShowModal(false);
-        setSelectedAddress('');
-      };
+    
 
     
     useEffect(()=>{
@@ -116,7 +108,7 @@ import dynamic from 'next/dynamic';
                                 <td>
                                 <button
                                         className="btn border border-warning   btn-sm" 
-                                        onClick={() => handleClick(clinic.Name)}
+                                        onClick={() => handleShowMap(clinic.Adress)}
                                     >
                                        show map
 
@@ -132,7 +124,15 @@ import dynamic from 'next/dynamic';
                     </ul>
                 </nav>
             </div>
-            {showModal && <MapModal Name={selectedAddress} onClose={() => setShowModal(false)} />}
+               {/* rest of the component code */}
+               {/* {selectedClinic && (
+  <div className="modal">
+    <div className="modal-content">
+      <button className="modal-close-btn" onClick={() => setSelectedClinic(null)}>Close</button>
+      <MapPage address={selectedAddress} />
+    </div>
+  </div>
+)} */}
 
         </div>
     );
