@@ -2,6 +2,7 @@ import { deleteData, VerifImg } from "@/services/mix";
 import { Cookies } from 'react-cookie'
 import { useEffect, useState } from "react"
 import { Table,Button, Container, Form, Stack } from "react-bootstrap"
+import DeleteModal from "@/components/layouts/DeleteModal";
 
 const cookies = new Cookies();
 export default function RecipeDetails(props) {
@@ -15,9 +16,23 @@ export default function RecipeDetails(props) {
     meals  :  "",
     user  :  ""
   })
+  
+  const [id, setId] = useState(null)
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState(null)
+  
+  const showDeleteModal = (id) => {
+    setId(id)
+    setDeleteMessage(`Are you sure you want to delete your  Recipe : '${recipe.name}' ('${recipe.totalCalorie}' Cal ) ?`)
+    setDisplayConfirmationModal(true)
+  }
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false)
+  }
 
   const deleteOneRecipe = async (id) =>{
    await deleteData(`${process.env.backurl}/api/recipe/${id}`)
+   setDisplayConfirmationModal(false)
    window.location = "/recipes"
    }
    
@@ -92,7 +107,7 @@ export default function RecipeDetails(props) {
                         <a href={`/recipes/edit/${recipe._id}`} className="btn wd-btn-round-2">Edit</a>
                       </div>
                       <div className="wd-post_date">
-                          <Button onClick={() => deleteOneRecipe(recipe._id)} className="btn wd-btn-round-2">Delete</Button>
+                          <Button onClick={() => showDeleteModal(recipe._id)} className="btn wd-btn-round-2">Delete</Button>
                       </div>
                   </div>
                 </div>
@@ -156,6 +171,7 @@ export default function RecipeDetails(props) {
           </div> 
         </div>
       </div>
+      <DeleteModal showModal={displayConfirmationModal} confirmModal={deleteOneRecipe} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
     </Container >
   )
 }

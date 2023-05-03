@@ -1,47 +1,18 @@
 import { Container, Button  } from "react-bootstrap";
 import {  useState } from "react";
-import { VerifImg, fetchData } from "@/services/mix";
+import { fetchData } from "@/services/mix";
 import CalorieForm from "@/components/calories/CalorieForm";
 import nextCookie from 'next-cookies'
 
-
-
-
-export default function Index({ Myrecipesdb,recipesdb
-  // ,usersdb 
-  ,user}) {
+export default function Index({ Myrecipesdb,recipesdb,user}) {
 
   const [mylist, setmMylist] = useState(Myrecipesdb)
   const [list, setList] = useState(recipesdb)
-  // var [userList, setUserList] = useState([])
-  // const [userListdb, setUserListdb] = useState(usersdb)
   const [filtered, setFiltered] = useState();
   const [showfiltered, setShowfiltered] = useState(false);
   const [typefilter, setTypefilter] = useState();
   const [search, setSearch] = useState("");
 
-  //   const refresh = async()=>{
-  //     // userList=[]
-  //     setList(recipesdb)
-  //     if(recipesdb!=[]){
-  //       recipesdb.forEach(async rec =>{
-  //         const data = await fetchData(`${process.env.backurl}/api/users/findOne/${rec.user}`);
-  //         userList.push(data);
-  //       })
-  //     }
-  //    console.log("userList "+JSON.stringify(userList))
-  //  }
-  // useEffect(() => {
-  //     list.forEach(async rec =>{
-  //       addToUserList(rec.user);
-  //     })
-  //   console.log("userList "+JSON.stringify(userList))
-  // }, [])
-
-  // const VerifImg2=(path)=>{
-  //   console.log("ii "+VerifImg(path).data) 
-  //   return VerifImg(path).data
-  // }
   const filterList = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearch(searchQuery)
@@ -58,7 +29,7 @@ export default function Index({ Myrecipesdb,recipesdb
     }
     else{
       filteredList = list.filter((item) =>
-        item[filterColumn].toLowerCase().includes(searchQuery)
+        item[filterColumn] && item[filterColumn].toString().toLowerCase().includes(searchQuery)
       );
     }
     if(searchQuery!=""){
@@ -68,6 +39,7 @@ export default function Index({ Myrecipesdb,recipesdb
       setShowfiltered(false)
     }
   }
+
   function extractDate(createAt) {
     const date = new Date(createAt);
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -77,6 +49,7 @@ export default function Index({ Myrecipesdb,recipesdb
     const dateString = `${monthNames[monthIndex]} ${day}, ${year}`;
     return dateString;
   }
+
   const renderRecipe = (recipe, index) =>{
     return (
       <div key={index} className="col-12 col-lg-6 col-md-6">
@@ -90,7 +63,6 @@ export default function Index({ Myrecipesdb,recipesdb
             // width="730" height="520" 
             
             src={ recipe.imgRecipe == undefined 
-              // || VerifImg2(`${recipe.imgRecipe}`)  == undefined  
               ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
               :`${process.env.backurl}${recipe.imgRecipe}`
             } 
@@ -98,7 +70,6 @@ export default function Index({ Myrecipesdb,recipesdb
             className=" wp-post-image img-container" 
               decoding="async" 
               srcSet={ recipe.imgRecipe == undefined 
-                // || VerifImg(`${recipe.imgRecipe}`)  == false  
               ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
               :`${process.env.backurl}${recipe.imgRecipe}`
             }  /> 
@@ -112,7 +83,6 @@ export default function Index({ Myrecipesdb,recipesdb
                 <span>
                   <img  key={recipe.user.image}  className="avatar rounded-circle" 
                   src={ recipe.user.image == undefined 
-                    // || VerifImg(`${userList[index].image}`)  == false  
                     ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
                     :`${process.env.backurl}/${recipe.user.image}`
                   } 
@@ -177,99 +147,135 @@ export default function Index({ Myrecipesdb,recipesdb
      </div> 
     )
   }
+
+    
+  const [Page, setPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(6);
+  const indexOfLastpage = Page * itemPerPage;
+  const indexOfFirstpage = indexOfLastpage -itemPerPage;
+  const pageNumbers = [];
+  var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
+
+  if(showfiltered){
+    for (let i = 1; i <= Math.ceil(filtered.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = filtered.slice(indexOfFirstpage, indexOfLastpage)
+  }else{
+    for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
+  }
+
+  const renderPageNumbers = pageNumbers.slice(Page-1,Page).map(number => {
+      return (
+          <li
+              key={number}
+              id={number}
+
+              className={Page === number ? "page-item color-picker " : "page-item"}
+              onClick={() => setPage(number)}
+          >
+            {Page === number
+            ?
+            <a className="page-number current " style={{backgroundColor : "#016837",color: "white" }} >{number}  / {pageNumbers.length}</a>
+            :
+              <a className="page-number " >{number} / {pageNumbers.length}</a>
+            }
+          </li>
+      );
+  });
+
+  const changepage = async (nbr) =>{
+    var newnbr = Page+nbr;
+    if(pageNumbers.includes(newnbr)){
+      setPage(newnbr)
+    }
+  }
+
   return (
     <Container className="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab">
-      
-    
       <div className=" wd-section-heading-wrapper text-center">
-                        <div className="wd-service-heading wd-section-heading">
-                            <span className="heading-subtitle">Featured Repices</span>
-                                <h3 className="wow fadeIn">Our Latest & <span className="wd-primary-color">Featured Repices</span></h3>
-                            <p></p>
-                        </div>
-                    </div>
-                    <div className="wd-section">
-
-        <div className="container">
-            <div className="row">
-                    <div className="col-12 col-lg-4">
-        <div className="sidebar">
-        <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Add New Recipe</h4>
-          <div
-            className=" txtCenter greenBtn centerMydiv" >
-            <a href={`/recipes/create`}>Create new Recipe</a>
-          </div>
-        
-      </div>
-        <div id="tag_cloud-1" className="widget widget_tag_cloud"><h4 className="widget-title txtCenter">Search type</h4><div className="tagcloud">
-
-        <select 
-                        className="greenBtn centerMydiv"   
-                            onChange={(event) =>{
-                            setTypefilter(event.target.value);
-                            setSearch("")
-                            setShowfiltered(false)
-                            }
-                            }
-                            >
-                            <option value="name"> Name </option>
-                            <option value="totalCalorie"> Calorie 100 g/ml </option>
-                        </select>
-</div>
-
-</div>    
-            <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Search value</h4>
-            <input 
-                        className="greenBtn centerMydiv"   
-                        onChange={filterList} placeholder="search" value={search} type="text"/>
-</div>
-<div id="categories-2" className="widget widget_categories"><h4 className="widget-title txtCenter">Calorie</h4>
-<CalorieForm user={user} />
-
-			</div>
-      <div id="weefly_recent_post-1" className="widget widget_weefly_recent_post"><h4 className="widget-title txtCenter">My Recipes</h4>
-        <div className="widget-posts">
-          <ul>
-            {mylist.length>0 &&
-              mylist.slice(-3).map((recipe, index)=> {
-                return(
-              <li  key={"li"+index} className="widget-post">
-                <div className="post_thumb">
-                
-                  <a key={recipe._id} href={`/recipes/details/${recipe._id}`} className="post-thumb">
-                  
-                  
-                    <img
-                    key={recipe.imgRecipe}
-                     
-              
-              src={ recipe.imgRecipe == undefined 
-                // || VerifImg(`${recipe.imgRecipe}`)  == false  
-              ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
-              :`${process.env.backurl}${recipe.imgRecipe}`
-                }
-                    />
-                  </a>
-                </div>
-                <div className="recent-content-wrap">
-                  <p className="post-date wd-primary-color" key={recipe.createdAt}>{extractDate(recipe.createdAt)}</p>
-                    <h6><a key={recipe.name} href={`/recipes/details/${recipe._id}`} className="post-title black-color">{recipe.name} ({recipe.totalCalorie} Cal )</a></h6>
-                    
-                </div>
-
-              </li>
-              )
-              })
-            }
-          </ul>
+        <div className="wd-service-heading wd-section-heading">
+            <span className="heading-subtitle">Featured Repices</span>
+                <h3 className="wow fadeIn">Our Latest & <span className="wd-primary-color">Featured Repices</span></h3>
+            <p></p>
         </div>
-      </div>    
-</div>
-    </div>
-                                <div className="col-lg-8">
-                    <div className="row">
-
-                    {showfiltered ?
+      </div>
+      <div className="wd-section">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-lg-4">
+              <div className="sidebar">
+                <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Add New Recipe</h4>
+                  <div
+                    className=" txtCenter greenBtn centerMydiv" >
+                    <a href={`/recipes/create`}>Create new Recipe</a>
+                  </div>
+                </div>
+                <div id="tag_cloud-1" className="widget widget_tag_cloud"><h4 className="widget-title txtCenter">Search type</h4><div className="tagcloud">
+                    <select 
+                      className="greenBtn centerMydiv"   
+                          onChange={(event) =>{
+                          setTypefilter(event.target.value);
+                          setSearch("")
+                          setShowfiltered(false)
+                          }
+                          }
+                          >
+                          <option value="name"> Name </option>
+                          <option value="totalCalorie"> Calorie 100 g/ml </option>
+                      </select>
+                  </div>
+                </div>    
+                <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Search value</h4>
+                  <input 
+                  className="greenBtn centerMydiv" 
+                  onChange={filterList} placeholder="search" value={search} type="text"/>
+                </div>
+                <div id="categories-2" className="widget widget_categories"><h4 className="widget-title txtCenter">Calorie</h4>
+                  <CalorieForm user={user} />
+                </div>
+                <div id="weefly_recent_post-1" className="widget widget_weefly_recent_post"><h4 className="widget-title txtCenter">My Recipes</h4>
+                  <div className="widget-posts">
+                    <ul>
+                      {mylist.length>0 &&
+                        mylist.slice(-3).map((recipe, index)=> {
+                          return(
+                            <li  key={"li"+index} className="widget-post">
+                              <div className="post_thumb">
+                                <a key={recipe._id} href={`/recipes/details/${recipe._id}`} className="post-thumb">
+                                  <img
+                                  key={recipe.imgRecipe}
+                                  src={ recipe.imgRecipe == undefined 
+                                  ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
+                                  :`${process.env.backurl}${recipe.imgRecipe}`
+                                    }
+                                  />
+                                </a>
+                              </div>
+                              <div className="recent-content-wrap">
+                                <p className="post-date wd-primary-color" key={recipe.createdAt}>{extractDate(recipe.createdAt)}</p>
+                                  <h6><a key={recipe.name} href={`/recipes/details/${recipe._id}`} className="post-title black-color">{recipe.name} ({recipe.totalCalorie} Cal )</a></h6>
+                              </div>
+                            </li>
+                          )
+                        })
+                      }
+                    </ul>
+                  </div>
+                </div>    
+              </div>
+            </div>
+            <div className="col-lg-8">
+              <div className="row">
+                {currentlist && currentlist.map 
+                    ((recipe, index)=> {
+                        return (renderRecipe(recipe, index))
+                    })
+                }
+                    {/* {showfiltered ?
                                  filtered.length>0 && filtered.map
                                 ((recipe, index)=> {
                                     return (renderRecipe(recipe, index))
@@ -279,26 +285,23 @@ export default function Index({ Myrecipesdb,recipesdb
                                 ((recipe, index)=> {
                                     return (renderRecipe(recipe, index))
                                 })
-                            } 
-                    </div>
-                                            {/* <div className="row">
-                            <div className="col-12">
-                                <div className="pagination-wrap">
-                                    <div className="row align-items-center">
-                                        <div className="col-12 col-md-12">
-                                            
-	<nav className="navigation pagination" aria-label=" ">
-		<h2 className="screen-reader-text"> </h2>
-		<div className="nav-links"><span aria-current="page" className="page-numbers current">1</span>
-<a className="page-numbers" href="page/2/index.html">2</a>
-<a className="next page-numbers" href="page/2/index.html">&raquo;</a></div>
-	</nav>                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
-                                    </div>
+                            }  */}
+              </div>   
+              <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-center ">
+                      <div className="nav-links">
+                      {Page != pageNumbers[0] &&
+                          <a className="prev page-numbers "  onClick={()=>changepage(-1)}>&laquo;</a>
+                      }
+                      {renderPageNumbers}
+                      {Page != pageNumbers[pageNumbers.length-1] &&
+                          <a className="next page-numbers" onClick={()=>changepage(1)} >&raquo;</a>
+                      }
+                      </div>
+                  </ul>
+              </nav>
             </div>
+          </div>
         </div>
     </div>
     </Container>
