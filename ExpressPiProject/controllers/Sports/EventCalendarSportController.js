@@ -409,4 +409,4 @@ const checkEvents = async () => {
 };
 
 // call the checkEvents function every 5 minutes
-setInterval(checkEvents, 5 * 60 * 1000);
+// setInterval(checkEvents, 5 * 60 * 1000);
