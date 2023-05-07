@@ -10,6 +10,7 @@ import nextCookie from 'next-cookies'
 // export var AuthenticatedUser = cookies.get('user') 
 // export var token = cookies.get('token') 
 
+const cookies = new Cookies();
 
 export const handleAuthSSR = async (ctx) => {
 
@@ -49,7 +50,6 @@ export const handleAuthSSR = async (ctx) => {
 }
 
 export const loginService = async ({ token, user }) => {
-  const cookies = new Cookies();
   // Cookie will expire after 24h
   if (!cookies.get('user') && !cookies.get('token')){
     cookies.set('token', token, { maxAge: 60 * 60 * 24 })

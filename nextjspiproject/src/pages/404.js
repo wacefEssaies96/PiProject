@@ -1,18 +1,6 @@
 import Link from 'next/link'
-import { useEffect } from 'react';
-import { useRouter } from 'next/router'
 
 const NotFound = () => {
-
-    //initialise the useRouter hook which contains a method to redirect
-    const router = useRouter();
-
-    //Redirection the user automaticlly after 3 seconds to the home page
-    useEffect(()=> {
-        setTimeout(()=> {
-            router.push('/');
-        }, 3000)
-    }, [])
 
     return (
         <div className="not-found">

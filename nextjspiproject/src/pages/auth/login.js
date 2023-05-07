@@ -6,7 +6,7 @@ import { loginService } from '@/services/auth'
 import { useState } from "react"
 import { Alert, Button, Form } from "react-bootstrap"
 import CustomModal from '@/components/layouts/CustomModal'
-// import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 import { AiFillGoogleCircle, AiFillLinkedin } from 'react-icons/ai'
 import VerifySms from '@/components/VerifySms'
 import withAuth from '@/components/Withauth'
@@ -17,11 +17,11 @@ function Login() {
 
   const [validInput, setValidInput] = useState(false)
   const [show, setShow] = useState(false)
-  // const [captchaToken, setCaptchaToken] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(false);
   const [showSmsVerify, setShowSmsVerify] = useState(false)
   const [code, setCode] = useState(0)
   const [user, setUser] = useState({})
-  // const [token, setToken] = useState('')
+  const [token, setToken] = useState('')
 
 
 
@@ -32,26 +32,25 @@ function Login() {
     password: "",
   })
 
-  // const onCaptchaChange = (token) => {
-  //   setCaptchaToken(token);
-  // };
-  // const [auth, setAuth] = useState({
-  //   token: cookies.get('token') || null,
-  //   error: '',
-  //   email: null,
-  //   password: null,
-  // })
+  const onCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
+  const [auth, setAuth] = useState({
+    token: cookies.get('token') || null,
+    error: '',
+    email: null,
+    password: null,
+  })
 
   const onLoginClick = async (e) => {
     e.preventDefault()
     const form = e.currentTarget;
-    setValidInput(true);
 
     if (form.checkValidity() === true) {
 
       setLogin({...login,"email": e.target.email.value,"password": e.target.password.value})
-      var email = login.email;
-      var password = login.password;
+      // var email = login.email;
+      // var password = login.password;
 
       try {
         // const { email, password } = cookies.get('user')
@@ -59,28 +58,41 @@ function Login() {
         console.log(" email : " + login.email + " password : " + login.password)
         const url = `${process.env.backurl}/api/auth/login`
         const response = await axios.post(url, {
-          email,
-          password,
+          email : e.target.email.value,
+          password : e.target.password.value
         })
         const token = response.data.token
         const user = response.data.user[0]
-        setUser(response.data.user[0])
+        // console.log(user);
+        // setUser(response.data.user[0])
         // setToken(response.data.token)
-        setCode(response.data.code)
-        if (user.two_factor === true) {
-          setShowSmsVerify(true)
+        // setCode(response.data.code)
+        if(user.hasOwnProperty("two_factor")){
+          if (user.two_factor === true) {
+            console.log('d5al')
+            setShowSmsVerify(true)
+          }
+          else {
+            await loginService({ token, user })
+            // setAuth({
+            //   token,
+            //   error: null,
+            // })
+            if (user['role'] == "ADMIN") {
+              window.location = '/admin/users'
+            }
+            else if (user['role'] == "DOCTOR") {
+              window.location = '/user/doctor'
+            }
+            else {
+              window.location = '/'
+            }
+          }
         }
-        else {
+        else{
           await loginService({ token, user })
-          // setAuth({
-          //   token,
-          //   error: null,
-          // })
           if (user['role'] == "ADMIN") {
             window.location = '/admin/users'
-          }
-          else if (user['role'] == "USER") {
-            window.location = '/'
           }
           else if (user['role'] == "DOCTOR") {
             window.location = '/user/doctor'
@@ -89,13 +101,16 @@ function Login() {
             window.location = '/'
           }
         }
+        
       } catch (error) {
         console.error(
           'You have an error in your code or there are Network issues.',
           error,
         )
-        // setAuth({ error: error.message })
+        setAuth({ error: error.message })
       } 
+    }else{
+      setValidInput(true);
     }
 
 
@@ -126,11 +141,10 @@ function Login() {
   const hideResetPwdModal = () => {
     setDisplayResetPwdModal(false)
   }
-
+  
   const SUBMIT = () => {
     console.log('alert to do')
   }
-  
 
 
   return (
@@ -182,17 +196,17 @@ function Login() {
                               Please enter a correct password
                             </Form.Control.Feedback>
                           </Form.Group>
-                          {/* <ReCAPTCHA
+                          <ReCAPTCHA
                             sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                             onChange={onCaptchaChange}
-                          /> */}
+                          />
 
                           <div className="d-flex justify-content-center">
                             <Button id="btn-disable-login"
                               className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button btn-light" style={{ borderRadius: "8000px", margin: "15px" }}
                               type="submit" value="Login"
                               name="submit" 
-                              // disabled={!captchaToken}
+                              disabled={!captchaToken}
                               >Sign In</Button>
                             <Button
                               className="btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button" style={{ borderRadius: "8000px", margin: "15px" }}
@@ -202,8 +216,8 @@ function Login() {
                               value="Login linkedIn" onClick={linkedInAuth} ><AiFillLinkedin size={20}></AiFillLinkedin>LinkedIn</Button>
                           </div>
                         </Form>
-                        {/* <p>{auth.error && `Error: ${auth.error}`}</p> */}
-                        {/* <p style={{color : "red"}}>{auth.error && `Error: Please verify your credentials !`}</p> */}
+                        <p>{auth.error && `Error: ${auth.error}`}</p>
+                        <p style={{color : "red"}}>{auth.error && `Error: Please verify your credentials !`}</p>
                         <div className="d-flex justify-content-center">
                           <p>Forgotten password ?
                             <Button className='btn wd-btn-round-2 text-uppercase font-weight-bold mb-2 submit_button' style={{ borderRadius: "8000px", margin: "15px" }} onClick={showResetPwdModal}>

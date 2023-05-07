@@ -1,5 +1,5 @@
 import React from 'react'
-import { Cookies } from 'react-cookie'
+import { Cookies, removeCookie } from 'react-cookie'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -21,15 +21,6 @@ function Header() {
    const [newNotif, setNewNotif] = useState(false)
    const [notifications, setNotifications] = useState([])
 
-   const logout = () => {
-      cookies.remove('token')
-      cookies.remove('user')
-      setAuth({
-         token: null,
-         user: null,
-      })
-      window.location = '/'
-   }
    const [imageSrc, setImageSrc] = useState(`${process.env.backurl}/uploads/User/altUser.png`)
 
    const getUser = async () => {
@@ -51,17 +42,28 @@ function Header() {
       const response = await axios.get(`${process.env.backurl}/api/notifications/find/${cookies.get('user')._id}`)
       setNotifications(response.data)
    }
+
+   const logout = () => {
+      document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
+      setAuth({
+         token: null,
+         user: null,
+      })
+      window.location = "/"
+   }
    useEffect(() => {
-      setAuth(
-         {
-            token: cookies.get('token'),
-            user: cookies.get('user')
-         })
+      setAuth({
+         token: cookies.get('token'),
+         user: cookies.get('user')
+      })
       getUser()
-      {(cookies.get('user') && cookies.get('user').image) 
-         ? setImageSrc(`${process.env.backurl}/${cookies.get('user').image}`)
-         : setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
-      }
+      if (cookies.get('user') && cookies.get('user').image)
+         setImageSrc(`${process.env.backurl}/${cookies.get('user').image}`)
+      else
+         setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
+
    }, [])
 
    const { state, dispatch } = useContext(Store);
@@ -122,11 +124,11 @@ function Header() {
                                  <div>
                                     {/* {(!auth.user || !auth.user.image)
                                        ? */}
-                                       <img style={{ height: '2rem', width: '2rem' }}
-                                          src={imageSrc}
-                                          alt="no img altUser.png"
-                                       />
-                                       {/* :
+                                    <img style={{ height: '2rem', width: '2rem' }}
+                                       src={imageSrc}
+                                       alt="no img altUser.png"
+                                    />
+                                    {/* :
                                        <img style={{ height: '2rem', width: '2rem' }}
                                           src={`${process.env.backurl}/${auth.user.image}`}
                                           onError={(e) => { e.target.src = `${process.env.backurl}/uploads/User/altUser.png` }}
@@ -177,7 +179,7 @@ function Header() {
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">
-                                          
+
                                           {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/users") }} aria-current="page">Users (Admin)</a>
                                           </li> */}
@@ -207,12 +209,12 @@ function Header() {
                                        </ul>
                                     </li>
                                  }
-                                 
+
                                  {auth.user && auth.token && auth.user.role === "ADMIN" &&
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Meals & Recipes </a>
                                        <ul className="sub-menu">
-                                          
+
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
                                              <a onClick={() => { router.push("/meals") }} >Meals</a>
                                           </li>
