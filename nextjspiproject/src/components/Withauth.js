@@ -2,15 +2,17 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { Cookies } from 'react-cookie';
 
-const cookies = new Cookies();
 
 function withAuth(WrappedComponent) {
+  
+const cookies = new Cookies();
+
   return (props) => {
     const router = useRouter();
-    // useEffect(() => {
-    //   if (!cookies.get('user')) {
-    //     router.push('/auth/login');
-    //   }
+    useEffect(() => {
+      if (window.location.pathname.includes('login') && cookies.get('user')) {
+        router.push('/');
+      }
     //   else {
     //     if (window.location.pathname.includes('admin') && cookies.get('user').role !== 'ADMIN') {
     //       window.location = '/'
@@ -22,7 +24,7 @@ function withAuth(WrappedComponent) {
     //       window.location = '/'
     //     }
     //   }
-    // }, []);
+    }, []);
 
     return <WrappedComponent {...props} />;
   };

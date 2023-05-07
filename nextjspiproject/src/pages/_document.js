@@ -10,12 +10,12 @@ export default function Document() {
       <meta name='robots' content='max-image-preview:large' />
       <Head>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
-        <script src='/wp-content/themes/weefly/assets/js/ajax-login-register6a4d.js' id='ajax-login-script-js'></script>
+        {/* <script src='/wp-content/themes/weefly/assets/js/ajax-login-register6a4d.js' id='ajax-login-script-js'></script> */}
         <script src='/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minbd43.js' id='jquery-blockui-js'></script>
         <script src='/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.minbdeb.js' id='wc-add-to-cart-js'></script>
         <script src='/wp-content/plugins/js_composer/assets/js/vendors/woocommerce-add-to-carte1b2.js' id='vc_woocommerce-add-to-cart-js-js'></script>
-        <script src='/wp-content/themes/weefly/assets/js/ajax-login-register.js' id='vb_reg_script-js'></script>
-        <script src='/template.js' id='ajax-login-script-js'></script>
+        {/* <script src='/wp-content/themes/weefly/assets/js/ajax-login-register.js' id='vb_reg_script-js'></script> */}
+        {/* <script src='/template.js' id='ajax-login-script-js'></script> */}
         <link rel="alternate" type="application/rss+xml" title="Weefly &raquo; Feed" href="/feed/index.html" />
         <link rel="alternate" type="application/rss+xml" title="Weefly &raquo; Comments Feed" href="/comments/feed/index.html" />
         <link rel='stylesheet' id='simple-line-icon-css' href='/wp-content/themes/weefly/assets/css/simple-line-icons6a4d.css' type='text/css' media='all' />
@@ -52,7 +52,7 @@ export default function Document() {
         <link rel='stylesheet' id='js_composer_front-css' href='/wp-content/plugins/js_composer/assets/css/js_composer.mine1b2.css' type='text/css' media='all' />
         <link rel="https://api.w.org/" href="/wp-json/index.html" />
         <link rel="alternate" type="application/json" href="/wp-json/wp/v2/pages/148.json" />
-        <link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc0db0.php?rsd" />
+        {/* <link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc0db0.php?rsd" /> */}
         <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.html" />
         <meta name="generator" content="WordPress 6.1.1" />
         <meta name="generator" content="WooCommerce 6.7.0" />

@@ -30,12 +30,21 @@ export default function RecipeForm(props) {
     meals  :  "",
     user  :  ""
   })
+    
+  const [imageSrc, setImageSrc] = useState(`${process.env.backurl}/uploads/Recipe/altRecipe.jpg`)
+
   const [validatedForm, setValidatedForm] = useState(false);
   
-  const getValidated = async (event) => {
-    console.log(event.target.value)
-    setRecipe({ ...props.recipe, 'validated': event.target.value })
+  const handleImageChange = (event) => {
+    if (event.target.files[0])
+      setImageSrc(URL.createObjectURL(event.target.files[0]))
+    else
+      setImageSrc('')
   }
+  // const getValidated = async (event) => {
+  //   console.log(event.target.value)
+  //   setRecipe({ ...props.recipe, 'validated': event.target.value })
+  // }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -191,6 +200,7 @@ export default function RecipeForm(props) {
       setOperationMode('Modify')
       setListMeal(props.recipe.meals)
       setListQuantity(props.recipe.quantity)
+      setImageSrc(`${process.env.backurl}${props.recipe.imgRecipe}`)
       updateMealsIds()
     }
   }, [])
@@ -395,8 +405,8 @@ export default function RecipeForm(props) {
                       <Form.Group>
                         
                           <div>
-                            <input type="checkbox"  name="validated" checked={recipe.validated} />
-                            <label for="validated">Publiched</label>
+                            <input type="checkbox"  name="validated" defaultChecked={recipe.validated} />
+                            <label htmlFor="validated">Publiched</label>
                           </div>
                         {/*
                         <Form.Label htmlFor="validated"> Publiched </Form.Label>
@@ -428,12 +438,14 @@ export default function RecipeForm(props) {
                             accept=".png, .jpg, .jpeg"
                             name="imgRecipe"
                             required
+                            onChange={handleImageChange}
                           />
                           : 
                           <Form.Control
                             type="file"
                             accept=".png, .jpg, .jpeg"
                             name="imgRecipe"
+                            onChange={handleImageChange}
                           />
                         }
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -444,22 +456,19 @@ export default function RecipeForm(props) {
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12  " >
                       <div className="designation-profile-img centerMydiv">
-                        {recipe.imgRecipe
+                        {/* {recipe.imgRecipe
                           ?
-                          <>
+                          <> */}
                             <img style={{ height: '15rem', width: '15rem' }}
-                              src={`${process.env.backurl}${recipe.imgRecipe}`}
-                              onError={(e) => {
-                                e.target.src = `${process.env.backurl}uploads/Recipe/altRecipe.jpg`;
-                              }}
-                              // onerror="this.onerror=null;this.src=;"
-                              alt={`${process.env.backurl}uploads/Recipe/altRecipe.jpg`}
+                              src={imageSrc}
+                              alt="ImgRecipe"
                             />
                             <div className="desig-content">
                               {/* <p >{recipe.imgRecipe}</p> */}
-                            <input type="hidden" id="pathImg" name="pathImg" defaultValue={recipe.imgRecipe} /> 
+                            <input type="hidden" id="pathImg" name="pathImg" defaultValue={imageSrc} /> 
                             </div>
-                          </>
+
+                          {/* </>
                           :
                           <>
                             <img style={{ height: '15rem', width: '15rem' }}
@@ -471,11 +480,11 @@ export default function RecipeForm(props) {
                             />
                             <hr />
                             <div className="desig-content">
-                              {/* <p>{`/uploads/Recipe/altRecipe.jpg`}</p> */}
+                              {/* <p>{`/uploads/Recipe/altRecipe.jpg`}</p> -/}
                             <input type="hidden" id="pathImg" name="pathImg" defaultValue={`/uploads/Recipe/altRecipe.jpg`} /> 
                             </div>
                           </>
-                        }
+                        } */}
                       </div>
                     </div>
                   </Row>
@@ -484,7 +493,7 @@ export default function RecipeForm(props) {
               </div>
         </Stack>
         <div className="txtCenter">
-          <Button  variant="success" type="submit">{operationMode} Meal</Button>
+          <Button  variant="success" type="submit">{operationMode} Recipe</Button>
         </div>
         <br/>
       </Form>

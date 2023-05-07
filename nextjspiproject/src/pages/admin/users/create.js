@@ -6,7 +6,7 @@ const UsersForm = lazy(() => import('@/components/users/UsersForm'));
 function Create() {
   return (
     <Suspense>
-      <UsersForm></UsersForm>
+      <UsersForm operationMode={"Create User"}></UsersForm>
     </Suspense>
   );
 }

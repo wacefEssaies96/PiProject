@@ -20,6 +20,7 @@ function Header() {
    })
    const [newNotif, setNewNotif] = useState(false)
    const [notifications, setNotifications] = useState([])
+
    const logout = () => {
       cookies.remove('token')
       cookies.remove('user')
@@ -29,6 +30,8 @@ function Header() {
       })
       window.location = '/'
    }
+   const [imageSrc, setImageSrc] = useState(`${process.env.backurl}/uploads/User/altUser.png`)
+
    const getUser = async () => {
       if (cookies.get('user')) {
          let res = await fetch(`${process.env.backurl}/api/users/findOne/${cookies.get('user')._id}`)
@@ -55,6 +58,10 @@ function Header() {
             user: cookies.get('user')
          })
       getUser()
+      {(cookies.get('user') && cookies.get('user').image) 
+         ? setImageSrc(`${process.env.backurl}/${cookies.get('user').image}`)
+         : setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
+      }
    }, [])
 
    const { state, dispatch } = useContext(Store);
@@ -113,19 +120,19 @@ function Header() {
                            <li className="has-dropdown">
                               <a href="#">
                                  <div>
-                                    {(!auth.user || !auth.user.image)
-                                       ?
+                                    {/* {(!auth.user || !auth.user.image)
+                                       ? */}
                                        <img style={{ height: '2rem', width: '2rem' }}
-                                          src={`${process.env.backurl}/uploads/User/altUser.png`}
+                                          src={imageSrc}
                                           alt="no img altUser.png"
                                        />
-                                       :
+                                       {/* :
                                        <img style={{ height: '2rem', width: '2rem' }}
                                           src={`${process.env.backurl}/${auth.user.image}`}
                                           onError={(e) => { e.target.src = `${process.env.backurl}/uploads/User/altUser.png` }}
                                           alt="verifiy img"
                                        />
-                                    }
+                                    } */}
                                  </div>
                               </a>
                               <ul className="user-option">
@@ -170,19 +177,14 @@ function Header() {
                                     <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
                                        <a onClick={() => { router.push("/admin/users") }} aria-current="page">Managment</a>
                                        <ul className="sub-menu">
-                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                          
+                                          {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/users") }} aria-current="page">Users (Admin)</a>
-                                          </li>
+                                          </li> */}
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
-                                             <a onClick={() => { router.push("/admin/meals") }} >Meals (Admin)</a>
+                                             <a onClick={() => { router.push("/admin/meals") }} >Meals </a>
                                           </li>
-                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
-                                             <a onClick={() => { router.push("/meals") }} >Meals (User)</a>
-                                          </li>
-                                          <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768">
-                                             <a onClick={() => { router.push("/recipes") }} >Recipes (User)</a>
-                                          </li>
-                                          <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                          {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles</a>
                                           </li>
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
@@ -201,11 +203,26 @@ function Header() {
                                           <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/admin/sport-type">Sport Types</Link></li>
                                           <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/admin/sport-sub-type">Sport Sub Types</Link></li>
                                           <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/event-calendar-sports">Event Calendar for Sports</Link></li>
-                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/sport-progress">List of Sport Progress</Link></li>
+                                          <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href="/admin/sport-progress">List of Sport Progress</Link></li> */}
                                        </ul>
                                     </li>
                                  }
-                                 <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="/" aria-current="page">Home</a>
+                                 
+                                 {auth.user && auth.token && auth.user.role === "ADMIN" &&
+                                    <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743">
+                                       <a onClick={() => { router.push("/admin/users") }} aria-current="page">Meals & Recipes </a>
+                                       <ul className="sub-menu">
+                                          
+                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
+                                             <a onClick={() => { router.push("/meals") }} >Meals</a>
+                                          </li>
+                                          <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768">
+                                             <a onClick={() => { router.push("/recipes") }} >Recipes </a>
+                                          </li>
+                                       </ul>
+                                    </li>
+                                 }
+                                 {/* <li id="menu-item-1743" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-has-children menu-item-1743"><a href="/" aria-current="page">Home</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754"><a href="/" aria-current="page">Home Page</a></li>
                                        <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753"><Link href="/sport-types">Sport Types</Link></li>
@@ -214,8 +231,8 @@ function Header() {
                                        {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/videos/${auth.user._id}`}>Sport Videos</Link></li>}
                                        {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/calendar/${auth.user._id}`}>Sport Calendar Plan</Link></li>}
                                     </ul>
-                                 </li>
-                                 <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
+                                 </li> */}
+                                 {/* <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles">Home</Link></li>
                                       
@@ -229,11 +246,11 @@ function Header() {
                                              <li id="menu-item-1724" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1724"><a href="#">Quote</a></li>
                                              <li id="menu-item-1723" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1723"><a href="#">Link</a></li>
                                           </ul>
-                                       </li> */}
+                                       </li> -/}
                                     </ul>
-                                 </li>
+                                 </li> */}
                                  <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>
-                                 <li id="menu-item-1728" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1728"><a href="#">Products</a>
+                                 {/* <li id="menu-item-1728" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1728"><a href="#">Products</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1745" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1745"><a
                                           onClick={() => {
@@ -247,8 +264,8 @@ function Header() {
                                        <li id="menu-item-1759" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1759"><a href="#">Wishlist</a></li>
                                        <li id="menu-item-1758" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1758"><a href="#">Cart</a></li>
                                     </ul>
-                                 </li>
-                                 <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719"><a href="#">Pages</a>
+                                 </li> */}
+                                 {/* <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719"><a href="#">Pages</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767"><a href="#">Our Team</a></li>
                                        <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766"><a href="#">Our Doctors</a></li>
@@ -256,8 +273,9 @@ function Header() {
                                        <li id="menu-item-1755" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1755"><a href="/user/doctor-or-user">Register</a></li>
                                        <li id="menu-item-1756" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1756"><a href="/auth/login">Login</a></li>
                                     </ul>
-                                 </li>
+                                 </li> */}
                                  <li id="menu-item-1747" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="#">Contact Us</a></li>
+                                 {/* 
                                  {auth.user && auth.user.role == "DOCTOR" ? (
    <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
        <a href="#">Health</a>
@@ -282,7 +300,7 @@ function Header() {
            </li>
            {/* <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
                <a href="#">Propose an appointment</a>
-           </li> */}
+           </li> -/}
        </ul>
    </li>
 ) :auth.user &&   auth.user.role == "ADMIN" ? (
@@ -297,7 +315,7 @@ function Header() {
            </li>
        </ul>
    </li>
-): null }
+): null } */}
                               </ul>                        </nav>
                         </div>
                         <div className="side-cart">

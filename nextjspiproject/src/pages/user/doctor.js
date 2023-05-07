@@ -1,15 +1,17 @@
-import DoctorsForm from '@/components/users/doctorform'
+import withAuth from '@/components/Withauth';
+import { fetchData } from '@/services/mix';
+import { Suspense, lazy } from 'react';
 import nextCookie from 'next-cookies'
+
+
+const UsersForm = lazy(() => import('@/components/users/UsersForm'));
 
 function Doctor({ user }) {
   return (
-    <>
-      {user._id === ""
-        ? <DoctorsForm operationMode="Add" />
-        : <DoctorsForm operationMode="Update" doctor={user} />
-      }
-    </>
-  )
+    <Suspense>
+      <UsersForm user={user} operationMode={"Profile Doctor"}></UsersForm>
+    </Suspense>
+  );
 }
 
 export async function getServerSideProps(ctx) {
@@ -27,19 +29,22 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       user: {
-        _id: '',
-        fullname: '',
-        email: '',
-        password: '',
-        phone: 0,
-        height: 0,
-        weight: 0,
-        address: '',
-        disease: '',
-        gender: ''
+        id:"",
+        image: "",
+        fullname: "",
+        email: "",
+        role: "",
+        phone: "",
+        dateOfBirth: "",
+        height: "",
+        weight: "",
+        gender: "",
+        address: "",
+        disease: "",
+        speciality: "",
       }
-    }
-  }
+    },
+  };
 }
 
-export default Doctor
+export default withAuth(Doctor);

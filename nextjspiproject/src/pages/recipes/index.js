@@ -86,7 +86,7 @@ export default function Index({ Myrecipesdb,recipesdb,user}) {
                     ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
                     :`${process.env.backurl}/${recipe.user.image}`
                   } 
-                  alt="Verify image" /> 
+                  alt="ImgUser" /> 
                   
                   <a key={recipe.user.fullname} href={`/recipes/details/${recipe._id}`}>{recipe.user.fullname}</a>
 

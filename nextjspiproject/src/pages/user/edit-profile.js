@@ -2,16 +2,15 @@ import Head from 'next/head'
 import Register from '@/components/users/RegisterForm'
 import nextCookie from 'next-cookies'
 import withAuth from '@/components/Withauth'
+import UsersForm from '@/components/users/UsersForm';
+
+
 
 function EditProfilePage({ user }) {
   return (
-    <div className='container'>
-      <Head>
-        <title>Edit Profile Form | User</title>
-      </Head>
-      <Register operation={'Update'} user={user} />
-    </div>
-  )
+    
+      <UsersForm user={user} operationMode={"Profile User"}></UsersForm>
+  );
 }
 
 export async function getServerSideProps(ctx) {
@@ -29,17 +28,22 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       user: {
-        _id: '',
+        id:"",
+        image: "",
         fullname: "",
         email: "",
         role: "",
+        phone: "",
+        dateOfBirth: "",
+        height: "",
+        weight: "",
         gender: "",
-        phone: 0,
         address: "",
+        disease: "",
         speciality: "",
       }
-    }
-  }
+    },
+  };
 }
 
 export default withAuth(EditProfilePage)

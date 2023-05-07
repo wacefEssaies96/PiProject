@@ -1,18 +1,9 @@
 import React from 'react'
-import { Cookies } from 'react-cookie'
-import { useState } from "react"
+
 
 
 function HomePage() {
 
-  const cookies = new Cookies()
-
-  const [auth, setAuth] = useState({
-    token: cookies.get('token') || null,
-    error: '',
-    email: null,
-    password: null,
-  })
 
   return (
     <>
