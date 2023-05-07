@@ -44,7 +44,23 @@ exports.signin = function (req, res) {
 
 };
 
-exports.signup = function (req, res, next) {
+exports.signup = async function (req, res, next) {
+  try {
+    const existingUser = await User.findOne({ email: req.body.email });
+
+    if (existingUser) {
+      return res.status(422).send({
+        message: "User already exists with email " + req.body.email
+      });
+    }
+
+  var speciality =""
+  var disease =""
+  if(req.body.role == "DOCTOR"){
+    speciality= req.body.speciality
+  }else{
+    disease = req.body.disease
+  }
   var user = new User({
     fullname: req.body.fullname,
     email: req.body.email,
@@ -55,26 +71,13 @@ exports.signup = function (req, res, next) {
     address: req.body.address,
     height: req.body.height,
     weight: req.body.weight,
-    disease: req.body.disease,
+    dateOfBirth: req.body.dateOfBirth,
+    disease: disease,
     image: req.file.path,
-    account_Verified: req.body.account_Verified,
-    speciality: req.body.speciality,
+    account_Verified: false,
+    speciality: speciality,
   });
-  const email = user.email;
-  const password = user.password;
-
-  if (!email || !password) {
-    return res.status(422).send({ error: 'Email and password must be provided' });
-  }
-
-  User.findOne({ email: email }, function (err, existingUser) {
-    if (err) {
-      return next(err);
-    }
-
-    if (existingUser) {
-      return res.status(422).send({ error: 'Email is already in use...' });
-    }
+      
 
 
     user.save(function (err) {
@@ -83,7 +86,16 @@ exports.signup = function (req, res, next) {
       }
       res.json({ token: tokenForUser(user) });
     });
+    
+  // res.status(500)
+  // .send({ message: "User = " + user  });
+
+} catch (err) {
+  res.status(500).send({
+    message:
+      "Some error occurred while creating the user."
   });
+}
 }
 
 exports.requireRole = function (role) {
@@ -107,6 +119,7 @@ exports.requireRole = function (role) {
       });
 
   };
+  
 }
 
 /*const temp_secret= speakeasy.generateSecret()

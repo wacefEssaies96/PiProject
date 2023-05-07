@@ -22,7 +22,13 @@ exports.createUser = async (req, res) => {
         message: "User already exists with email " + req.body.email
       });
     }
-
+    var speciality =""
+    var disease =""
+    if(req.body.role == "DOCTOR"){
+      speciality= req.body.speciality
+    }else{
+      disease = req.body.disease
+    }
     const newUser = new User({
       fullname: req.body.fullname,
       email: req.body.email,
@@ -34,10 +40,10 @@ exports.createUser = async (req, res) => {
       height: req.body.height,
       weight: req.body.weight,
       dateOfBirth: req.body.dateOfBirth,
-      disease: req.body.disease,
       image: req.file.path,
       account_Verified: req.body.account_Verified,
-      speciality: req.body.speciality,
+      speciality: speciality,
+      disease: disease,
     });
 
     const savedUser = await newUser.save();
@@ -83,7 +89,7 @@ exports.findUserById = async (req, res) => {
 
     res.send(user);
   } catch (err) {
-    res.status(500).send({ message: "Internal server error" });
+    res.status(500).send({data : null});
   }
 };
 
