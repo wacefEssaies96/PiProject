@@ -1148,3 +1148,13 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+.team{
+  width: 250px;
+}
+
+#about-us-dev {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../../public/dev.png);
+  background-size: cover;
+}

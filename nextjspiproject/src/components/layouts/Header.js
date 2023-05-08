@@ -232,7 +232,7 @@ function Header() {
                                        </li> */}
                                     </ul>
                                  </li>
-                                 <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>
+                                 <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="/about-us">About Us</a></li>
                                  <li id="menu-item-1728" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1728"><a href="#">Products</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1745" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1745"><a
@@ -257,7 +257,6 @@ function Header() {
                                        <li id="menu-item-1756" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1756"><a href="/auth/login">Login</a></li>
                                     </ul>
                                  </li>
-                                 <li id="menu-item-1747" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="#">Contact Us</a></li>
                                  {auth.user && auth.user.role == "DOCTOR" ? (
    <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
        <a href="#">Health</a>

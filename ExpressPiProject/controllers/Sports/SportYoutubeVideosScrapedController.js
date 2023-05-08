@@ -36,6 +36,7 @@ exports.youtubeVideos = async (req, res) => {
                 q: query,
                 part: 'id,snippet',
                 type: 'video',
+                videoDefinition: 'high',
                 maxResults: 10, // Specify the number of results to retrieve
                 key: 'AIzaSyC8zRRDe5qseKnGUrfLI2b3lAafbllMFNg', // Replace with your actual API key
             }
