@@ -208,12 +208,14 @@ export default function Index({ Myrecipesdb,recipesdb,user}) {
           <div className="row">
             <div className="col-12 col-lg-4">
               <div className="sidebar">
-                <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Add New Recipe</h4>
-                  <div
-                    className=" txtCenter greenBtn centerMydiv" >
-                    <a href={`/recipes/create`}>Create new Recipe</a>
+                {user._id &&
+                  <div id="search-1" className="widget widget_search"><h4 className="widget-title txtCenter">Add New Recipe</h4>
+                    <div
+                      className=" txtCenter greenBtn centerMydiv" >
+                      <a href={`/recipes/create`}>Create new Recipe</a>
+                    </div>
                   </div>
-                </div>
+                }
                 <div id="tag_cloud-1" className="widget widget_tag_cloud"><h4 className="widget-title txtCenter">Search type</h4><div className="tagcloud">
                     <select 
                       className="greenBtn centerMydiv"   
@@ -234,38 +236,43 @@ export default function Index({ Myrecipesdb,recipesdb,user}) {
                   className="greenBtn centerMydiv" 
                   onChange={filterList} placeholder="search" value={search} type="text"/>
                 </div>
-                <div id="categories-2" className="widget widget_categories"><h4 className="widget-title txtCenter">Calorie</h4>
-                  <CalorieForm user={user} />
-                </div>
-                <div id="weefly_recent_post-1" className="widget widget_weefly_recent_post"><h4 className="widget-title txtCenter">My Recipes</h4>
-                  <div className="widget-posts">
-                    <ul>
-                      {mylist.length>0 &&
-                        mylist.slice(-3).map((recipe, index)=> {
-                          return(
-                            <li  key={"li"+index} className="widget-post">
-                              <div className="post_thumb">
-                                <a key={recipe._id} href={`/recipes/details/${recipe._id}`} className="post-thumb">
-                                  <img
-                                  key={recipe.imgRecipe}
-                                  src={ recipe.imgRecipe == undefined 
-                                  ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
-                                  :`${process.env.backurl}${recipe.imgRecipe}`
-                                    }
-                                  />
-                                </a>
-                              </div>
-                              <div className="recent-content-wrap">
-                                <p className="post-date wd-primary-color" key={recipe.createdAt}>{extractDate(recipe.createdAt)}</p>
-                                  <h6><a key={recipe.name} href={`/recipes/details/${recipe._id}`} className="post-title black-color">{recipe.name} ({recipe.totalCalorie} Cal )</a></h6>
-                              </div>
-                            </li>
-                          )
-                        })
-                      }
-                    </ul>
-                  </div>
-                </div>    
+                
+                {user._id &&
+                  <>
+                    <div id="categories-2" className="widget widget_categories"><h4 className="widget-title txtCenter">Calorie</h4>
+                      <CalorieForm user={user} />
+                    </div>
+                    <div id="weefly_recent_post-1" className="widget widget_weefly_recent_post"><h4 className="widget-title txtCenter">My Recipes</h4>
+                      <div className="widget-posts">
+                        <ul>
+                          {mylist.length>0 &&
+                            mylist.slice(-3).map((recipe, index)=> {
+                              return(
+                                <li  key={"li"+index} className="widget-post">
+                                  <div className="post_thumb">
+                                    <a key={recipe._id} href={`/recipes/details/${recipe._id}`} className="post-thumb">
+                                      <img
+                                      key={recipe.imgRecipe}
+                                      src={ recipe.imgRecipe == undefined 
+                                      ?`${process.env.backurl}/uploads/Recipe/altRecipe.jpg` 
+                                      :`${process.env.backurl}${recipe.imgRecipe}`
+                                        }
+                                      />
+                                    </a>
+                                  </div>
+                                  <div className="recent-content-wrap">
+                                    <p className="post-date wd-primary-color" key={recipe.createdAt}>{extractDate(recipe.createdAt)}</p>
+                                      <h6><a key={recipe.name} href={`/recipes/details/${recipe._id}`} className="post-title black-color">{recipe.name} ({recipe.totalCalorie} Cal )</a></h6>
+                                  </div>
+                                </li>
+                              )
+                            })
+                          }
+                        </ul>
+                      </div>
+                    </div>  
+                  </>
+                }  
               </div>
             </div>
             <div className="col-lg-8">

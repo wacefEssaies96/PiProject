@@ -1,9 +1,12 @@
 import { Container, Table, Button, Row, Col } from "react-bootstrap";
 import { useState } from "react";
+import { errorAlert } from "@/services/alerts";
+import axios from "axios";
 
 
 
-export default function Meal({ mealsdb }) {
+
+export default function Meal({ cu,mealsdb }) {
 
   const [list, setList] = useState(mealsdb)
   const [filtered, setFiltered] = useState();
@@ -28,7 +31,34 @@ export default function Meal({ mealsdb }) {
       setShowfiltered(false)
     }
   }
-  
+  const RateMeal =(mealId) =>{
+    if(cu){
+        var newRate={"userRate": cu._id,"rate":4}
+
+        axios.put(`${process.env.backurl}/api/meal/Update/${mealId}`, {"newRate": newRate})
+        .then((dataRate) => { if (dataRate.data) {
+            // success(dataRate.data.message);
+            // window.location ="/meals"
+            window.location.reload()
+             success("Yor rate is added ");
+            } })
+        .catch((errorRate) => { if (errorRate.response) { 
+            // errorAlert(errorRate.response.data.message)
+            errorAlert("Some Problem to rate Meals")
+         } })
+        console.log("newRate"+JSON.stringify(newRate)+"mealId"+mealId)
+    }
+    else{
+        errorAlert(" LOGIN BEFORE RATING !! ")
+    }
+  }
+  const Somme = (MealRate)  => {
+    var somme = 0;
+    for (let i = 0; i < MealRate.length; i++) {
+        somme += MealRate[i].rate;
+      }
+    return somme;
+  }
   const renderMeal = (meal, index) =>{
     
     return (
@@ -58,20 +88,34 @@ export default function Meal({ mealsdb }) {
                     <h6 key={meal.FoodItem} className="navy-txt"><a
                                 href="#">{meal.FoodItem}</a>
                     </h6>
-                    <p key={meal.calories_100g}>{meal.calories_100g}</p>                                    
-                    {/* <div className="wd-shop-details-title-wrapper">
+                    <p key={meal.calories_100g}>{meal.calories_100g}</p>  
+
+                    <div className="wd-shop-details-title-wrapper">
                         <div className="wd-shop-product-review-star">
                             <div className="rating-star">
-                                <div className="star-rating" title="Rated 3.50 out of 5">
-                                    <span style={{width:"70%"}}></span>
-                                </div>
-                                <div className="rating-count">
-                                    <strong className="rating">3.50</strong>
-                                </div>                                                                                                            
-                                <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span>
+                                    <div className="star-rating" onClick={() => RateMeal(meal._id) }  >
+                                        <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
+                                    </div>
+                                {/* <div className="rating-count">
+                                    <strong className="rating">{Somme(meal.rate)}</strong>
+                                </div>                                                                                                             */}
+                                {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
                             </div>
                         </div>
-                    </div> */}
+                    </div>
+                    <div className="wd-shop-details-title-wrapper">
+                        <div className="wd-shop-product-review-star">
+                            <div className="rating-star">
+                                    <div className="star-rating " >
+                                        <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
+                                    </div>
+                                {/* <div className="rating-count">
+                                    <strong className="rating">{(Somme(meal.rate)/5)}</strong>
+                                </div>                                                                                                             */}
+                                {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
     </div>

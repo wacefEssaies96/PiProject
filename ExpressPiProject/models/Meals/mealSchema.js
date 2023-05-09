@@ -16,6 +16,16 @@ const mealSchema =new mongoose.Schema(
     calories_oz    : String,
     validated : Boolean,
     imgMeal  : String,
+    rate  : [ 
+      {
+        userRate: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true
+        },
+        rate :Number
+      }
+    ]
   },
   { timestamps: true }
 )

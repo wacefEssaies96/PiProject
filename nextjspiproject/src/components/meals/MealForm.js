@@ -15,7 +15,8 @@ export default function MealsForm(props) {
     serving_size_portion :  "",
     serving_size_oz  :  "",
     validated : "",
-    imgMeal : ""
+    imgMeal : "",
+    rate : []
   })  
   const [imageSrc, setImageSrc] = useState(`${process.env.backurl}/uploads/Meal/altMeal.jpg`)
 
@@ -68,6 +69,8 @@ export default function MealsForm(props) {
             <Col md={4}>
               <Form.Group>
                   <input type="hidden" name="id" defaultValue={meal._id}></input>
+
+                  <input type="hidden" name="rate" defaultValue={meal.rate}></input>
 
                   <Form.Label htmlFor="FoodCategory" className="greenBOLD">Food Category</Form.Label>
                   <Form.Control defaultValue={meal.FoodCategory} placeholder="Food Category" type="text" id="FoodCategory" name="FoodCategory" required></Form.Control>

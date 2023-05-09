@@ -1169,7 +1169,7 @@ textarea {
   background-image: url(../../public/dev.png);
   background-size: cover;
 }
-a {
+li > a, a {
   color: inherit;
   text-decoration: none;
 }

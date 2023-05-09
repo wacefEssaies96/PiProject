@@ -124,8 +124,9 @@ exports.CreateScapedMeal = async (req, res) => {
       serving_size_oz,
       calories_oz,
       validated,
-      imgMeal
-    });
+      imgMeal,
+      // rate,
+      });
 
     await meal.save();
 
@@ -138,8 +139,9 @@ exports.CreateScapedMeal = async (req, res) => {
 
 exports.createMeal = async (req, res) => {
   
-  const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated } = req.body;
-
+  const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated,rate } = req.body;
+  var rateList =[];
+  
   // Validate request
   if (!FoodItem || !FoodCategory) {
     return res.status(400).send({ message: "Content can not be empty!" });
@@ -157,6 +159,16 @@ exports.createMeal = async (req, res) => {
     if (existingMeal) {
       return res.status(302).send({ message: "Meals already exist with FoodItem = " + FoodItem });
     }
+    var existingUser = undefined;
+    try {
+      existingUser = await User.findById( rate.user );
+    } catch (erru) {
+      return res.status(500).send({ message: "Some error find user." + erru });
+    }
+
+    
+
+    rateList.push({userRate:existingUser,rate:rate.rate})
 
     const meal = new Meal({
       FoodCategory,
@@ -168,7 +180,8 @@ exports.createMeal = async (req, res) => {
       serving_size_oz,
       calories_oz,
       validated,
-      imgMeal: "/"+req.file.path.replace(/\\/g, '/')
+      imgMeal: "/"+req.file.path.replace(/\\/g, '/'),
+      rate:rateList,
       // ,
       // user : existingUser
     });
@@ -184,20 +197,108 @@ exports.createMeal = async (req, res) => {
   }
 };
 
+// Update a meal by the id in the request
+// exports.RateMeal = async (req, res) => {
+  
+    
+//   const id = req.params.id;
+//   var meal = null;
+//   existingMeal = await Meal.findOne({ _id: id });
+
+  
+
+//   if(req.body.newRate && existingMeal){
+//     meal = existingMeal;
+
+//     var rateList =[];
+
+//     for (let i = 0; i < existingMeal.rate; i++) {
+//       rateList.push(existingMeal.rate[i]);
+//     }
+
+//     var newRate= req.body.newRate
+//     var pos =-1;
+//     for (let i = 0; i < existingMeal.rate.length; i++) {
+//       if(existingMeal.rate[i].userRate == newRate.userRate){
+//         pos = i;
+//       }
+//     }
+//     if(pos != -1){
+//       rateList[pos]={userRate:newRate.userRate,rate:newRate.rate};
+//     }else{
+//       rateList.push({userRate:newRate.userRate,rate:newRate.rate})
+//     }
+//     meal.rate=rateList;
+    
+//   }else{
+//     res.status(500).send({
+//       message: "You can't rate"
+//     });
+//   }
+
+//   // res.status(500).send({
+//   //   message: "Meal" + meal
+//   // });
+//   Meal.findByIdAndUpdate(id, meal, { useFindAndModify: false })
+//     .then(data => {
+//       if (!data) {
+//         res.status(404).send({
+//           message: `Cannot update meal with id=${id}. Maybe meal was not found!`
+//         });
+//       } else res.send({ message: "meal was updated successfully." });
+//     })
+//     .catch(err => {
+//       res.status(500).send({
+//         message: "Error updating meal with id=" + id
+//       });
+//     });
+// };
 
 // Update a meal by the id in the request
-exports.updateMeal = (req, res) => {
+exports.updateMeal = async (req, res) => {
   
     
   const id = req.params.id;
 
+  var meal = null;
+  existingMeal = await Meal.findOne({ _id: id });
 
-  var meal = req.body; 
-  if (req.file)
-    meal.imgMeal = "/"+req.file.path.replace(/\\/g, '/')
-  else if(req.body.imgMeal)
-    meal.imgMeal =req.body.imgMeal
+  
 
+  if(req.body.newRate){
+    meal = existingMeal;
+
+    var rateList =[];
+
+    for (let i = 0; i < existingMeal.rate; i++) {
+      rateList.push(existingMeal.rate[i]);
+    }
+
+    var newRate= req.body.newRate
+    var pos =-1;
+    for (let i = 0; i < existingMeal.rate.length; i++) {
+      if(existingMeal.rate[i].userRate == newRate.userRate){
+        pos = i;
+      }
+    }
+    if(pos != -1){
+      rateList[pos]={userRate:newRate.userRate,rate:newRate.rate};
+    }else{
+      rateList.push({userRate:newRate.userRate,rate:newRate.rate})
+    }
+    meal.rate=rateList;
+    
+  }else{
+    meal = req.body;
+    if (req.file)
+      meal.imgMeal = "/"+req.file.path.replace(/\\/g, '/')
+    else if(req.body.imgMeal)
+      meal.imgMeal =req.body.imgMeal
+  }
+
+  // res.status(500).send({
+  //   message: "Meal" + meal
+  // });
   Meal.findByIdAndUpdate(id, meal, { useFindAndModify: false })
     .then(data => {
       if (!data) {
