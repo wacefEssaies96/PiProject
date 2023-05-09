@@ -12,7 +12,6 @@ const productSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ['normal', 'featured', 'trending'],
-      default: 'normal',
     },
     nutrition: [NutritionSchema],
   },

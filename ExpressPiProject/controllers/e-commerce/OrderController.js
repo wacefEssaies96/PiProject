@@ -88,26 +88,32 @@ const stripe = require('stripe')(
 ); // Replace with your Stripe API key
 
 const createPaymentSession = async (req, res) => {
-  console.log('hi');
-  const orderId = req.params.id; // Get the order ID from the request params
+  // console.log('req.params', req.params);
+  const orderId = req.params.orderId; // Get the order ID from the request params
+  console.log('orderid', orderId);
   try {
     // Find the order in the database
     const order = await Order.findById(orderId);
-    console.log(order);
     // Create a new payment session with Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: order.orderItems.map((item) => ({
-        name: item.name,
-        amount: Math.round(item.price * 100),
+        price_data: {
+          currency: 'usd',
+          unit_amount: Math.round(item.price * 100),
+          product_data: {
+            name: item.name,
+            // other product data properties as needed
+          },
+        },
         quantity: item.quantityy,
-        currency: 'usd',
       })),
+
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/order/${order._id}/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/order/${order._id}/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/order/${orderId}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/order/${orderId}/cancel`,
       metadata: {
-        orderId: order._id.toString(),
+        orderId: orderId.toString(),
         userId: order.user._id.toString(),
       },
     });
@@ -117,7 +123,8 @@ const createPaymentSession = async (req, res) => {
     await order.save();
 
     // Send the session ID back to the client
-    res.status(200).json({ sessionId: session.id });
+    res.json({ url: session.url });
+    console.log('sessionurl', session.url);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create payment session.' });

@@ -1,6 +1,7 @@
 const Product = require('../../models/e-commerce/product');
 // CREATE a new product
-
+const fs = require('fs');
+const util = require('util');
 // Create the multer middleware
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -27,13 +28,14 @@ const { createPool } = require('generic-pool');
 //     res.status(500).send('Internal server error');
 //   }
 // }
+const writeFile = util.promisify(fs.writeFile);
 
 async function scrap(req, res) {
   try {
     const categories = [
-      //'proteines',
-      // 'carbohydrates',
-      // 'acides-amines',
+      'proteines',
+      'carbohydrates',
+      'acides-amines',
       'acides-gras',
     ];
     const productsByCategory = {};
@@ -67,16 +69,17 @@ async function scrap(req, res) {
         )
           .text()
           .trim();
-        const image = $$('.woocommerce-product-gallery__image a img').attr(
-          'src'
-        );
-        products.push({ name, slug, description, image });
+        // const image = $$('.woocommerce-product-gallery__image a img').attr(
+        //   'src'
+        // );
+        products.push({ name, slug, description });
       }
 
       productsByCategory[category] = products;
     });
-
     await Promise.all(requests);
+
+    await writeFile('products.json', JSON.stringify(productsByCategory));
 
     res.send(productsByCategory);
   } catch (error) {
@@ -100,6 +103,8 @@ async function scrapeProductNamesAndSlugs(req, res) {
       'carbohydrates',
       'acides-amines',
       'acides-gras',
+      'Vitamines-et-mineraux',
+      'creatine',
     ];
     const productsByCategory = {};
 
@@ -145,7 +150,7 @@ async function createProduct(req, res) {
 
     category,
     marque,
-    nutrition,
+    type,
   } = req.body;
   const images = req.files.map((file) => file.path);
   const product = new Product({
@@ -156,7 +161,7 @@ async function createProduct(req, res) {
     images,
     category,
     marque,
-    nutrition,
+    type,
   });
   try {
     const savedProduct = await product.save();
@@ -165,7 +170,6 @@ async function createProduct(req, res) {
     res.status(400).json({ message: err.message });
   }
 }
-
 // READ all products
 async function getProducts(req, res) {
   try {
@@ -192,44 +196,27 @@ async function getProductById(req, res) {
 
 // UPDATE a product by ID
 async function updateProductById(req, res) {
-  if (!req.body) {
-    return res.status(400).send({
-      message: 'Data to update can not be empty!',
-    });
-  }
-
-  const { id } = req.params;
-  const {
-    name,
-    price,
-    quantity,
-    description,
-
-    category,
-    marque,
-    //nutrition,
-  } = req.body;
-  let images;
-  if (req.files && req.files.length > 0) {
-    images = req.files.map((file) => file.path);
-  }
   try {
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    const { id } = req.params;
+    console.log('id', id);
+    const { name, price, quantity, description, category, marque, type } =
+      req.body;
+    let images;
+    if (req.files && req.files.length > 0) {
+      images = req.files.map((file) => file.path);
     }
-    product.name = name;
-    product.price = price;
-    product.quantity = quantity;
-    product.description = description;
-    product.images = images;
-    product.category = category;
-    product.marque = marque;
-    // product.nutrition = nutrition || product.nutrition;
-    const savedProduct = await product.save();
-    res.json(savedProduct);
+    console.log('body', req.body);
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { name, price, quantity, description, category, marque, type, images },
+      { new: true }
+    );
+
+    res.json(updatedProduct);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err);
+    res.status(500).json({ message: err });
   }
 }
 

@@ -122,10 +122,12 @@ function OrderScreen() {
       const { data } = await axios.post(
         `${process.env.backurl}/api/admin/orders/${orderId}/pay`,
         {}
-        //  { withCredentials: true }
+        // { withCredentials: true }
       );
-      console.log(data.id);
-      const sessionId = data.id;
+      console.log('data', data);
+      //   const sessionId = data.url;
+      window.location = data.url; // Redirect the user to the Stripe checkout page
+
       const { error } = await stripe.redirectToCheckout({
         sessionId,
       });

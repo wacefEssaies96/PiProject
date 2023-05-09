@@ -6,6 +6,9 @@ import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { Table } from 'react-bootstrap';
 import Head from 'next/head';
 import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+
 import {
   FormGroup,
   Label,
@@ -16,9 +19,9 @@ import {
 } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 
-export default function ProductsForm(props) {
+export default function ProductsForm({ editproduct, products }) {
+  console.log(products);
   const router = useRouter();
-
   const [operationMode, setOperationMode] = useState('Create');
   const [product, setProduct] = useState({
     name: '',
@@ -29,7 +32,7 @@ export default function ProductsForm(props) {
     category: '',
     marque: '',
     isNew: false,
-    type: 'normal',
+    type: '',
   });
   const [validated, setValidated] = useState(false);
   const [scrapedProducts, setScrapedProducts] = useState([]);
@@ -38,10 +41,14 @@ export default function ProductsForm(props) {
     const form = event.currentTarget;
     setValidated(true);
     console.log(product);
-    await submitProduct(product, operationMode);
     if (form.checkValidity() === true) {
-      router.push('/admin/Products');
+      await submitProduct(product, operationMode);
     }
+  };
+
+  const getType = async (event) => {
+    if (event.target) console.log(event.target.value);
+    setProduct({ ...product, type: event.target.value });
   };
   // const [selectedProduct, setSelectedProduct] = useState(null);
   // const [imageInputMethod, setImageInputMethod] = useState('upload');
@@ -64,8 +71,14 @@ export default function ProductsForm(props) {
   };
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter products based on search query
-  const filteredProducts = Object.entries(scrapedProducts).flatMap(
+  // const filteredProducts = Object.entries(products).flatMap(([products]) =>
+  //   products.filter((category, products) =>
+  //     product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  //   ).length > 0
+  //     ? [[category, products]]
+  //     : []
+  // );
+  const filteredProducts = Object.entries(products).flatMap(
     ([category, products]) =>
       products.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -74,16 +87,22 @@ export default function ProductsForm(props) {
         : []
   );
 
+  // useEffect(() => {
+  //   fetch('/products.json')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, []);
+
   useEffect(() => {
-    if (props.product !== undefined) {
-      setProduct(props.product);
+    if (editproduct !== undefined) {
+      setProduct(editproduct);
       setOperationMode('Modify');
     }
-    axios
-      .get(`${process.env.backurl}/api/admin/products/scrap/products`)
-      .then((res) => {
-        setScrapedProducts(res.data);
-      });
   }, []);
   // const handleImageUpload = (e) => {
   //   const files = e.target.files;
@@ -149,6 +168,7 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Label>Price</Form.Label>
               <Form.Control
+                name="price"
                 type="number"
                 value={product.price}
                 onChange={(e) =>
@@ -162,6 +182,7 @@ export default function ProductsForm(props) {
               <Form.Label>Quantity</Form.Label>
               <Form.Control
                 type="number"
+                name="quantity"
                 value={product.quantity}
                 onChange={(e) =>
                   setProduct({ ...product, quantity: e.target.value })
@@ -173,6 +194,7 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Label>Description</Form.Label>
               <Form.Control
+                name="description"
                 as="textarea"
                 rows={3}
                 value={product.description}
@@ -184,6 +206,7 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Label>Images</Form.Label>
               <Form.Control
+                name="images"
                 type="file"
                 multiple
                 onChange={(e) => {
@@ -244,6 +267,7 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Label>Category</Form.Label>
               <Form.Control
+                name="category"
                 type="text"
                 value={product.category}
                 onChange={(e) =>
@@ -256,6 +280,7 @@ export default function ProductsForm(props) {
               <Form.Label>Marque</Form.Label>
               <Form.Control
                 type="text"
+                name="marque"
                 value={product.marque}
                 onChange={(e) =>
                   setProduct({ ...product, marque: e.target.value })
@@ -266,6 +291,7 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Check
                 type="checkbox"
+                name="isNew"
                 label="Is New"
                 checked={product.isNew}
                 onChange={(e) =>
@@ -277,11 +303,10 @@ export default function ProductsForm(props) {
             <Form.Group>
               <Form.Label>Type</Form.Label>
               <Form.Control
+                name="type"
                 as="select"
                 value={product.type}
-                onChange={(e) =>
-                  setProduct({ ...product, type: e.target.value })
-                }
+                onChange={getType}
               >
                 <option value="normal">Normal</option>
                 <option value="featured">Featured</option>
@@ -304,52 +329,86 @@ export default function ProductsForm(props) {
               onChange={(event) => setSearchTerm(event.target.value)}
             />
           </Form.Group>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>image link</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map(([category, products], index) => (
-                <React.Fragment key={index}>
-                  <tr>
-                    <td colSpan={3}>
-                      <h3>{category}</h3>
-                    </td>
-                  </tr>
-                  {products
-                    .filter((prod) =>
-                      prod.name.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
+          <div style={{ height: '800px', overflow: 'scroll' }}>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>image link</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map(([category, products], index) => (
+                  <React.Fragment key={index}>
+                    <tr>
+                      <td colSpan={3}>
+                        <h3>{category}</h3>
+                      </td>
+                    </tr>
+                    {products
+                      .filter((prod) =>
+                        prod.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
 
-                    .map((prod, prodIndex) => (
-                      <tr key={prodIndex}>
-                        <td>{prodIndex + 1}</td>
-                        <td>{prod.name}</td>
-                        <td>{prod.image}</td>
+                      .map((prod, prodIndex) => (
+                        <tr key={prodIndex}>
+                          <td>{prodIndex + 1}</td>
+                          <td>{prod.name}</td>
+                          <td>{prod.image}</td>
 
-                        <td>{prod.description}</td>
+                          <td>{prod.description}</td>
 
-                        <td>
-                          <Button
-                            variant="primary"
-                            onClick={() => handleSelectProduct(prod, category)}
-                          >
-                            Select
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </Table>
+                          <td>
+                            <Button
+                              variant="primary"
+                              onClick={() =>
+                                handleSelectProduct(prod, category)
+                              }
+                            >
+                              Select
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
       </Container>
     </>
   );
 }
+// export async function getStaticProps() {
+//   // console.log('hi');
+//   console.log(__dirname);
+//   const filePath = path.join(process.cwd(), 'products.json');
+//   // console.log(filePath);
+//   const fileContents = await fs.promises.readFile(filePath, 'utf8');
+//   // console.log(fileContents);
+
+//   const products = JSON.parse(fileContents);
+//   console.log(products); // Add this line to log the products data to the console
+
+//   return {
+//     props: {
+//       products,
+//     },
+//   };
+// }
+// import fsPromises from 'fs/promises';
+// // import path from 'path'
+// export async function getStaticProps() {
+//   const filePath = path.join(process.cwd(), 'products.json');
+//   const jsonData = await fsPromises.readFile(filePath);
+//   const products = JSON.parse(jsonData);
+
+//   return {
+//     props: products,
+//   };
+// }

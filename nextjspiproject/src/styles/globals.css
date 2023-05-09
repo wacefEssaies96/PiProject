@@ -1,7 +1,5 @@
 /* template */
 
-
-
 .modal {
   position: fixed;
   top: 0;
@@ -36,7 +34,7 @@
   cursor: pointer;
 }
 
-.txtCenter{
+.txtCenter {
   text-align: center;
 }
 .greenBtn {
@@ -96,7 +94,6 @@
   border: solid green 3px;
   width: 250px;
   border-radius: 30px;
-
 }
 
 .sectionCenter {
@@ -762,7 +759,7 @@ body .is-layout-flex > * {
   background-color: #eeaf50;
 }
 
-.ck.ck-editor__main>.ck-editor__editable {
+.ck.ck-editor__main > .ck-editor__editable {
   min-height: 200px;
 }
 
@@ -1026,13 +1023,13 @@ body .is-layout-flex > * {
   /* transform: translate(-50%, -50%); */
 }
 
-.text-image>h1 {
+.text-image > h1 {
   color: #016837;
   font-size: 70px;
   text-shadow: 1px 1px 2px #016837, 0 0 1em #d93, 0 0 0.2em #d93;
 }
 
-.text-image>h5 {
+.text-image > h5 {
   color: #d93;
   font-size: 30px;
 }
