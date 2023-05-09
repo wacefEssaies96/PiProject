@@ -107,8 +107,7 @@ export const submitMeal = async (data, operationMode) => {
 //add Meal From Scrapping data
 export const addMealScrap = async (data) => {
     
-    // const user = await fetchData(`${process.env.backurl}/api/users/findOne/${cookies.get('user')["_id"]}`);
-
+    
     let meal = {
         'FoodCategory': data.FoodCategory.trim(),
         'FoodItem': data.FoodItem.trim(),
@@ -117,10 +116,23 @@ export const addMealScrap = async (data) => {
         'serving_size_portion' : data.serving_size_portion,
         'calories_portion' : data.calories_portion,
         'serving_size_oz' : data.serving_size_oz,
-        'calories_oz' : data.calories_oz
-        // ,'userId': cookies.get('user')["_id"]
+        'calories_oz' : data.calories_oz,
+        'validated' : false,
+        'imgMeal': undefined
     }
-    axios.post(`${process.env.backurl}/api/meal/Create`, meal)
+    // let formDataMeal = new FormData();
+    // formDataMeal.append('FoodCategory', data.FoodCategory);
+    // formDataMeal.append('FoodItem', data.FoodItem);
+    // formDataMeal.append('serving_size_100g', data.serving_size_100g);
+    // formDataMeal.append('calories_100g',  data.calories_100g);
+    // formDataMeal.append('serving_size_portion', data.serving_size_portion);
+    // formDataMeal.append('calories_portion',  data.calories_portion);
+    // formDataMeal.append('serving_size_oz', data.serving_size_oz);
+    // formDataMeal.append('calories_oz', data.calories_oz);
+    // formDataMeal.append('validated', false);
+    // formDataMeal.append('imgMeal', "undefined");
+
+    axios.post(`${process.env.backurl}/api/meal/CreateScaped`, meal)
         .then((data) => { if (data.data) { success(data.data.message) } })
         .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } })
 }

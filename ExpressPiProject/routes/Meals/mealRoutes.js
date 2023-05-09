@@ -16,6 +16,8 @@ router.get("/Category/:cat", meal.findMealsOfCategory);
 router.get("/Details/:food", meal.findMealByName);
 
 // Create a new Meal
+router.post("/CreateScaped", meal.CreateScapedMeal);
+// Create a new Meal
 router.post("/Create",upload.single('imgMeal'), meal.createMeal);
 // Update a Meal with id
 router.put("/Update/:id",upload.single('imgMeal'), meal.updateMeal);

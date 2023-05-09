@@ -1,12 +1,18 @@
-import { Container, Table, Button, Row, Col } from "react-bootstrap";
+import { Container, Table, Button, Row } from "react-bootstrap";
 import { useState } from "react";
 import { deleteData,fetchData } from "@/services/mix";
-import { addMealScrap, fetchMealsUrl } from "@/services/meal";
+import { addMealScrap } from "@/services/meal";
 import Link from "next/link";
+import DeleteModal from "@/components/layouts/DeleteModal";
+import { useRouter } from "next/router";
+import {  BiEdit, BiTrashAlt } from 'react-icons/bi'
 
 
 
-export default function Index({ catMeals,meals,mealsdb }) {
+
+export default function Index({ catMeals,mealsdb }) {
+
+  const router = useRouter();
 
   const [catlist, setCatlist] = useState(catMeals)
   const [list, setList] = useState(mealsdb)
@@ -21,6 +27,18 @@ export default function Index({ catMeals,meals,mealsdb }) {
   const [showServing_portion, setshowServing_portion] = useState(false)
   const [showServing_oz, setshowServing_oz] = useState(false)
   
+  const [id, setId] = useState(null)
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState(null)
+  
+  const showDeleteModal = (id) => {
+    setId(id)
+    setDeleteMessage(`Are you sure you want to delete the  : '${list.find((x) => x._id === id).FoodItem}' from Meals  ?`)
+    setDisplayConfirmationModal(true)
+  }
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false)
+  }
 
 
   const showServingFilter = (filter) =>{
@@ -36,7 +54,11 @@ export default function Index({ catMeals,meals,mealsdb }) {
   }
   const handleSubmit = async (meal) => {
     await addMealScrap(meal)
-    setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
+    window.location = "/admin/meals" 
+
+    // setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
+    
+    // router.replace(router.asPath);
     // setList(await fetchData(`${process.env.backurl}/api/meal/findAll`));
   }
   const verifyMeal = (FoodItem) => {
@@ -47,12 +69,12 @@ export default function Index({ catMeals,meals,mealsdb }) {
   const filterList = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearch(searchQuery)
-    let filterColumn ="FoodItem";
+    let filterColumn ="FoodCategory";
     if(typefilter!=undefined){
       filterColumn =typefilter;
     }
     const filteredList = list.filter((item) =>
-      item[filterColumn].toLowerCase().includes(searchQuery)
+      item[filterColumn] && item[filterColumn].toString().toLowerCase().includes(searchQuery)
     );
     if(searchQuery!=""){
       setFiltered(filteredList);
@@ -72,7 +94,7 @@ export default function Index({ catMeals,meals,mealsdb }) {
     await deleteData(`${process.env.backurl}/api/meal/${id}`)
     setListdb(await fetchData(`${process.env.backurl}/api/meal/findAll`));
     setList(await fetchData(`${process.env.backurl}/api/meal/findAll`));
-  
+    setDisplayConfirmationModal(false)
     }
   const renderMeal = (meal, index) =>{
     
@@ -119,11 +141,15 @@ export default function Index({ catMeals,meals,mealsdb }) {
         >
           {meal._id?
             <>
-              <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/meals/edit/${meal._id}`}>Edit</Link>
+              <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/meals/edit/${meal._id}`}>
+                <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
+              </Link>
               &nbsp;
               {meal.validated ?<></>
                 :
-                <Button onClick={() => deleteOneMeal(meal._id)} variant="outline-danger">Delete</Button>
+                <Button onClick={() => showDeleteModal(meal._id)} variant="outline-danger">
+                  <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+                </Button>
               }
             </>
             :
@@ -140,6 +166,51 @@ export default function Index({ catMeals,meals,mealsdb }) {
       </tr>
     )
   }
+  
+  const [Page, setPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(10);
+  const indexOfLastpage = Page * itemPerPage;
+  const indexOfFirstpage = indexOfLastpage -itemPerPage;
+  const pageNumbers = [];
+  var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
+
+  if(showfiltered){
+    for (let i = 1; i <= Math.ceil(filtered.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = filtered.slice(indexOfFirstpage, indexOfLastpage)
+  }else{
+    for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
+  }
+
+  const renderPageNumbers = pageNumbers.slice(Page-1,Page).map(number => {
+      return (
+          <li
+              key={number}
+              id={number}
+
+              className={Page === number ? "page-item color-picker " : "page-item"}
+              onClick={() => setPage(number)}
+          >
+            {Page === number
+            ?
+            <a className="page-number current " style={{backgroundColor : "#016837",color: "white" }} >{number}  / {pageNumbers.length}</a>
+            :
+              <a className="page-number " >{number} / {pageNumbers.length}</a>
+            }
+          </li>
+      );
+  });
+  const changepage = async (nbr) =>{
+    var newnbr = Page+nbr;
+    if(pageNumbers.includes(newnbr)){
+      setPage(newnbr)
+    }
+  }
+
   return (
     <Container className="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab">
       
@@ -252,7 +323,12 @@ export default function Index({ catMeals,meals,mealsdb }) {
           </tr>
         </thead>
         <tbody>
-          {showfiltered ?
+          {currentlist && currentlist.map 
+              ((meal, index)=> {
+                  return (renderMeal(meal, index))
+              })
+          }
+          {/* {showfiltered ?
           filtered.map
           ((meal, index)=> {
             return (renderMeal(meal, index))
@@ -262,9 +338,25 @@ export default function Index({ catMeals,meals,mealsdb }) {
           ((meal, index)=> {
             return (renderMeal(meal, index))
           })
-          } 
+          }  */}
         </tbody>
       </Table>
+
+      <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center ">
+              <div className="nav-links">
+                {Page != pageNumbers[0] &&
+                  <a className="prev page-numbers "  onClick={()=>changepage(-1)}>&laquo;</a>
+                }
+                {renderPageNumbers}
+                {Page != pageNumbers[pageNumbers.length-1] &&
+                  <a className="next page-numbers" onClick={()=>changepage(1)} >&raquo;</a>
+                }
+              </div>
+          </ul>
+      </nav>
+      <DeleteModal showModal={displayConfirmationModal} confirmModal={deleteOneMeal} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
+
     </Container>
   )
 }
@@ -276,14 +368,14 @@ export async function getServerSideProps() {
   //// const data = await fetchData(`${process.env.backurl}/api/meal/scrape/${urlcatMeal}`);
 
   catMeals = await fetchData(`${process.env.backurl}/api/meal/scrapeCatMeals`);
-  data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
+  // data = await fetchData(`${process.env.backurl}/api/meal/scrape`);
   const mealsdb = await fetchData(`${process.env.backurl}/api/meal/findAll`);
 
   return {
     props: {
       catMeals: catMeals
-      ,
-      meals: data
+      // ,
+      // meals: data
       ,
       mealsdb : mealsdb
     }

@@ -279,9 +279,9 @@ function Header() {
            <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
                <a href="/appointments/BookPage">Appointments</a>
            </li>
-           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+           {/* <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
                <a href="#">Propose an appointment</a>
-           </li>
+           </li> */}
        </ul>
    </li>
 ) :auth.user &&   auth.user.role == "ADMIN" ? (
