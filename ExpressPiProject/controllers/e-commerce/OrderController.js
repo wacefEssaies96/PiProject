@@ -111,7 +111,7 @@ const createPaymentSession = async (req, res) => {
 
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL}/order/${orderId}/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/order/${orderId}/cancel`,
+      cancel_url: `${process.env.FRONTEND_URL}`,
       metadata: {
         orderId: orderId.toString(),
         userId: order.user._id.toString(),
