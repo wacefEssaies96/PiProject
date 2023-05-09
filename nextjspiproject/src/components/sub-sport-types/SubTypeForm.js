@@ -20,6 +20,7 @@ export default function SportSubTypesForm(props) {
     const [checkSport, setCheckSport] = useState(false);
     const [arr, setArr] = useState([])
     const [sportTypeTitle, setSportTypeTitle] = useState('')
+    const [editVid, setEditVid] = useState(false)
 
     //web scraping
     useEffect(() => {
@@ -30,7 +31,7 @@ export default function SportSubTypesForm(props) {
                 setSportSubTypetitle(dataT[1].titlesScrapped)
             })
     }, []);
-    console.log(sportSubTypeDef);
+
     const handleChange = (e) => {
         setCheckSport(e.target.checked)
         setSportTypeTitle(`${e.target.name} Sports`)
@@ -123,6 +124,11 @@ export default function SportSubTypesForm(props) {
         navigator.clipboard.writeText(text)
     }
 
+    const handleClick = () => {
+        console.log("hi");
+        setEditVid(true)
+    }
+
     return (
         <div className="container" style={{ padding: "5%" }}>
             <h2>{sportTypeTitle}</h2>
@@ -164,20 +170,19 @@ export default function SportSubTypesForm(props) {
                 </div>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">Sport SubType Title</Form.Label>
-                    <Form.Select required value={sportSubType.title} name="title" onChange={handleChangeAtt}>
+                    {operationMode === "Add" ? <Form.Select required value={sportSubType.title} name="title" onChange={handleChangeAtt}>
                         <option value="">Select Soprt SubType Title</option>
                         {arr && arr.map((t, i) => <option value={t} key={i}>{t}</option>)}
-                    </Form.Select>
-                    <Form.Control.Feedback type="valid">
-                        You did it!
-                    </Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>
-                        Please enter a sport sub-type title !
-                    </Form.Control.Feedback>
+                    </Form.Select> :
+                        <Form.Select readOnly value={props.sportSubType.title} name="title" onChange={handleChangeAtt}>
+                            <option>{props.sportSubType.title}</option>
+                        </Form.Select>}
                 </Form.Group>
+                {!editVid && <Form.Control value={props.sportSubType.demoVideo} type="text" />}
+                <Button onClick={handleClick}>Edit Video</Button>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="floatingInput">DemoVideo</Form.Label>
-                    <Form.Control defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required onChange={handleDemoVideo} />
+                    <Form.Control disabled={!editVid} defaultValue={sportSubType.demoVideo} name="demoVideo" type="file" className="form-control" id="floatingInput" placeholder="DemoVideo" required onChange={handleDemoVideo} />
                     <Form.Control.Feedback type="valid">
                         You did it!
                     </Form.Control.Feedback>
@@ -193,7 +198,7 @@ export default function SportSubTypesForm(props) {
                         </>}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="floatingInput">definitionHistory</Form.Label>
+                    <Form.Label htmlFor="floatingInput">Definition History</Form.Label>
                     <Form.Control value={sportSubType.definitionHistory} name="definitionHistory" type="text" className="form-control" id="floatingInput" placeholder="Definition and History of this sport sub type" required onChange={handleChangeAtt} />
                     <Form.Control.Feedback type="valid">
                         You did it!

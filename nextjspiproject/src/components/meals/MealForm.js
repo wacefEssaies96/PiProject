@@ -16,10 +16,19 @@ export default function MealsForm(props) {
     serving_size_oz  :  "",
     validated : "",
     imgMeal : ""
-  })
+  })  
+  const [imageSrc, setImageSrc] = useState(`${process.env.backurl}/uploads/Meal/altMeal.jpg`)
+
   const [validatedForm, setValidatedForm] = useState(false);
 
   
+  const handleImageChange = (event) => {
+    if (event.target.files[0])
+      setImageSrc(URL.createObjectURL(event.target.files[0]))
+    else
+      setImageSrc('')
+  }
+
   const getValidated = async (event) => {
     console.log(event.target.value)
     setMeal({ ...props.meal, 'validated': event.target.value })
@@ -38,7 +47,8 @@ export default function MealsForm(props) {
   useEffect(() => {
     
     if (props.meal !== undefined) {
-      setMeal(props.meal)
+      setMeal(props.meal)      
+      setImageSrc(`${process.env.backurl}/${props.meal.imgMeal}`)
       setOperationMode('Modify')
     }
   }, [])
@@ -126,12 +136,14 @@ export default function MealsForm(props) {
                     accept=".png, .jpg, .jpeg"
                     name="imgMeal"
                     required
+                    onChange={handleImageChange}
                   />
                   : 
                   <Form.Control
                     type="file"
                     accept=".png, .jpg, .jpeg"
                     name="imgMeal"
+                    onChange={handleImageChange}
                   />
                 }
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -142,24 +154,22 @@ export default function MealsForm(props) {
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
                       <div className="designation-profile-img centerMydiv">
-                {meal.imgMeal
+                {/* {meal.imgMeal
                   ?
-                  <>
+                  <> */}
 
                     <img style={{ height: '15rem', width: '15rem' }}
-                      src={`${process.env.backurl}${meal.imgMeal}`}
-                      onError={(e) => {
-                        e.target.src = `${process.env.backurl}uploads/Meal/altMeal.jpg`;
-                      }}
-                      // onerror="this.onerror=null;this.src=;"
-                      alt={`${process.env.backurl}/uploads/Meal/altMeal.jpg`}
+                      src={imageSrc}
+                      alt="Img"
                     />
                     <hr />
                     <div className="desig-content">
                       {/* <p >{meal.imgMeal}</p> */}
-                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={meal.imgMeal} /> 
+                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={imageSrc} /> 
                     </div>
-                  </>
+                  {/* 
+                                    </>
+
                   :
                   
                   <>
@@ -172,12 +182,12 @@ export default function MealsForm(props) {
                     />
                     <hr />
                     <div className="desig-content">
-                      {/* <p>{`/uploads/Meal/altMeal.jpg`}</p> */}
+                      {/* <p>{`/uploads/Meal/altMeal.jpg`}</p> -/}
                      <input type="hidden" id="pathImg" name="pathImg" defaultValue={`/uploads/Meal/altMeal.jpg`} /> 
                     </div>
                   </>
                   
-                }
+                } */}
               </div>
                   </div>
                   </Row>

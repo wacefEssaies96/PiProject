@@ -16,12 +16,12 @@ export const submitUser = async (data, operationMode) => {
     let formData = new FormData();
     formData.append('fullname', data.target.fullname.value);
     formData.append('email', data.target.email.value);
-    formData.append('role', data.target.role.value);
     formData.append('phone', data.target.phone.value);
     formData.append('dateOfBirth', data.target.dateOfBirth.value);
     formData.append('height', data.target.height.value);
     formData.append('weight', data.target.weight.value);
     formData.append('gender', data.target.gender.value);
+    formData.append('address', data.target.address.value);
     if(data.target.password.value)
         formData.append('password', data.target.password.value);
     
@@ -29,36 +29,99 @@ export const submitUser = async (data, operationMode) => {
         formData.append('image', data.target.image.files[0]);
     else
         formData.append('image', data.target.pathImg.value);
-        
-    operationMode === 'Create'
-        ?
-        axios.post(`${process.env.backurl}/api/users/Create`, formData)
+    
+
+    if(operationMode === 'Create User' ){
+        formData.append('role', data.target.role.value);
+        if(data.target.role.value == "DOCTOR"){
+            formData.append('speciality', data.target.speciality.value)
+        }else{
+            formData.append('disease', data.target.disease.value);
+        }
+    axios.post(`${process.env.backurl}/api/users/Create`, formData)
             .then((data) => { if (data.data) { success(data.data.message); 
                 window.location = "/admin/users" } })
             .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } })
-        : axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
+        
+    }
+    else if(operationMode === 'Modify User' ){
+        formData.append('role', data.target.role.value);
+        if(data.target.role.value == "DOCTOR"){
+            formData.append('speciality', data.target.speciality.value)
+        }else{
+            formData.append('disease', data.target.disease.value);
+        }
+
+        axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
             .then(async (data2) => { 
                 if (data2.data) { 
-                    
-                    
                     // cookies.remove('user')
                       // const router = useRouter()
 
     //   window.location.reload()
       // router.replace(router.asPath);
                     //change profile
-                    // if(cookies.get('user')["_id"] == data.target.id.value){
-                    //     console.log("same user")
+                    if(cookies.get('user')["_id"] == data.target.id.value){
+                        // console.log("same user")
+
                     //     var u = await fetchData(`${process.env.backurl}/api/users/findOne/${cookies.get('user')["_id"]}`);
-                    //     cookies.set('user', u, { maxAge: 60 * 60 * 24 })
+                        cookies.remove('token')
+                        cookies.remove('user')
+                        var e =data2.email
+                        var p =data2.password
+                        await loginService2({ e , p })
+                        cookies.set('user', data2, { maxAge: 60 * 60 * 24 })
+                        window.location.reload()
+
                     //     console.log( " user cookies "+cookies.get('user')+"u "+u)
-                    // }
+                    }
                     success(data2.data.message);
                     window.location = "/admin/users" 
                 } 
             })
             .catch((error2) => { if (error2.response) { errorAlert(error2.response.data.message) } })
-    
+        }
+        else if (operationMode === 'Register User' ){
+            formData.append('role', 'USER');
+            formData.append('disease', data.target.disease.value);
+            
+            axios.post(`${process.env.backurl}/api/auth/register`, formData)  
+            .then((data3) => { if (data3.data) { success(data3.data.message); 
+                window.location = "/auth/login" } }) 
+            .catch((error3) => { if (error3.response) { errorAlert(error3.response.data.message) } })  
+        }
+        else if (operationMode === 'Profile User' ){
+            formData.append('role', 'USER');
+            formData.append('disease', data.target.disease.value);
+
+            axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
+            .then((data4) => { if (data4.data) { success(data4.data.message); 
+                window.location.reload() } }) 
+            .catch((error4) => { if (error4.response) { errorAlert(error4.response.data.message) } })
+        }
+        else if ( operationMode === 'Register Doctor'){
+            formData.append('role', 'DOCTOR');
+            formData.append('speciality', data.target.speciality.value)
+            
+            axios.post(`${process.env.backurl}/api/auth/register`, formData)   
+            .then(async (data5) => { 
+                if (data5.data) { 
+                    success(data5.data.message);
+                    window.location = "/auth/login" 
+                } 
+            })
+            .catch((error5) => { if (error5.response) { errorAlert(error5.response.data.message) } })  
+        }
+        else if (operationMode === 'Profile Doctor'){
+            formData.append('role', 'DOCTOR');
+            formData.append('speciality', data.target.speciality.value)
+
+            axios.put(`${process.env.backurl}/api/users/Update/${data.target.id.value}`, formData)
+            .then((data6) => { if (data6.data) { success(data6.data.message); 
+                window.location.reload() } }) 
+            .catch((error6) => { if (error6.response) { errorAlert(error6.response.data.message) } })
+        }
+
             
 }
 

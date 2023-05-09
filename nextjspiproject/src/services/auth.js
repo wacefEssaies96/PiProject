@@ -4,13 +4,13 @@ import { Cookies } from 'react-cookie'
 import nextCookie from 'next-cookies'
 
 // set up cookies
-const cookies = new Cookies();
 
 // export var isAuthenticated = (cookies.get('token') !== undefined && cookies.get('user') !== undefined)
 
 // export var AuthenticatedUser = cookies.get('user') 
 // export var token = cookies.get('token') 
 
+const cookies = new Cookies();
 
 export const handleAuthSSR = async (ctx) => {
 
@@ -51,8 +51,10 @@ export const handleAuthSSR = async (ctx) => {
 
 export const loginService = async ({ token, user }) => {
   // Cookie will expire after 24h
-  cookies.set('token', token, { maxAge: 60 * 60 * 24 })
-  cookies.set('user', user, { maxAge: 60 * 60 * 24 })
+  if (!cookies.get('user') && !cookies.get('token')){
+    cookies.set('token', token, { maxAge: 60 * 60 * 24 })
+    cookies.set('user', user, { maxAge: 60 * 60 * 24 })
+  }
 }
 
 export const resetPassword = async (data, id, token) => {

@@ -57,6 +57,7 @@ export default function ArticleForm(props) {
     article.subcategory.title = param
     const response = await fetchData(`${process.env.backurl}/api/admin/articles/scrap/wired/${param}`)
     setRecommendation(response.articles)
+    console.log(response.articles)
     // setIsLoading(false)
   }
 

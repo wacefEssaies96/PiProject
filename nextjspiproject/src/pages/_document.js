@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document'
+import Script from 'next/script'
 
 export default function Document() {
 
@@ -9,13 +10,10 @@ export default function Document() {
       <title>HealthSpotLight</title>
       <meta name='robots' content='max-image-preview:large' />
       <Head>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
-        <script src='/wp-content/themes/weefly/assets/js/ajax-login-register6a4d.js' id='ajax-login-script-js'></script>
-        <script src='/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minbd43.js' id='jquery-blockui-js'></script>
-        <script src='/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.minbdeb.js' id='wc-add-to-cart-js'></script>
-        <script src='/wp-content/plugins/js_composer/assets/js/vendors/woocommerce-add-to-carte1b2.js' id='vc_woocommerce-add-to-cart-js-js'></script>
-        <script src='/wp-content/themes/weefly/assets/js/ajax-login-register.js' id='vb_reg_script-js'></script>
-        <script src='/template.js' id='ajax-login-script-js'></script>
+        <Script src="https://code.jquery.com/jquery-3.6.0.min.js" ></Script>
+        <Script src='/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minbd43.js' id='jquery-blockui-js'></Script>
+        <Script src='/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.minbdeb.js' id='wc-add-to-cart-js'></Script>
+        <Script src='/wp-content/plugins/js_composer/assets/js/vendors/woocommerce-add-to-carte1b2.js' id='vc_woocommerce-add-to-cart-js-js'></Script>
         <link rel="alternate" type="application/rss+xml" title="Weefly &raquo; Feed" href="/feed/index.html" />
         <link rel="alternate" type="application/rss+xml" title="Weefly &raquo; Comments Feed" href="/comments/feed/index.html" />
         <link rel='stylesheet' id='simple-line-icon-css' href='/wp-content/themes/weefly/assets/css/simple-line-icons6a4d.css' type='text/css' media='all' />
@@ -52,7 +50,7 @@ export default function Document() {
         <link rel='stylesheet' id='js_composer_front-css' href='/wp-content/plugins/js_composer/assets/css/js_composer.mine1b2.css' type='text/css' media='all' />
         <link rel="https://api.w.org/" href="/wp-json/index.html" />
         <link rel="alternate" type="application/json" href="/wp-json/wp/v2/pages/148.json" />
-        <link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc0db0.php?rsd" />
+        {/* <link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc0db0.php?rsd" /> */}
         <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.html" />
         <meta name="generator" content="WordPress 6.1.1" />
         <meta name="generator" content="WooCommerce 6.7.0" />
@@ -66,11 +64,11 @@ export default function Document() {
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-fa-icon-css" href="/wp-content/plugins/revslider/public/assets/fonts/font-awesome/css/font-awesome.css" type="text/css" media="all" />
         <link rel="stylesheet" property="stylesheet" id="rs-icon-set-pe-7s-css" href="/wp-content/plugins/revslider/public/assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" type="text/css" media="all" />
         <link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-  crossorigin=""
-/>
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""
+        />
       </Head>
       <body className="home page-template-default page page-id-148 wp-embed-responsive weefly-main theme-weefly woocommerce-no-js wpb-js-composer js-comp-ver-6.9.0 vc_responsive">
         <Main />

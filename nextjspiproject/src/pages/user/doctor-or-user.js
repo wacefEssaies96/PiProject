@@ -22,35 +22,35 @@ export default function DoctororUser() {
             <Head>
                 <title>Register | User Or Doctor</title>
             </Head>
-            <div class="wd-members-section">
-                <div class="row ">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="members">
-                            <img src="/client.png" alt="image" class="mx-auto img-fluid d-block" style={{width:"350px"}}/>
-                            <div class="member-info text-center">
+            <div className="wd-members-section">
+                <div className="row ">
+                    <div className="col-lg-6 col-md-6">
+                        <div className="members">
+                            <img src="/client.png" alt="image" className="mx-auto img-fluid d-block" style={{width:"350px"}}/>
+                            <div className="member-info text-center">
                                 <h5>Register as a user</h5><br/>
                                 <h6><Link id="link-register" href={"/auth/register"}>Register</Link></h6><br/>
                                 <p>You can also register with Google or LinkedIn</p>
-                                <ul class="inline-block social-net">
-                                    {/* <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li> */}
+                                <ul className="inline-block social-net">
+                                    {/* <li><a href="#"><i className="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i className="fab fa-twitter"></i></a></li> */}
                                     <li><Link href="#" onClick={googleAuth}><i className='fab'><AiFillGoogleCircle size={22}></AiFillGoogleCircle></i></Link></li>
-                                    <li><a href="#" onClick={linkedInAuth}><i class="fab fa-linkedin-in"></i></a></li>
-                                    {/* <li><a href="#"><i class="fab fa-instagram"></i></a></li> */}
+                                    <li><a href="#" onClick={linkedInAuth}><i className="fab fa-linkedin-in"></i></a></li>
+                                    {/* <li><a href="#"><i className="fab fa-instagram"></i></a></li> */}
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="members">
-                            <img src="/doctor.png" alt="image" class="mx-auto img-fluid d-block" style={{width:"350px"}}/>
-                            <div class="member-info text-center">
+                    <div className="col-lg-6 col-md-6">
+                        <div className="members">
+                            <img src="/doctor.png" alt="image" className="mx-auto img-fluid d-block" style={{width:"350px"}}/>
+                            <div className="member-info text-center">
                                 <h5>Register as a doctor</h5><br/>
-                                <h6><Link id="link-register" href={"/user/doctor"}>Register</Link></h6><br/>
+                                <h6><Link id="link-register" href={"/auth/register?doc=1"}>Register</Link></h6><br/>
                                 <p>You can also register with Google or LinkedIn</p>
-                                <ul class="inline-block social-net">
+                                <ul className="inline-block social-net">
                                     <li><Link href="#" onClick={googleAuth}><i className='fab'><AiFillGoogleCircle size={22}></AiFillGoogleCircle></i></Link></li>
-                                    <li><a href="#" onClick={linkedInAuth}><i class="fab fa-linkedin-in"></i></a></li>
+                                    <li><a href="#" onClick={linkedInAuth}><i className="fab fa-linkedin-in"></i></a></li>
                                 </ul>
                             </div>
                         </div>

@@ -9,11 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function App({ Component, pageProps }) {
   return (
     <>
-      <StoreProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </StoreProvider>
+        <StoreProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </StoreProvider>
       <ToastContainer
         position="top-center"
         autoClose={5000}
