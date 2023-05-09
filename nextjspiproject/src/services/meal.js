@@ -68,6 +68,7 @@ export const submitMeal = async (data, operationMode) => {
     formDataMeal.append('serving_size_oz', serving_size_oz);
     formDataMeal.append('calories_oz', calories_oz+" cal");
     formDataMeal.append('validated', data.target.validated.value);
+    // formDataMeal.append('rate',data.target.rate.value);
     
     // let meal = {
     //     'FoodCategory': data.target.FoodCategory.value.trim(),
@@ -118,6 +119,7 @@ export const addMealScrap = async (data) => {
         'serving_size_oz' : data.serving_size_oz,
         'calories_oz' : data.calories_oz,
         'validated' : false,
+        // 'rate' : [],
         'imgMeal': undefined
     }
     // let formDataMeal = new FormData();

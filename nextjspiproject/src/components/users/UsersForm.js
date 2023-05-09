@@ -299,7 +299,11 @@ export default function UsersForm(props) {
                     <hr />
                     <div className="desig-content">
                       {/* <p>{`/uploads/User/altUser.png`}</p> */}
-                     <input type="hidden" id="pathImg" name="pathImg" defaultValue={`${process.env.backurl}/${props.user.image}`} /> 
+                      {/* {props.user && props.user.image
+                      ?  */}
+                      <input type="hidden" id="pathImg" name="pathImg" defaultValue={imageSrc} /> 
+                    {/* //   : <input type="hidden" id="pathImg" name="pathImg" defaultValue={`${process.env.backurl}/${props.user.image}`} /> 
+                    // } */}
                     </div>
                   {/* </>
                   :

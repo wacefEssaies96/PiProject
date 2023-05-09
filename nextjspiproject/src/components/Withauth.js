@@ -11,12 +11,13 @@ function withAuth(WrappedComponent) {
   return (props) => {
     const [show, setShow] = useState(true)
     useEffect(() => {
+      
       if (window.location.pathname.includes('login') && cookies.get('user') && cookies.get('token')) {
         // window.location = '/'
         setShow(false)
       }
       else {
-        if (window.location.pathname.includes('admin') && window.location.pathname.includes('clinic') && cookies.get('user').role !== 'ADMIN') {
+        if ( !cookies.get('user') && window.location.pathname.includes('admin') && window.location.pathname.includes('clinic') && cookies.get('user').role !== 'ADMIN') {
           // window.location = '/'
           setShow(false)
         }

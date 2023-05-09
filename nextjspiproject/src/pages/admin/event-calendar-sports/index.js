@@ -97,9 +97,9 @@ export default function EventCalendarSportAdminHomePage({ events }) {
       <h1 className={styles.title}>Events Admin Home Page</h1>
 
       <div className="container mx-auto">
-        <Link href="/admin/event-calendar-sports/create" className="btn btn-outline-success">
+        {/* <Link href="/admin/event-calendar-sports/create" className="btn btn-outline-success">
           Add an Event <BiPlus></BiPlus>
-        </Link><br /><br />
+        </Link><br /><br /> */}
 
         <Table striped bordered hover size="sm">
           <thead>
@@ -111,7 +111,7 @@ export default function EventCalendarSportAdminHomePage({ events }) {
               <th><span>End Date Time</span></th>
               <th><span>End Time Zone</span></th>
               <th><span>User Email</span></th>
-              <th><span>Actions</span></th>
+              {/* <th><span>Actions</span></th> */}
             </tr>
           </thead>
           <tbody>
@@ -126,7 +126,7 @@ export default function EventCalendarSportAdminHomePage({ events }) {
                   <td key={event.end.dateTime}>{event.end.dateTime}</td>
                   <td key={event.end.timeZone}>{event.end.timeZone}</td>
                   {users.length > 0 && <td key={i}>{users[i].email}</td>}
-                  <td style={{ textAlign: "center" }} key={event._id} className='px-16 py-2 flex justify-content-center'>
+                  {/* <td style={{ textAlign: "center" }} key={event._id} className='px-16 py-2 flex justify-content-center'>
                     <Link href={`/admin/event-calendar-sports/edit/${event._id}`} onClick={() => {
                       router.push({
                         pathname: `/admin/event-calendar-sports/edit/${event._id}`,
@@ -138,7 +138,7 @@ export default function EventCalendarSportAdminHomePage({ events }) {
                     <button className="btn" type="button" onClick={() => showDeleteModal(event._id)}>
                       <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               )
               i++

@@ -1160,7 +1160,7 @@ textarea {
   border-radius: 8px;
 }
 
-a {
+li > a, a {
   color: inherit;
   text-decoration: none;
 }

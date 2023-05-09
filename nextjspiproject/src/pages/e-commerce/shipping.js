@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import CheckoutWizard from '../../components/e-commerce/checkoutWizard';
 import { Store } from '@/utils/Store';
 import { useRouter } from 'next/router';
+import withAuth from '@/components/Withauth';
 //import withAuth from '@/utils/Withauth';
 function ShippingScreen() {
   const {
@@ -137,4 +138,4 @@ function ShippingScreen() {
   );
 }
 //need to add withauth
-export default ShippingScreen;
+export default withAuth(ShippingScreen);

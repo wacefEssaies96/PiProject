@@ -136,6 +136,13 @@ export default function RecipeForm(props) {
     }
   }
   
+  const Somme = (MealRate)  => {
+    var somme = 0;
+    for (let i = 0; i < MealRate.length; i++) {
+        somme += MealRate[i].rate;
+      }
+    return somme;
+  }
   const renderMeal = (meal, index) =>{
     
     return (
@@ -165,19 +172,19 @@ export default function RecipeForm(props) {
                                 href="#">{meal.FoodItem}</a>
                     </h6>
                     <p key={meal.calories_100g}>{meal.calories_100g}</p>                                    
-                    {/* <div className="wd-shop-details-title-wrapper">
+                    <div className="wd-shop-details-title-wrapper">
                         <div className="wd-shop-product-review-star">
                             <div className="rating-star">
-                                <div className="star-rating" title="Rated 3.50 out of 5">
-                                    <span style={{width:"70%"}}></span>
+                                <div className="star-rating" >
+                                    <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
                                 </div>
-                                <div className="rating-count">
-                                    <strong className="rating">3.50</strong>
-                                </div>                                                                                                            
-                                <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span>
+                                {/* <div className="rating-count">
+                                    <strong className="rating">{Somme(meal.rate)}</strong>
+                                </div>                                                                                                             */}
+                                {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
     </div>

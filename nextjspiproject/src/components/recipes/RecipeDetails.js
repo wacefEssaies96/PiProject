@@ -57,6 +57,13 @@ export default function RecipeDetails(props) {
     return dateString;
   }
 
+  const Somme = (MealRate)  => {
+    var somme = 0;
+    for (let i = 0; i < MealRate.length; i++) {
+      somme += MealRate[i].rate;      
+    }
+    return somme;
+  }
   return (
     <Container>
       <div className=" wd-section-heading-wrapper text-center">
@@ -152,6 +159,19 @@ export default function RecipeDetails(props) {
                                   } 
                                     alt="Meal IMG" /> 
                                     </span>
+                              </div>                                    
+                              <div className="wd-shop-details-title-wrapper ">
+                                  <div className="wd-shop-product-review-star">
+                                      <div className="rating-star">
+                                          <div className="star-rating" >
+                                              <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
+                                          </div>
+                                          {/* <div className="rating-count">
+                                              <strong className="rating">{Somme(meal.rate)}</strong>
+                                          </div>                                                                                                             */}
+                                          {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                                      </div>
+                                  </div>
                               </div>
                             </td>
                             <td key={meal.FoodItem} className="woocommerce-product-attributes-item__value">{meal.FoodItem}</td>
