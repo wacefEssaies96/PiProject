@@ -183,12 +183,13 @@ function Header() {
                                           {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/users") }} aria-current="page">Users (Admin)</a>
                                           </li> */}
-                                          <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
+                                          {/* <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
                                              <a onClick={() => { router.push("/admin/meals") }} >Meals </a>
-                                          </li>
-                                          {/* <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
+                                          </li> */}
+                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/articles") }} aria-current="page">Articles</a>
                                           </li>
+                                          {/*
                                           <li id="menu-item-1754" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-148 current_page_item menu-item-1754">
                                              <a onClick={() => { router.push("/admin/Products") }} aria-current="page">Products (Admin)</a>
                                           </li>
@@ -234,12 +235,12 @@ function Header() {
                                        {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/calendar/${auth.user._id}`}>Sport Calendar Plan</Link></li>}
                                     </ul>
                                  </li> */}
-                                 {/* <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
+                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>
                                     <ul className="sub-menu">
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles">Home</Link></li>
                                       
                                       {auth.user != null && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/articles/my-articles">My articles</Link></li>} 
-                                       {/* <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
+                                     {/* <li id="menu-item-1744" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1744"><a href="#">Blog Grid</a></li>
                                        <li id="menu-item-1726" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1726"><a href="#">Blog Single</a>
                                           <ul className="sub-menu">
                                              <li id="menu-item-1725" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1725"><a href="#">Standard</a></li>
@@ -248,9 +249,9 @@ function Header() {
                                              <li id="menu-item-1724" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1724"><a href="#">Quote</a></li>
                                              <li id="menu-item-1723" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1723"><a href="#">Link</a></li>
                                           </ul>
-                                       </li> -/}
+                                       </li>  */}
                                     </ul>
-                                 </li> */}
+                                 </li> 
                                  <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="#">About Us</a></li>
                                  {/* <li id="menu-item-1728" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1728"><a href="#">Products</a>
                                     <ul className="sub-menu">
