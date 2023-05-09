@@ -3,10 +3,10 @@ import { Suspense, lazy } from 'react';
 
 const ProductsForm = lazy(() => import('@/components/e-commerce/ProductsForm'));
 
-export default function EditMeal({ product }) {
+export default function EditMeal({ editproduct }) {
   return (
     <Suspense>
-      <ProductsForm product={product}></ProductsForm>
+      <ProductsForm editproduct={editproduct}></ProductsForm>
     </Suspense>
   );
 }
@@ -17,7 +17,7 @@ export async function getServerSideProps(context) {
   );
   return {
     props: {
-      product: data,
+      editproduct: data,
     },
   };
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { errorAlert, success } from './alerts';
 export const submitProduct = async (productData, mode) => {
   try {
     let response;
@@ -17,10 +17,22 @@ export const submitProduct = async (productData, mode) => {
     console.log(formData);
     console.log(productData);
     if (mode === 'Create') {
-      response = await axios.post(
-        `${process.env.backurl}/api/admin/products`,
-        formData
-      );
+      response = await axios
+        .post(`${process.env.backurl}/api/admin/products`, formData)
+        .then((data) => {
+          console.log(data);
+          console.log(data.data);
+
+          if (data) {
+            success(data.message);
+            window.location = '/admin/Products';
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            errorAlert(error.response.data.message);
+          }
+        });
     } else {
       response = await axios.put(
         `${process.env.backurl}/api/admin/products/update/${productData._id}`,

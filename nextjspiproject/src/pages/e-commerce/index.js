@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import ReactPaginate from 'react-paginate';
 
 export default function Index({ products }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,10 +65,19 @@ export default function Index({ products }) {
     setPriceFilter(value[1]);
   };
 
+  const [productsPerPage, setProductsPerPage] = useState(8);
+  const [currentPage, setCurrentPage] = useState(0);
+  const handlePageChange = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+  const startIndex = currentPage * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
   return (
-    <Container>
+    <Container style={{}}>
       <ToastContainer position="top-left" limit={1} />
-      <h1 className="my-5 text-center">Shop by category</h1>
+      <h1 className="my-5 text-center">Shop </h1>
       <Row>
         <Col md={3}>
           <div className="mb-4 bg-light p-3 border rounded">
@@ -83,14 +93,15 @@ export default function Index({ products }) {
                 Complément alimentaire
               </option>
               <option value="Protein Bars">Protein Bars</option>
-              <option value="Energy Drinks">Energy Drinks</option>
-              <option value="Weight Management">Weight Management</option>
-              <option value="Meal Replacement">Meal Replacement</option>
+              <option value="proteines">Proteines</option>
+              <option value="Weight Management">carbohydrates</option>
+              <option value="Meal Replacement">acides-amines</option>
               <option value="Vitamins and Supplements">
                 Vitamins and Supplements
               </option>
+
               <option value="Snacks and Treats">Snacks and Treats</option>
-              <option value="Sports Nutrition">Sports Nutrition</option>
+              <option value="acides-gras">acides-gras</option>
               <option value="Gluten-Free">Gluten-Free</option>
               <option value="Organic">Organic</option>
               <option value="Non-GMO">Non-GMO</option>
@@ -116,7 +127,7 @@ export default function Index({ products }) {
         {/* </Col> */}
 
         <Col md={9}>
-          <div className="d-flex justify-content-center align-items-center mb-4">
+          <div className="d-flex justify-content-center align-items-center mb-">
             <input
               type="text"
               placeholder="Search products"
@@ -127,8 +138,8 @@ export default function Index({ products }) {
             <Button variant="warning">Search</Button>
           </div>
           <Row>
-            {filteredProducts.map((product) => (
-              <Col key={product._id} sm={6} md={4} lg={3} className="mb-4">
+            {currentProducts.map((product) => (
+              <Col key={product._id} sm={6} md={4} lg={3} className="mb-2">
                 <ProductItem
                   product={product}
                   key={product.name}
@@ -138,8 +149,23 @@ export default function Index({ products }) {
             ))}
           </Row>
         </Col>
+        <ReactPaginate
+          pageCount={Math.ceil(filteredProducts.length / productsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName="pagination justify-content-center"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          activeClassName="active"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          disabledClassName="disabled"
+        />
       </Row>
-      {/* <FeaturedProducts /> */}
+      <FeaturedProducts type="featured" />
     </Container>
   );
 }

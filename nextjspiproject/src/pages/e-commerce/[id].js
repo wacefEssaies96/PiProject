@@ -8,6 +8,8 @@ import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Router, { useRouter } from 'next/router';
 import axios from 'axios';
+import StarRatings from 'react-star-ratings';
+
 export default function ProductScreen({ product }) {
   // const { product } = props;
   const { state, dispatch } = useContext(Store);
@@ -62,7 +64,7 @@ export default function ProductScreen({ product }) {
           <h1 className="mb-4">{product.quantity}</h1>
 
           <h2 className="text-primary font-weight-bold mb-4">
-            ${product.price}
+            {product.price} dt
           </h2>
           <div
             className={`badge badge-${
@@ -75,6 +77,15 @@ export default function ProductScreen({ product }) {
             {product.marque} - {product.type}
           </p>
           <p className="mb-4">{product.description}</p>
+          <div>
+            <StarRatings
+              rating={product.rating}
+              starRatedColor="#FFC107"
+              numberOfStars={5}
+              starDimension="20px"
+              starSpacing="2px"
+            />
+          </div>
           <Button
             variant="primary"
             size="lg"
