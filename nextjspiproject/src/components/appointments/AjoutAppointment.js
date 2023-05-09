@@ -4,17 +4,14 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { Cookies } from 'react-cookie'
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
+
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
 
 export default function AppointmentForm(props) {
-    const [selectedDate, setSelectedDate] = useState("");
-    const cookies = new Cookies()
-    const router = useRouter()
+  
     
     const [validated, setValidated] = useState(false);
     const [operationMode, setOperationMode] = useState('Create')
@@ -26,9 +23,7 @@ export default function AppointmentForm(props) {
        
     })
     const handleDateChange = (date) => {
-        // const formattedDate = `${("0" + date.getDate()).slice(-2)}/${
-        //     ("0" + (date.getMonth() + 1)).slice(-2)
-        //   }/${date.getFullYear()}`;
+    
         setAppointments({
             ...appointments,
              Date: date
@@ -49,14 +44,7 @@ export default function AppointmentForm(props) {
         setValidated(true);
     }
     
-    // const handleDateChange = (date) => {
-    //     setAppointments({
-    //         ...appointments,
-    //         Date: date
-    //     });
-    //     console.log("date " + date)
-      
-    // }
+    
    
 
     
@@ -119,13 +107,8 @@ export default function AppointmentForm(props) {
                                                 required
                                             />  
                                              
-                                                  {/* <DatePicker
-  selected={appointments.Date}
-  onChange={(date) => handleDateChange(date)}
-  dateFormat="dd/mm/yyyy"
-  placeholderText="Select a date" */}
-{/* /> */}
-                                                                {/* <Form.Control id="vb_name" defaultValue={appointments.Date} name="Date" type="text" placeholder="Date" required  /> */}
+                                                  
+
                                             <Form.Control.Feedback type='invalid'>
                                                 {'Please enter the Date'}
                                             </Form.Control.Feedback>
@@ -141,7 +124,7 @@ export default function AppointmentForm(props) {
                                                         name="Hour"
                                                         type="Hour"
                                                         placeholder="HH:MM"
-                                                        pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" // ajout du pattern
+                                                       
                                                         required
                                                     />
                                             <Form.Control.Feedback type="valid">
@@ -159,9 +142,7 @@ export default function AppointmentForm(props) {
                                                             name="Duration"
                                                             type="text"
                                                             placeholder="e.g. 1h30min"
-                                                            //value={appointments.Duration || "30min"}
-                                                            pattern="((0|1)[0-9]|[1-9])h([3-9]|[1-5][0-9]?)min"
-// ajout du pattern
+                                                            
                                                             required
                                                         />
                                             <Form.Control.Feedback type="valid">

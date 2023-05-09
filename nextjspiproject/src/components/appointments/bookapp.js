@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Link from "next/link";
-import { NavLink } from 'react-router-dom';
-import { Route } from 'react-router-dom';
 
 import { useRouter } from 'next/router';
 import axios from "axios";
 import { Alert } from 'react-bootstrap';
+import { errorAlert, success } from '@/services/alerts';
 // import sgMail from '@sendgrid/mail';
 // import { cp } from 'fs';
 
@@ -23,6 +21,18 @@ import { Alert } from 'react-bootstrap';
     const [showForm, setShowForm] = useState(false);
     const [reserved, setReserved]= useState(false);
 
+    const [roomCode, setRoomCode] = useState(null);
+
+  const submitCode = async(e) => {
+    e.preventDefault();
+      await axios.post(`${process.env.backurl}/api/meet/addMeet/${user._id}`,{"code":roomCode,"mode":"JOIN"})
+      .then((data) => { if (data.data) { success(data.data.message); 
+          router.push(`/appointments/vd?RoomCode=${roomCode}&name=${user.fullname}`) } })
+      .catch((error) => { if (error.response) { errorAlert(error.response.data.message) } })
+   
+      
+      
+  };
 //    let  API_KEY = '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'
 //    sgMail.setApiKey(API_KEY);
 
@@ -54,7 +64,7 @@ import { Alert } from 'react-bootstrap';
     
     const handleBookAppointment = async (app) => {
         try {
-          const response = await axios.get(`${process.env.backurl}/api/app/resapp/${app._id}`);
+          const response = await axios.get(`${process.env.backurl}/api/app/resapp/${app._id}/${user._id}`);
           const message=`your appointment has been booked successfully on ${extractDate(app.Date)} at ${app.Hour} with doctor ${app.fullname} Speciality ( ${app.speciality} )`
           const email= user.email
 
@@ -64,9 +74,6 @@ import { Alert } from 'react-bootstrap';
           }
           console.log("response1  avant ")
 
-          const response1 = await axios.post(`${process.env.backurl}/api/app/sendMailAppointment`,data);
-
-          console.log("response1 "+response1)
           setReserved(true);
           
           console.log('Sending email to:', email);
@@ -78,7 +85,7 @@ import { Alert } from 'react-bootstrap';
             console.log(error);
           }
           }
-          
+   
           const indexOfLastAppointment = currentPage * appointmentsPerPage;
           const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
           var currentAppointments=-1;
@@ -119,7 +126,28 @@ import { Alert } from 'react-bootstrap';
                 <h2>List of Appointments</h2>
                							
             </div>
-            
+            <form onSubmit={submitCode} className="text-white md:pt-12 flex flex-col items-center justify-center">
+  <div className="form-group flex flex-col justify-center items-center ">
+  <div className="flex flex-col justify-center items-center ">
+
+    <label htmlFor="roomCode"> Enter Room Code</label>
+    <input
+  type="text"
+  required
+  placeholder="Enter Room Code"
+  id="roomCode"
+  value={roomCode}
+  onChange={(e) => setRoomCode(e.target.value)}
+  className="form-control py-1.5 md:py-2 px-4 rounded-full max-w-[16rem] mt-2 text-black md:mt-6 outline-0 "
+/>
+   <br></br>
+  
+  <button type="submit" className="btn wd-btn-round-2   ">
+    Go
+  </button>
+  </div>
+  </div>
+</form>
        
   
 
@@ -135,6 +163,9 @@ import { Alert } from 'react-bootstrap';
                             <th>Duration</th>
                             <th>FullName</th>
                             <th>Speciality</th>
+                            <th>Phone Number</th>
+                            <th>Action</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +177,8 @@ import { Alert } from 'react-bootstrap';
                                 <td key={app.fullname}>{app.fullname}</td>
 
                                 <td key={app.speciality}>{app.speciality}</td>
+                                <td key={app.phone}>{app.phone}</td>
+
                                 <td><button className="btn btn-warning" onClick={()=>handleBookAppointment(app)}>Book</button> </td>
                               
                             </tr>

@@ -18,7 +18,7 @@ export const submitUser = async (data, operationMode) => {
     formData.append('email', data.target.email.value);
     formData.append('role', data.target.role.value);
     formData.append('phone', data.target.phone.value);
-    formData.append('dateOfBirth', data.target.dateOfBirth.value);
+    // formData.append('dateOfBirth', data.target.dateOfBirth.value);
     formData.append('height', data.target.height.value);
     formData.append('weight', data.target.weight.value);
     formData.append('gender', data.target.gender.value);
@@ -105,7 +105,7 @@ export const registerUser = async (data, operationMode) => {
     options.append('gender', data.target.gender.value)
     options.append('phone', data.target.phone.value)
     options.append('address', data.target.address.value)
-    options.append('dateOfBirth', data.target.dateOfBirth.value)
+    // options.append('dateOfBirth', data.target.dateOfBirth.value)
     options.append('role', 'USER')
     options.append('image', data.target.image.files[0]);
     const res =

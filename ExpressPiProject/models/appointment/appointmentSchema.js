@@ -11,31 +11,31 @@ const appointmentSchema = new mongoose.Schema({
   },
   Hour: {
     type: String,
-    required: true
+    required: true,
   },
   Duration: {
     type: String,
     required: true,
-    //default:"30min",
-    unique: false
   },
   user: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    //required: true,
      
   }],
   reserved: Boolean,
   fullname: {
     type: String,
     ref: 'User',
-    //equired: true,
      
   },
   speciality: {
     type: String,
      ref: 'User',
-    //required: true,
+     
+  },
+  phone: {
+    type: Number,
+     ref: 'User',
      
   },
 

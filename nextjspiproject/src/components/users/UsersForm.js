@@ -11,7 +11,7 @@ export default function UsersForm(props) {
     email: "",
     role: "",
     phone: "",
-    dateOfBirth: "",
+    // dateOfBirth: "",
     height: "",
     weight: "",
     gender: "",
@@ -126,7 +126,7 @@ export default function UsersForm(props) {
             </Col>
           </Row>
           <Row>
-            <Col md={4}>
+            {/* <Col md={4}>
               <Form.Group>
                 <Form.Label htmlFor="dateOfBirth" className="greenBOLD"> Date of Birth </Form.Label>
                 {operationMode=="Create" 
@@ -140,7 +140,7 @@ export default function UsersForm(props) {
                 </Form.Control.Feedback>
               </Form.Group>
 
-            </Col>
+            </Col> */}
             <Col md={4}>
             <Form.Group className="mb-3">
               <Form.Label className="greenBOLD">Password</Form.Label>

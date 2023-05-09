@@ -20,16 +20,16 @@ export default function AjoutForm(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
-        setValidated(true);
-        await handleUpdateOrAdd (event, operationMode)
-        // if (form.checkValidity() === true) {
-        //     if (!cookies.get('clinic'))
-        //         window.location = "/clinic/clinicPage"
-        //     window.location = "/" 
-           
-        // }
+        if (form.checkValidity() === true) {
 
-      
+        await handleUpdateOrAdd (event, operationMode)
+        } else{
+            event.stopPropagation(); 
+        }
+    
+
+        setValidated(true);
+
        
     }
     
@@ -72,14 +72,7 @@ export default function AjoutForm(props) {
                         <div className="register py-5">
                             <div className="row">
                                 <div className="offset-lg-3 col-lg-6  mx-auto d-block login-page">
-                                    {/* <div className="register_form_heading">
-                                        <p className="sub_title">
-                                            Already have an account?
-                                            <Link className="color-litegreen" href="/auth/login">
-                                                Login here!
-                                            </Link>
-                                        </p>
-                                    </div> */}
+                             
                                     <Form noValidate validated={validated} onSubmit={handleSubmit} className="form-horizontal registraion-form" encType='multipart/form-data'>
                                         {operationMode === 'Add' ? <h2>Add a clinic</h2> : <h2>Update a clinic</h2>}
                                         <Form.Control defaultValue={clinics._id} name="id" type="hidden"></Form.Control>
@@ -107,7 +100,7 @@ export default function AjoutForm(props) {
                                         </Form.Group>
                                             <Form.Group className="mb-3">
                                             <Form.Label>Phone Number</Form.Label>
-                                            <Form.Control defaultValue={"+216 "} name="phone_number" type="phone" placeholder="Phone" required pattern="^\+216[0-9]{8}$" />
+                                            <Form.Control defaultValue={"+216 "} name="phone_number" type="phone" placeholder="Phone" required  />
                                             <Form.Control.Feedback type="valid">
                                                 You did it!
                                             </Form.Control.Feedback>
