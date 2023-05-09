@@ -212,6 +212,7 @@ function Header() {
                                        <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href="/sub-sport-types">Sport SubTypes</Link></li>
                                        {auth.user != undefined && auth.user.hasOwnProperty("subTypeSport") && <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768"><Link href={`/sports/sport-videos/${auth.user._id}`}>Training Videos</Link></li>}
                                        {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/videos/${auth.user._id}`}>Sport Videos</Link></li>}
+                                       {auth.user && <li id="menu-item-1769" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1769"><Link href={`/sports/calendar/${auth.user._id}`}>Sport Calendar Plan</Link></li>}
                                     </ul>
                                  </li>
                                  <li id="menu-item-1729" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1729"><a href="#">Blog</a>

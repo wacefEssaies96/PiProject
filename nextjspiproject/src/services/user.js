@@ -54,7 +54,7 @@ export const submitUser = async (data, operationMode) => {
                     //     console.log( " user cookies "+cookies.get('user')+"u "+u)
                     // }
                     success(data2.data.message);
-                    // window.location = "/admin/users" 
+                    window.location = "/admin/users" 
                 } 
             })
             .catch((error2) => { if (error2.response) { errorAlert(error2.response.data.message) } })

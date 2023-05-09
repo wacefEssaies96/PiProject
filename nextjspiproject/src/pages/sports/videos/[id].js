@@ -2,8 +2,9 @@ import AddSportRating from "@/components/AddSportRating";
 import { fetchSubTypeData } from "@/services/SportSubTypeServices";
 import { deleteProgress, postProgress } from "@/services/sportProgress";
 import Head from "next/head"
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button, Carousel, ProgressBar } from "react-bootstrap";
+import { Alert, Button, Carousel, ProgressBar } from "react-bootstrap";
 import Confetti from "react-confetti";
 import useWindowSize from 'react-use/lib/useWindowSize'
 
@@ -72,7 +73,13 @@ const VideosPage = ({ user, videos, ratesUser, allUserProgresses }) => {
                 <title>Sport Videos | Page</title>
                 <meta name='keywords' content='Sports' />
             </Head>
-            {progress === 100 && <Confetti width={width} height={height} style={{ position: "fixed" }} />}
+            {progress === 100 &&
+                <div>
+                    <Confetti width={width} height={height} style={{ position: "fixed" }} />
+                    <Alert variant="success">
+                        <h1 style={{ textAlign: "center" }}>Congratulations ! You have finished your SPORTS training !</h1>
+                    </Alert>
+                </div>}
             <div className=" vc_custom_1578545547251 wd-section-heading-wrapper text-center">
                 <div className="wd-service-heading wd-section-heading">
                     <span className="heading-subtitle">Sport PlayList</span>
@@ -81,6 +88,9 @@ const VideosPage = ({ user, videos, ratesUser, allUserProgresses }) => {
                         <span className="wd-primary-color">  Health SpotLight</span>
                     </h3>
                 </div><br /><br />
+            </div>
+            <div className="container">
+                {videos.message && <Alert variant="danger" style={{ textAlign: "center" }}><h2>You don't have Sport Videos yet, please click <Link href="/sports" style={{textDecoration:"underline"}}>here</Link> to start your taining !</h2></Alert>}
             </div>
             <Carousel onSlid={() => setDisable(false)} variant="dark">
                 {videos.length > 0 && videos.map((v, i) =>
@@ -130,12 +140,12 @@ const VideosPage = ({ user, videos, ratesUser, allUserProgresses }) => {
                         </div>
                     </Carousel.Item>)}
             </Carousel>
-            <div className="container" style={{ marginLeft: "400px", marginTop: "5%", marginBottom: "5%" }}>
+            {!videos.message && <div className="container" style={{ marginLeft: "400px", marginTop: "5%", marginBottom: "5%" }}>
                 <h1>You can give a rate to our proposition</h1>
                 <div style={{ marginLeft: "200px" }}>
                     <AddSportRating averagePerUser={storedRating} size="50" sportSubTypeTitle={user.subTypeSport && user.subTypeSport.title} userId={user._id} />
                 </div>
-            </div>
+            </div>}
         </div>
     );
 }

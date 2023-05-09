@@ -99,15 +99,9 @@
 
 }
 
-
 .sectionCenter {
   width: 80%;
   margin: 0 10%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
 
 img.wp-smiley,
@@ -1164,4 +1158,9 @@ textarea {
 .custom-card {
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }

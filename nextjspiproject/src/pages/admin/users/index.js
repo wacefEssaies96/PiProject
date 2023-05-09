@@ -1,17 +1,34 @@
 import Link from "next/link";
 import { Container, Table, Button, Form, Row } from "react-bootstrap";
+import {  BiEdit, BiTrashAlt } from 'react-icons/bi'
 import { useState } from "react";
 import { deleteData, fetchData } from "@/services/mix";
 import { verifyAccount } from "@/services/user";
 import withAuth from "@/components/Withauth";
+import DeleteModal from "@/components/layouts/DeleteModal";
 
 function Index({ users }) {
+
+  
 
   const [list, setList] = useState(users)
   const [filteredUser, setFilteredUser] = useState();
   const [showfilteredUser, setShowfilteredUser] = useState(false);
   const [typefilterUser, setTypefilterUser] = useState();
   const [search, setSearch] = useState("");
+
+  const [id, setId] = useState(null)
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState(null)
+  
+  const showDeleteModal = (id) => {
+    setId(id)
+    setDeleteMessage(`Are you sure you want to delete the user : '${users.find((x) => x._id === id).email}'?`)
+    setDisplayConfirmationModal(true)
+  }
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false)
+  }
 
   const filterListUser = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -37,8 +54,10 @@ function Index({ users }) {
     await verifyAccount(e.target.email.value, e.target.id.value);
     await refresh();
   };
+  const refresh = async () => setList(await fetchData(`${process.env.backurl}/api/users/findAll`));
 
-  const deleteOneUser = async (id) => confirmDelete(`${process.env.backurl}/api/users/${id}`,users).then(refresh)
+  const deleteOneUser = async (id) => deleteData(`${process.env.backurl}/api/users/${id}`,users)
+  .then(setDisplayConfirmationModal(false),refresh())
 
   const renderUser = (user, index) =>{
     
@@ -72,10 +91,14 @@ function Index({ users }) {
       <td key={user._id}>
         <Row>
           <div className=" col-12 col-lg-3">
-            <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/users/edit/${user._id}`}>Edit</Link>
+            <Link className="btn btn-outline-secondary me-3 ms-3" href={`/admin/users/edit/${user._id}`}>
+              <BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit>
+            </Link>
           </div>
           <div className=" col-12 col-lg-3">
-          <Button onClick={() => deleteOneUser(user._id)}  variant="outline-danger">Delete</Button>
+          <Button onClick={() => showDeleteModal(user._id)}  variant="outline-danger">
+            <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+          </Button>
           </div>
           <div className=" col-12 col-lg-3">
             {user.role == "DOCTOR" &&
@@ -90,6 +113,51 @@ function Index({ users }) {
       </td>
     </tr>
     )
+  }
+
+  
+  const [Page, setPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(5);
+  const indexOfLastpage = Page * itemPerPage;
+  const indexOfFirstpage = indexOfLastpage -itemPerPage;
+  const pageNumbers = [];
+  var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
+
+  if(showfilteredUser){
+    for (let i = 1; i <= Math.ceil(filteredUser.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = filteredUser.slice(indexOfFirstpage, indexOfLastpage)
+  }else{
+    for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
+        pageNumbers.push(i);
+    }
+    currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
+  }
+
+  const renderPageNumbers = pageNumbers.slice(Page-1,Page).map(number => {
+      return (
+          <li
+              key={number}
+              id={number}
+
+              className={Page === number ? "page-item color-picker " : "page-item"}
+              onClick={() => setPage(number)}
+          >
+            {Page === number
+            ?
+            <a className="page-number current " style={{backgroundColor : "#016837",color: "white" }} >{number}  / {pageNumbers.length}</a>
+            :
+              <a className="page-number " >{number} / {pageNumbers.length}</a>
+            }
+          </li>
+      );
+  });
+  const changepage = async (nbr) =>{
+    var newnbr = Page+nbr;
+    if(pageNumbers.includes(newnbr)){
+      setPage(newnbr)
+    }
   }
 
   return (
@@ -160,19 +228,41 @@ function Index({ users }) {
           </tr>
         </thead>
         <tbody>
-          {showfilteredUser ?
+          {currentlist && currentlist.map 
+              ((user, index)=> {
+                  return (renderUser(user, index))
+              })
+          }
+          {/* {showfilteredUser ?
               filteredUser && filteredUser.map
               ((user, index)=> {
                   return (renderUser(user, index))
               })
               :
-              list && list.map 
+              // list && list.map 
+              currentlist && currentlist.map 
               ((user, index)=> {
                   return (renderUser(user, index))
               })
-          } 
+          }  */}
         </tbody>
       </Table>
+
+      <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center ">
+		          <div className="nav-links">
+                {Page != pageNumbers[0] &&
+                  <a class="prev page-numbers "  onClick={()=>changepage(-1)}>&laquo;</a>
+                }
+                {renderPageNumbers}
+                {Page != pageNumbers[pageNumbers.length-1] &&
+                  <a className="next page-numbers" onClick={()=>changepage(1)} >&raquo;</a>
+                }
+              </div>
+          </ul>
+      </nav>
+      <DeleteModal showModal={displayConfirmationModal} confirmModal={deleteOneUser} hideModal={hideConfirmationModal} id={id} message={deleteMessage} />
+
     </Container>
   );
 }

@@ -97,6 +97,45 @@ exports.findMealByName = (req, res) => {
     });
 };
 
+exports.CreateScapedMeal = async (req, res) => {
+  
+  const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated,imgMeal } = req.body;
+
+  
+  if (!FoodItem || !FoodCategory) {
+    return res.status(400).send({ message: "Content can not be empty!" });
+  }
+
+  try {
+
+    const existingMeal = await Meal.findOne({ FoodItem });
+
+    if (existingMeal) {
+      return res.status(302).send({ message: "Meals already exist with FoodItem = " + FoodItem });
+    }
+
+    const meal = new Meal({
+      FoodCategory,
+      FoodItem,
+      serving_size_100g,
+      calories_100g,
+      serving_size_portion,
+      calories_portion,
+      serving_size_oz,
+      calories_oz,
+      validated,
+      imgMeal
+    });
+
+    await meal.save();
+
+    return res.status(200).send({ message: "Meal from Scraped data created successfully." });
+  } catch (err) {
+    return res.status(500).send({ message: "Some error occurred while creating the meal."+err });
+  }
+  
+};
+
 exports.createMeal = async (req, res) => {
   
   const { FoodItem, FoodCategory, serving_size_100g, calories_100g, serving_size_portion, calories_portion, serving_size_oz, calories_oz,validated } = req.body;

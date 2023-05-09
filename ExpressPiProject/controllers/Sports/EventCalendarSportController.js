@@ -2,7 +2,6 @@ const EventModel = require("../../models/Sports/EventCalendarSportModel")
 const { google } = require('googleapis');
 require('dotenv').config();
 const User = require("../../models/Users/user");
-const moment = require('moment-timezone');
 
 // Provide the required configuration
 const CREDENTIALS = { "type": "service_account", "project_id": "youtubevideosscraping", "private_key_id": "8ff96d3acae19e550a72c01c1156318bb3055ad3", "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNft972fdX9CQB\nwqqZytna/jxqcp6/ZUKFrZvr9vBvxmOJPx11nIHDARZpMjbvvoHQRTPWI8K5Hfv4\n+E8G3A/plDd9SZfMwqzshxVjCwBEe23+DxR00RRVpaIsXwV1a9c6oJ75OThfZ1UE\nZG+XNRSQkfNcWrnHdudeJETXrfsfqzVTAaFvXZBn7bGFtFSryVa2CA1KchQbPTgu\nqhV8CoNh+UoqbCWByAn+ZFuVoE5Ny4H3UcdqfCxYs5t74Im7myZi2HDjK/Ba6TqY\n1KEefYnDpsMvIv96JH8DsEZ7C1+irLqgciTkBK5C1/ucSbqvtl75pb6bVzyZ2M73\nMKzSTKlDAgMBAAECggEAEBsYB/x64tVbNxobRed8sKnJcWxfXc/haVnEhTd6+7+4\nUGr2c5/bGb4NlBwf6yVqxjiOSgPOgLTFaWuIwhhgVOXNfY/VinJdnEIwHm2fzT5B\nTi6/YzJ53gaX0dN2uY/EtC8flpfx/6Q5KRl4F4lM/dG6mavwsJ30n0/HZ4IW0xHz\nrPbaOzV1FaMlxa+lDTXrshOoS76a9BbCY7qDjfUwrVyokUlSTCrg91dZZokv1A43\n+F3CFNrUHZsgrJjjD+JYamC5tROt8Y06NotpyFQNxSX1xcZmtZF3oVTgc1wDkk6I\nSbIkcaLfdL6l0yl+L28kv/QuLWMLmhkLaNyIeQvwtQKBgQDnrVGiSbYHOYI/EffB\nldOQ5m9kLYImrppSREzHwCUKDdJIacB2CibepbXksIQNV5Qe93AZ/ToyWTFenz0v\nRIDtG3F1fpE+NuU3JdetCBINdQZ8BK1sHWs70pMZYBy+xvCKUNQEk4Hoetmtf/dV\nE05hxm+dmqxUpIlP28HqOzi7bQKBgQDjEeMsBj8IcQS7jMKX4KiAXCA0hMhR9zRB\neJYBuvZQG+RTRIa5r1dZvGT21qCvC37Uh4hxUJrEUwcFVF/JxJt3neqag9v1ovkV\n4E3zejs8c+tdbq5Eyrw+MWmkApy+5T/PT+uR1bDYMOZtt+ExwbgyRi3GN4E3S6AC\n/KKAbKTZbwKBgBxwhT3jyImYgKmXXg+QgdkewHvOrlRrSJxir/4xUxqp2a9z8+FJ\nm73nH64EESHGJ3OpskQudq9pjYrtB0i/Iwh4PvRKZi/58ydS6Offvr+SJwqgVF2a\nOuisD8ykpMKyjyKbi3tIVEEim4gV1lnGNfAAuQDi1NbLH+QCuQo03OD9AoGAVDw2\nggZvK7qBfvHg3mbBG50RdWosxftmr0MEou+woFc4hItPT2L0jJ2O9uL4CPfCvSTq\nQN8eCuaiHCAIyNjes6kpdtijqKQkszDauhAGGY8HKUn97Bcpbgj2n5k4fLiey1Fi\nml8jk4/Qa7NjHwo2QrA2GupMTS8I1RLTVcD4BpECgYEAzMJHYOKlDfNysg4dQnxx\n6EXOvKoIDk6HO7HY6Y+dTpSOaIpQAPCAH0cvbHoLftFIpxBD8UbGPIRu+TuoaL3Q\nIlq1rH8DGGru4rsyFlQjR4JEEoCne6a2lRXA1hMowNjQbOK03V9gqt10L/Sf1G7O\nq1qaPFToHa0/xm/+NtjJ2OE=\n-----END PRIVATE KEY-----\n", "client_email": "sport-calendar@youtubevideosscraping.iam.gserviceaccount.com", "client_id": "100874968205871947167", "auth_uri": "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token", "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs", "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sport-calendar%40youtubevideosscraping.iam.gserviceaccount.com" }
@@ -349,3 +348,65 @@ exports.getEventsUser = (req, res) => {
         .then(user => res.json(user.SportEvents))
         .catch(err => res.status(400).json('Error: ' + err));
 }
+
+
+
+
+
+
+///////////////////////////////////////NOTIFICATION////////////////////////////////////////////
+
+
+
+
+
+const moment = require('moment');
+const sgMail = require('@sendgrid/mail')
+API_KEY = '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'
+
+sgMail.setApiKey(API_KEY)
+
+const sendEmail = async (receiver, source, subject, content) => {
+    // msg object
+    const message = {
+        to: receiver,
+        from: source,
+        subject: subject,
+        html: content,
+    }
+
+    //send email
+    await sgMail.send(message)
+        .then(res => console.log({ result: res, msg: 'Email sent...' }))
+        .catch(err => console.log(err.message))
+}
+
+const checkEvents = async () => {
+    const now = moment();
+
+    const events = EventModel.find()
+        .then(async (events) => {
+            if (events) {
+                for (const event of events) {
+                    const start = moment(event.start.dateTime);
+                    if (start.diff(now, 'minutes') <= 15) {
+                        await sendEmail('haifaarouri29@gmail.com',
+                            'haifa.arouri@esprit.tn',
+                            `Reminder: Upcoming event - ${event.summary}`,
+                            `You have an upcoming event - ${event.summary} scheduled for ${start.format('LLL')}`,
+                            (error, info) => {
+                                if (error) {
+                                    console.log('Error sending email', error);
+                                } else {
+                                    console.log('Email sent: ' + info.response);
+                                }
+                            });
+                    }
+                }
+            }
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+};
+
+// call the checkEvents function every 5 minutes
+setInterval(checkEvents, 5 * 60 * 1000);

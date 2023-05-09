@@ -22,8 +22,9 @@ export default function RecipeForm(props) {
   const [operationMode, setOperationMode] = useState('Create')
   const [recipe, setRecipe] = useState({
     name : "",
+    validated : false,
     description :  "",
-    quantity  :  "",
+    quantity  :  [],
     totalCalorie :  "",
     imgRecipe  :  "",
     meals  :  "",
@@ -61,7 +62,7 @@ export default function RecipeForm(props) {
   }
   
   const addqt = async (position,qt) =>{
-    if(qt>0){
+    if(qt>=1){
       listQuantity[position]=qt;
       recipe.quantity = listQuantity;
       calculateTotCal();
@@ -83,6 +84,7 @@ export default function RecipeForm(props) {
     }else{
       listQuantity[position]=listQuantity[position]+qt;
     }
+    
     recipe.meals = listMeal;
     recipe.quantity = listQuantity;
 
@@ -212,16 +214,22 @@ export default function RecipeForm(props) {
                   <Table striped bordered hover size="sm"  className="woocommerce-product-attributes shop_attributes  txtCenter">
                     <thead>
                       <tr className="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_conditions">
-                        <th >Delete</th>
-                        <th >Food Item</th>
-                        <th >Calories 100 g/ml
-                          <br/>
-                          <span className="redBOLD">***</span>
-                          <br/>
-                          <span className="greenBOLD"> Percent</span>
-                        </th>
-                        <th>Quantity</th>
-                        <th className="woocommerce-product-attributes-item__label" >Picture</th>
+                        { listQuantity.length>0 ?
+                        <>
+                          <th >Delete</th>
+                          <th >Food Item</th>
+                          <th >Calories 100 g/ml
+                            <br/>
+                            <span className="redBOLD">***</span>
+                            <br/>
+                            <span className="greenBOLD"> Percent</span>
+                          </th>
+                          <th>Quantity</th>
+                          <th className="woocommerce-product-attributes-item__label" >Picture</th>
+                          </>
+                          :
+                           <td  className="redBOLD"> Add meals from list below </td>
+                        }
                       </tr>
                     </thead>
                     <tbody>
@@ -244,9 +252,9 @@ export default function RecipeForm(props) {
                                 <br/>
                                   <span className="redBOLD">***</span>
                                 <br/>
-                                  <span className="greenBOLD"> { ((extractValue(meal.calories_100g)*recipe.quantity[index])/totalCaloriecal*100).toFixed(2)} %</span>
+                                  <span className="greenBOLD"> { ((extractValue(meal.calories_100g)*listQuantity[index])/totalCaloriecal*100).toFixed(2)} %</span>
                               </td>
-                              <td key={recipe.quantity[index]} className="woocommerce-product-attributes-item__value">
+                              <td key={listQuantity[index]} className="woocommerce-product-attributes-item__value">
                                 <input
                                   type="number"
                                   id="quantity_6407f5d94259b"
@@ -254,15 +262,16 @@ export default function RecipeForm(props) {
                                   step="1"
                                   min="1"
                                   max="999"
-                                  value={recipe.quantity[index]}
-                                  onChange={() => addqt(index,recipe.quantity[index])}
+                                  value={listQuantity[index]}
+                                  onChange={() => addqt(index,listQuantity[index])}
                                   title="Qty"
                                   size="3" />
                                   <input 
-                                  onClick={() => addqt(index,recipe.quantity[index]-1)}
+                                  disabled={listQuantity[index]== 1}
+                                  onClick={() => addqt(index,listQuantity[index]-1)}
                                   type="button" value="-" className="minus btn btn-outline-secondary"/>
                                   <input 
-                                  onClick={() => addqt(index,recipe.quantity[index]+1)}
+                                  onClick={() => addqt(index,listQuantity[index]+1)}
                                   type="button" value="+" className="plus btn btn-outline-secondary"/>
                               </td>
                               <td className="woocommerce-product-attributes-item__value">
@@ -384,11 +393,17 @@ export default function RecipeForm(props) {
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12 col-lg-4 " >
                       <Form.Group>
+                        
+                          <div>
+                            <input type="checkbox"  name="validated" checked={recipe.validated} />
+                            <label for="validated">Publiched</label>
+                          </div>
+                        {/*
                         <Form.Label htmlFor="validated"> Publiched </Form.Label>
-                        <Form.Select required value={recipe.validated} name="validated" onChange={getValidated} >
+                         <Form.Select required value={recipe.validated} name="validated" onChange={getValidated} >
                           <option value="false">False</option>
                           <option value="true">True</option>
-                        </Form.Select>
+                        </Form.Select> */}
                       </Form.Group>
                     </div>
                     <div className=" txtCenter  centerMydiv  col-12  " >
