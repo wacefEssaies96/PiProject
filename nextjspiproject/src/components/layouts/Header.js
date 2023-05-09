@@ -277,7 +277,7 @@ function Header() {
                                        <li id="menu-item-1756" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1756"><a href="/auth/login">Login</a></li>
                                     </ul>
                                  </li> */}
-                                 <li id="menu-item-1747" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="contact-us">Contact Us</a></li>
+                                 {/* <li id="menu-item-1747" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="contact-us">Contact Us</a></li> */}
                                  {/* 
                                  {auth.user && auth.user.role == "DOCTOR" ? (
    <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">

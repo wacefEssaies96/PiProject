@@ -46,7 +46,7 @@ export default function AboutUs() {
                                                             <FcSportsMode size={65} />
                                                             <span className="number-box">02</span>
                                                         </span>
-                                                        <h5>Sprot Training</h5>
+                                                        <h5>Sport Training</h5>
                                                         <p>
                                                             Personalized recommendations: "Health SpotLight" uses advanced algorithms to provide users with personalized recommendations based on their dietary preferences and fitness goals. This ensures that users can create exercise routine accourding to there body shapes that is tailored to their unique needs.
                                                         </p>

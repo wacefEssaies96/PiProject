@@ -261,7 +261,7 @@ exports.scrapFromWired = async (req, res) => {
     const articles = [];
     const response = await axios.get(url)
     let $ = cheerio.load(response.data);
-    $('.jecVbf .SummaryListWrapper-elcoJA .summary-item--layout-placement-side-by-side-desktop-only').each((i, el) => {
+    $('.bMTfcI.bMTfcI.summary-item--has-border').each((i, el) => {
         const title = $(el).find('h3').text();
         const author = $(el).find('p').text();
         const time = $(el).find('time').text();
