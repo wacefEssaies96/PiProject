@@ -32,21 +32,8 @@ function Appointments({user,appointment}) {
     const dateString = `${monthNames[monthIndex]} ${day}, ${year}`;
     return dateString;
   }
-    // useEffect(() => {
-    //   if (appointment) {
-    //     setAppointments([appointment]);
-    //   }
-    // }, [appointment]);
-    // useEffect(() => {
-    //     if (newAppointment) {
-    //       setAppointments([...appointments, newAppointment]);
-    //       setNewAppointment(null);
-    //     }
-    //   }, [newAppointment, appointments]);
-    
-    const handleClick = () => {
-      setShowForm(true);
-    }
+   
+  
 
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this appointment?")) {
@@ -69,7 +56,6 @@ function Appointments({user,appointment}) {
 
     const indexOfLastAppointment = currentPage * appointmentsPerPage;
     const indexOfFirstAppointment = indexOfLastAppointment -appointmentsPerPage;
-    // const currentAppointments=1;
     
     const currentAppointments = Array.isArray(appointments) ? appointments.slice(indexOfFirstAppointment, indexOfLastAppointment) : [];
 
@@ -101,16 +87,6 @@ function Appointments({user,appointment}) {
             </div>
             
             <a href="/appointments/AjoutAppointments" className=" float-end"  style={{color: '#016837'}}>Add an appointment</a>
-            {/* <div className='container'>
-            <div>{user.speciality}</div>
-            <div>{user.fullname}</div>
-            <div><img style={{ height: '2rem', width: '2rem' }}
-                                          src={`${process.env.backurl}/${user.image}`}
-                                          onError={(e) => { e.target.src = `${process.env.backurl}/uploads/User/altUser.png` }}
-                                          alt="verifiy img"
-                                       /></div>
- 
-  </div> */}
 
 
             <div className="table-responsive">
@@ -122,6 +98,9 @@ function Appointments({user,appointment}) {
                             <th>Date</th>
                             <th>Hour</th>
                             <th>Duration</th>
+                            <th>State</th>
+                            <th>Appointment Link</th>
+                            <th>Patient mail</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +125,19 @@ function Appointments({user,appointment}) {
                                         </>
                                     }
                                 </td>
+                                <td>
+                                    {app.reserved 
+                                        ?
+                                        <>
+                                        <Link className="btn wd-btn-round-2" href={`/appointments/vdh?name=${app.fullname}`}>meet</Link>
+                                    
+                                        </>
+                                            :
+                                        <>Not Reserved</>
+                                    }
+                                  
+                                </td>
+                                <td> {app.user[1] && app.user[1].email }</td>
                             </tr>
                         ))}
                     </tbody>

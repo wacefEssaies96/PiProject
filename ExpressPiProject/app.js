@@ -31,8 +31,6 @@ var subcategoryRouter = require('./routes/article/subcategory');
 var ClinicRouter = require('./routes/apointments/clinicroutes');
 //routes appointments
 var appointmentRouter = require('./routes/apointments/appointmentroutes');
-//routes userapp
-var UserappointmentRouter = require('./routes/apointments/appuserroutes');
 // routes e-commerce
 const productRouter = require('./routes/e-commerce/e-commerce');
 const productController = require('./controllers/e-commerce/produit');
@@ -55,6 +53,8 @@ const sportNotificationRouter = require("./routes/Sports/sendSportNotificationRo
 const sportRatingRouter = require("./routes/Sports/RatingSportRouter")
 // sport progress routes
 const sportPprogressRouter = require("./routes/Sports/ProgressSportRouter")
+// sport meets routes
+const meetRouter = require("./routes/apointments/MeetRoutes")
 
 var app = express();
 
@@ -90,7 +90,6 @@ app.use('/api/admin/subcategories', subcategoryRouter);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/clinic', ClinicRouter);
 app.use('/api/app', appointmentRouter);
-app.use('/api/appuser', UserappointmentRouter);
 app.use('/api', resetPassword);
 app.use('/api/sportSubTypes/uploads', express.static('uploads/SportSubTypesDemVideos'))
 app.use('/api/scrapedSportSubTypesTitles', sportSubTypeTitlesScrapedRouter)
@@ -101,6 +100,7 @@ app.use('/api/eventCalendarSport', EventCalendarSportRouter)
 app.use('/api/sportsNotif', sportNotificationRouter)
 app.use('/api/sportsRating', sportRatingRouter)
 app.use('/api/sportsProgress', sportPprogressRouter)
+app.use('/api/meet', meetRouter)
 
 //connect to mongo database
 mongoose.set('strictQuery', true);

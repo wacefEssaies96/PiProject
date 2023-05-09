@@ -17,12 +17,11 @@ router.delete("/delapp/:id", appointments.delete);
 
 router.get("/getapp/:id", appointments.findAppointmentById);
 
-router.get("/resapp/:id", appointments.upreserved);
+router.get("/resapp/:idapp/:idu", appointments.upreserved);
 router.get("/fi/:id", appointments.finda);
 
 
 router.delete("/del", appointments.deleteAll);
 router.get("/getname/:id", appointments.findns);
-// router.get("/getemail/:id", appointments.gete)
-// router.get ('/send', appointments.send);
+
 module.exports= router;

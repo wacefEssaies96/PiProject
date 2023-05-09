@@ -308,14 +308,14 @@ function Header() {
    </li>
 ) :auth.user &&   auth.user.role == "ADMIN" ? (
    <li id="menu-item-1719" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1719">
-       <a href="#">Admin</a>
+       <a href="#">Health</a>
        <ul className="sub-menu">
            <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767">
-               <a href="clinic/clinicPage">Manage Clinics</a>
+               <a href="/clinic/clinicPage">Manage Clinics</a>
            </li>
-           <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
+           {/* <li id="menu-item-1766" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1766">
                <a href="#">Manage Appointments</a>
-           </li>
+           </li> */}
        </ul>
    </li>
 ): null } */}

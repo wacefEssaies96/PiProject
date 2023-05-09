@@ -16,17 +16,7 @@ function AjoutFormPage({ clinic}) {
 
 export async function getServerSideProps(ctx) {
  
-  // if (ctx.query.id) {
-  //   const res = await fetch(`${process.env.backurl}/api/clinic/findOne/${ctx.query.id}`)
-  //   const c= res.json()
-  //   console.log("message : "+ c)
 
-  //   return {
-  //     props: {
-  //       clinic: res
-  //     }
-  //   }
-  // }
   console.log(ctx.query.id)
   return {
     props: {

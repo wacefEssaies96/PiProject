@@ -7,7 +7,6 @@ const puppeteer = require('puppeteer');
 const fs=require('fs/promises');
 
 
-// create and save  a new clinic 
 
 exports.create= (req,res)=>{
     //validate a request 
@@ -15,7 +14,6 @@ exports.create= (req,res)=>{
         res.status(400).send({message: "Content cannot be empty !"});
         return; 
     }
-    //new clinic
     const clinic= new clinicdb({
         Name:req.body.Name,
         Adress:req.body.Adress,
@@ -23,7 +21,6 @@ exports.create= (req,res)=>{
         
     })
 
-    //save the user in the database
 
     clinic
     .save()

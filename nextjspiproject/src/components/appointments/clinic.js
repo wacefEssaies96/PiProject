@@ -7,6 +7,8 @@ import { Route } from 'react-router-dom';
 
 import { useRouter } from 'next/router';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 
@@ -15,7 +17,7 @@ import { useRouter } from 'next/router';
         
     const [clinics, setClinics] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [clinicsPerPage, setClinicsPerPage] = useState(5);
+    const [clinicsPerPage, setClinicsPerPage] = useState(20);
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
     const handleClick = () => {
@@ -37,7 +39,11 @@ import { useRouter } from 'next/router';
         });
     }, []);
 
+    const [isTrashOpen, setIsTrashOpen] = useState(false);
 
+    const handleTrashClick = () => {
+      setIsTrashOpen(!isTrashOpen);
+    };
     
    
     
@@ -89,16 +95,24 @@ import { useRouter } from 'next/router';
         <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
             <div className="wishlist-title ">
                 <h2>List of Clinics</h2>
-               							
+              					
             </div>
-           <a href="/clinic/AjoutForm" class=" float-end"  style={{color: '#016837'}}>Add Clinic</a>
+
+           <a href="/clinic/AjoutForm" class=" float-end"  style={{color: '#016837'}}>Add a clinic</a>
+           <br />	
             <div className="table-responsive">
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th>Clinic Name</th>
-                            <th>Address</th>
-                            <th>Phone number</th>
+                           
+                            <th className="text-center" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+     Clinic Name
+    </th>
+
+    <th className="text-center" style={{ fontSize: '18px', fontWeight: 'bold' }}>Address</th>
+    <th className="text-center" style={{ fontSize: '18px', fontWeight: 'bold' }}>Phone number</th>
+    <th className="text-center" style={{ fontSize: '18px', fontWeight: 'bold' }}>Action</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -109,19 +123,24 @@ import { useRouter } from 'next/router';
 
                                 <td key={clinic.phone_number}>{clinic.phone_number}</td>
                                 <td>
-                                 <button
-                                        className="btn border border-danger   btn-sm" 
-                                        onClick={() => handleDelete(clinic._id)}
-                                    >
-                                        Delete
-                                    </button>
+                                <div className="d-flex align-items-center">
+  <button
+    className="btn btn-danger btn-lg rounded-pill d-flex align-items-center justify-content-center px-4"
+    onClick={() => handleDelete(clinic._id)}
+  >
+    <i className={`bi bi-trash me-2${isTrashOpen ? ' open' : ''}`} onClick={handleTrashClick}></i>
+    
+  </button>
+  <Link className="btn btn-outline-secondary btn-lg rounded-pill d-flex align-items-center justify-content-center px-4" href={`/clinic/edit/${clinic._id}`} style={{backgroundColor: '#dd9933'}}>
+  <i className="bi bi-pencil-fill me-2 text-white"></i>
+  
+</Link>
+
+</div>
+
                                     
                                     </td>
-                                    <td>
                                    
-                                        <Link className="btn btn-outline-secondary me-3 ms-3" href={`/clinic/edit/${clinic._id}`}>Edit</Link>
-                                        
-                                    </td>
                             </tr>
                         ))}
                     </tbody>

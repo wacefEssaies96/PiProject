@@ -21,10 +21,7 @@ import { useRouter } from 'next/router';
         const [selectedClinic, setSelectedClinic] = useState(null);
         const [selectedAddress, setSelectedAddress] = useState(null);
 
-        // const handleShowMap = (clinic) => {
-        //     setSelectedClinic(clinic);
-        //     setSelectedAddress(clinic.Adress);
-        //   }
+     
         const handleShowMap = (address) => {
             router.push({
               pathname: '/appointments/map',
@@ -37,7 +34,7 @@ import { useRouter } from 'next/router';
     const [clinics, setClinics] = useState([]);
     const [add, setAdd] = useState("tunis");
     const [currentPage, setCurrentPage] = useState(1);
-    const [clinicsPerPage, setClinicsPerPage] = useState(5);
+    const [clinicsPerPage, setClinicsPerPage] = useState(15);
     const router = useRouter();
     const [showMap, setShowMap] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -91,6 +88,7 @@ import { useRouter } from 'next/router';
                             <th>Clinic Name</th>
                             <th>Address</th>
                             <th>Phone number</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,7 +105,7 @@ import { useRouter } from 'next/router';
                                 <td key={clinic.phone_number}>{clinic.phone_number}</td>
                                 <td>
                                 <button
-                                        className="btn border border-warning   btn-sm" 
+                                        className="btn wd-btn-round-2" 
                                         onClick={() => handleShowMap(clinic.Adress)}
                                     >
                                        show map
@@ -124,15 +122,7 @@ import { useRouter } from 'next/router';
                     </ul>
                 </nav>
             </div>
-               {/* rest of the component code */}
-               {/* {selectedClinic && (
-  <div className="modal">
-    <div className="modal-content">
-      <button className="modal-close-btn" onClick={() => setSelectedClinic(null)}>Close</button>
-      <MapPage address={selectedAddress} />
-    </div>
-  </div>
-)} */}
+              
 
         </div>
     );

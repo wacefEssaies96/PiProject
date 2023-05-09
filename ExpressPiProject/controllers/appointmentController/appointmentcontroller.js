@@ -4,8 +4,6 @@ const appointmentdb= require('../../models/appointment/appointment')
 const moment = require('moment');
 const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail')
-// API_KEY = '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'
-// sgMail.setApiKey(API_KEY)
 
 
 
@@ -31,6 +29,7 @@ exports.create = async (req, res) => {
     reserved: false,
     fullname : u.fullname,
     speciality : u.speciality,
+    phone : u.phone,
   })
   // Enregistrer le rendez-vous dans la base de données
   appointment.save()
@@ -49,30 +48,6 @@ exports.find=(req,res)=>{
         res.status(500).send({message:err.message || "Error occured while trying to retieve data"})
     })
 }
-
-// exports.update=(req,res)=>{
-//     // if(!req.body){
-//     //     return res
-//     //     .status(400)
-//     //     .send({message:"Data to update cannot be empty !"})
-//     // }
-//     const id=req.params.id;
-//     const updatedAppointment = {
-//         Date: moment(req.body.Date + " " + req.body.Hour, "DD/MM/YY HH:mm").toDate(),
-//         Hour: req.body.Hour,
-//         Duration: req.body.Duration,
-//       };
-//     appointmentdb.findByIdAndUpdate(id,updatedAppointment,{ new: true })
-//     .then(data=>{
-//         if(!data){
-//             res.status(404).send({message:`Cannot Update appointment with ${id}.May be the appointment is not found `})
-//         }else{
-//             res.send(data)
-//         }
-//     })
-//     .catch(err=>{res.status(500).send({message:"Error while updating the appointment"})})
-
-//  }
 
 
 exports.update = (req, res) => {
@@ -101,7 +76,7 @@ exports.update = (req, res) => {
       }
     })
     .catch(err => {
-      console.log(err); // Ajout d'un console.log pour afficher l'erreur dans la console du serveur
+      console.log(err); 
       res.status(500).send({
         message:
           err.message || "Une erreur s'est produite lors de la mise à jour du rendez-vous.",
@@ -158,22 +133,6 @@ exports.findAppointmentById = async (req, res) => {
       });
   };
 
-  // exports.findDoctor = async (req, res) => {
-  //   const id = req.params.id;
-  
-  //   try {
-  //     const appointment = await appointmentdb.findOne({'user':id});
-  
-  //     if (!appointment) {
-  //       return res.status(404).send({ message: "appointment not found" });
-  //     }
-  
-  //     res.send(appointment);
-  //   } catch (err) {
-  //     res.status(500).send({ message: "Internal server error" });
-  //   }
-  // };
-
 
   exports.sendMailAppointment = async (req, res) => {
     try {
@@ -225,7 +184,7 @@ exports.findAppointmentById = async (req, res) => {
     const id= req.params.id;
   
     try {
-      const appointment = await appointmentdb.find({'user': id });
+      const appointment = await appointmentdb.find({'user': id }).populate('user');
   
       if (!appointment || appointment.length === 0) {
         return res.status(404).send({ message: "appointment not found" });
@@ -237,23 +196,20 @@ exports.findAppointmentById = async (req, res) => {
     }
   };
 
-  // exports.displayappointmentslist= async(req, res) => {
-
-  // }
 
   exports.findns = async (req, res) => {
     const id = req.params.id;
   
     try {
-      const user = await User.findById(id).select({ fullname: 1, speciality: 1, _id: 0 });
+      const user = await User.findById(id).select({ fullname: 1, speciality: 1, phone: 1, _id: 0 });
   
       const appointments = await appointmentdb.find({'user': id});
   
       for (const appointment of appointments) {
         const fullName = user.fullname;
         const speciality = user.speciality;
-  
-        await appointmentdb.updateOne({ _id: appointment._id }, { $set: { fullname: fullName, speciality: speciality } });
+        const phone = user.phone;
+        await appointmentdb.updateOne({ _id: appointment._id }, { $set: { fullname: fullName, speciality: speciality, phone: phone } });
       }
   
       res.status(200).json({ message: "Les rendez-vous ont été mis à jour avec succès." });
@@ -262,33 +218,41 @@ exports.findAppointmentById = async (req, res) => {
       res.status(500).json({ message: "Une erreur est survenue lors de la mise à jour des rendez-vous." });
     }
   };
-  // exports.upreserved=async(req, res) =>{
-  //   const id=req.params.id;
-  //   try{
-  //      const appointment =await appointmentdb.findOne({'user' : id});
-  //      await appointmentdb.updateOne({ _id: appointment._id },{reserved: true})
-  //       res.send(appointment)
-  // }catch(error){
-  //   res.status(500).json({ message: "Une erreur est survenue lors de la mise à jour des rendez-vous." });
-  // }
-  //   };
+  
+ 
+
   exports.upreserved = async (req, res) => {
-    const id = req.params.id;
+    const idapp = req.params.idapp;
+    const idu = req.params.idu;
     try {
-      
-      await appointmentdb.updateOne({ _id: id }, { $set: { reserved: true} });
-      
-      res.send({ message: " appointment mise à jour ." });
+      const u = await User.findById(idu);
+
+      const app = await appointmentdb.findById(idapp);
+      if (!app) {
+        return res.status(404).send({ message: "app not found" });
+      }
+      else{
+        var list = [];
+        list.push(app.user[0])
+        list.push(u)
+        if(app.user.length == 2){
+          return res.status(404).send({ message: "You can't join" });
+        }else{
+          await appointmentdb.updateOne({ _id: idapp }, { $set: { reserved: true, user: list} });
+
+          res.send({ message: " appointment mise à jour ." });
+        }
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Une erreur est survenue lors de la mise à jour des rendez-vous." });
+      console.log(error);
+      res.status(500).send({ message: "Une erreur est survenue lors de la mise à jour des rendez-vous." });
+
     }
+    
   };
  
 
 
-// Route pour récupérer l'email de l'utilisateur à partir de son ID
 exports.gete= async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -303,37 +267,3 @@ exports.gete= async (req, res) => {
 }
 
 
-
-// exports.gete = async (req, res) => {
-//   try {
-//     const userId = mongoose.Types.ObjectId(req.params.id); // convertit la valeur en ObjectId
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send({ message: "User not found" });
-//     }
-//     res.status(200).send({ email: user.email });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({ message: "Internal server error" });
-//   }
-// }
-
-// const sgMail = require('@sendgrid/mail')
-// API_KEY = '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'
-
-// exports.send= async (res,req,email,message) => {
-//   sgMail.setApiKey(API_KEY)
-//   const msg = {
-//     to: email,
-//     from: 'haifa.arouri@esprit.tn',
-//     subject: 'Appointment Booked',
-//     html: message,
-//   };
-//   try {
-    
-
-//     await sgMail.send(msg);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }

@@ -13,7 +13,7 @@ export default function UsersForm(props) {
     email: "",
     role: "",
     phone: "",
-    dateOfBirth: "",
+    // dateOfBirth: "",
     height: "",
     weight: "",
     gender: "",
@@ -164,7 +164,7 @@ export default function UsersForm(props) {
             </Col>
           </Row>
           <Row>
-            <Col md={4}>
+            {/* <Col md={4}>
               <Form.Group>
                 <Form.Label htmlFor="dateOfBirth" className="greenBOLD"> Date of Birth </Form.Label>
                 { ( operationMode=="Modify User" ||  operationMode=="Profile User" )
@@ -178,7 +178,7 @@ export default function UsersForm(props) {
                 </Form.Control.Feedback>
               </Form.Group>
 
-            </Col>
+            </Col> */}
             <Col md={4}>
               <Form.Group>
                 <Form.Label htmlFor="address" className="greenBOLD"> Address </Form.Label>

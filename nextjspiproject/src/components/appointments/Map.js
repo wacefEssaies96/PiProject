@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import useSWR from "swr";
 import { withSSR } from "next-ssr";
 import dynamic  from "next/dynamic";
-// import * as parkData from "./data/datamap.json"
 
 function Map({ address}) {
     const [position, setPosition] = useState([0,0]);
@@ -18,20 +17,7 @@ function Map({ address}) {
         }
       });
   }, [address]);
-// useEffect(() => {
-//     // Use Photon API to get the coordinates of the address
-//     fetch(`https://photon.komoot.de/api/?q=${address}&format=json`)
-//       .then((response) => response.json())
-//       .then((data) => {
-//         if (data.features && data.features.length > 0) {
-//           // Set the position to the coordinates returned by the API
-//           setPosition([
-//             data.features[0].geometry.coordinates[1],
-//             data.features[0].geometry.coordinates[0],
-//           ]);
-//         }
-//       });
-//   }, [address]);
+
   
 
   
