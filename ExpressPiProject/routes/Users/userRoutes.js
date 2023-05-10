@@ -6,6 +6,8 @@ const upload = multer({ dest: 'uploads/' })
 
 // Retrieve all Users
 router.get("/findAll", user.findAllUsers);
+// Retrieve all Doctors
+router.get("/findAllDoctors", user.findAllDoctors);
 // Retrieve a single User with email
 router.get("/email/:email", user.findUserByEmail);
 // Retrieve a single User with id

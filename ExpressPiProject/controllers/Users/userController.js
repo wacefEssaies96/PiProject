@@ -11,6 +11,21 @@ exports.findAllUsers = async (req, res) => {
     });
   }
 };
+exports.findAllDoctors = async (req, res) => {
+  
+  User.find({role : "DOCTOR"})
+    .then(data => {
+      if (data[0])
+        res.send(data);
+      else
+        res.status(404).send({ message: "Not found DOCTOR "  });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving DOCTORS  ; err "+err});
+    });
+};
 
 // Create and Save a new user
 exports.createUser = async (req, res) => {

@@ -27,7 +27,7 @@ export const submitRecipe = async (data, operationMode) => {
     //     console.log("imgRecipe"+JSON.stringify(data.target))
     
     else
-        formDataRecipe.append('imgRecipe', data.target.pathImg.value);
+        formDataRecipe.append('imgRecipe', data.target.pathImg.value.replace(/^http:\/\/localhost:3030\//, ""));
         
     //     console.log("formDataRecipe "+JSON.stringify(formDataRecipe))
 

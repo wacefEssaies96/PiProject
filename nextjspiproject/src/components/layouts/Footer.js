@@ -4,33 +4,33 @@ import { Cookies } from 'react-cookie'
 import { useEffect, useState } from "react"
 
 function Footer() {
-  
+
   const cookies = new Cookies()
   const router = useRouter();
-  
+
   const [auth, setAuth] = useState({
     token: null,
     user: null,
- })
- 
- const logout = () => {
-  document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
-  setAuth({
-     token: null,
-     user: null,
   })
-  window.location = "/"
-}
-  
+
+  const logout = () => {
+    document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setImageSrc(`${process.env.backurl}/uploads/User/altUser.png`)
+    setAuth({
+      token: null,
+      user: null,
+    })
+    window.location = "/"
+  }
+
   useEffect(() => {
     setAuth({
-       token: cookies.get('token'),
-       user: cookies.get('user')
+      token: cookies.get('token'),
+      user: cookies.get('user')
     })
 
- }, [])
+  }, [])
   return (
     <>
       <footer id="footer">
@@ -93,25 +93,25 @@ function Footer() {
             <div className="col-lg-4 footer_widget">
               <div className="widget_inner">
                 <div id="nav_menu-1" className="widget widget_nav_menu"><h4 className="widget-title">Useful Links</h4><div className="menu-footer-menu-1-container"><ul id="menu-footer-menu-1" className="menu">
-                 
+
                   <li id="menu-item-1773" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1773"><a href="/articles">Articles</a></li>
- 
+
                   <li id="menu-item-1767" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1767">
-                          <a href="/clinic/ClinicDoctor">Our Clinics</a>
-                    </li>
+                    <a href="/clinic/ClinicDoctor">Our Clinics</a>
+                  </li>
                   <li id="menu-item-1753" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1753">
-                      <a onClick={() => { router.push("/meals") }} >Our Meals</a>
+                    <a onClick={() => { router.push("/meals") }} >Our Meals</a>
                   </li>
                   <li id="menu-item-1768" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1768">
-                      <a onClick={() => { router.push("/recipes") }} >Our Recipies </a>
+                    <a onClick={() => { router.push("/recipes") }} >Our Recipies </a>
                   </li>
-                                          
+
                   <li id="menu-item-1718" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-1718">
                     <a href="#" onClick={() => { router.push('/e-commerce'); }}>Shop</a>
                   </li>
                   <li id="menu-item-1734" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1734">
                     <a href="#" onClick={() => { router.push('/sport-types'); }}>Our Sports</a></li>
-                    
+
                   {/* <li id="menu-item-1774" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1774"><a href="#">Our Team</a></li>
                   <li id="menu-item-1734" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1734"><a href="#">Our Products</a></li> */}
                 </ul>
@@ -120,27 +120,27 @@ function Footer() {
             <div className="col-lg-4 footer_widget">
               <div className="widget_inner">
                 <div id="nav_menu-2" className="widget widget_nav_menu"><h4 className="widget-title">Other Pages</h4><div className="menu-footer-menu-2-container">
-                    <ul id="menu-footer-menu-2" className="menu">
-                  {/* <li id="menu-item-1763" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1763"><a href="#">Contact Us</a></li>
-                  <li id="menu-item-1764" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1764"><a href="#">About us</a></li> */}
-                  
-                  {!auth.token && !auth.user
+                  <ul id="menu-footer-menu-2" className="menu">
+                    <li id="menu-item-1746" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-1746"><a href="/about-us">About Us</a></li>
+
+
+                    {!auth.token && !auth.user
                       ?
                       <>
-                          <li><a href={"/user/doctor-or-user"}>Register</a></li>
-                          <li><a href={"/auth/login"}>Login</a></li>
+                        <li><a href={"/user/doctor-or-user"}>Register</a></li>
+                        <li><a href={"/auth/login"}>Login</a></li>
                       </>
                       :
                       <>
-                          {auth.token && auth.user && auth.user.role == 'DOCTOR'
-                            ? <li><a href="#" onClick={() => { router.push('/user/doctor') }}> Profile</a></li>
-                            : <li><a href="#" onClick={() => { router.push('/user/edit-profile') }}> Profile</a></li>
-                          }
+                        {auth.token && auth.user && auth.user.role == 'DOCTOR'
+                          ? <li><a href="#" onClick={() => { router.push('/user/doctor') }}> Profile</a></li>
+                          : <li><a href="#" onClick={() => { router.push('/user/edit-profile') }}> Profile</a></li>
+                        }
 
-                          <li><a href="#" onClick={logout}> Logout</a></li>
+                        <li><a href="#" onClick={logout}> Logout</a></li>
                       </>
                     }
-                </ul></div></div>          </div>
+                  </ul></div></div>          </div>
             </div>
           </div >
         </div >

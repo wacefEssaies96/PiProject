@@ -87,7 +87,7 @@ export const submitMeal = async (data, operationMode) => {
     if (data.target.imgMeal.files[0] !== undefined)
         formDataMeal.append('imgMeal', data.target.imgMeal.files[0]);
     else
-        formDataMeal.append('imgMeal', data.target.pathImg.value);
+        formDataMeal.append('imgMeal', data.target.pathImg.value.replace(/^http:\/\/localhost:3030\//, ""));
         
         
         for (const [name, value] of formDataMeal.entries()) {

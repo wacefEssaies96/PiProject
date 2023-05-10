@@ -35,3 +35,9 @@ export const errorAlert = (message) => {
         'Error !', message, 'error'
     )
 }
+
+export const infoAlert = (message) => {
+    Swal.fire(
+        'Info !', message, 'info'
+    )
+}

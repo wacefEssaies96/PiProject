@@ -270,7 +270,7 @@ exports.updateMeal = async (req, res) => {
 
     var rateList =[];
 
-    for (let i = 0; i < existingMeal.rate; i++) {
+    for (let i = 0; i < existingMeal.rate.length; i++) {
       rateList.push(existingMeal.rate[i]);
     }
 

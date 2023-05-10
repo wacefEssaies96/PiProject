@@ -1,237 +1,275 @@
 import { Container, Table, Button, Row, Col } from "react-bootstrap";
 import { useState } from "react";
-import { errorAlert } from "@/services/alerts";
+import { infoAlert, errorAlert } from "@/services/alerts";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 
 
 
-export default function Meal({ cu,mealsdb }) {
+export default function Meal({ cu, mealsdb }) {
+    const router = useRouter();
 
-  const [list, setList] = useState(mealsdb)
-  const [filtered, setFiltered] = useState();
-  const [showfiltered, setShowfiltered] = useState(false);
-  const [typefilter, setTypefilter] = useState();
-  const [search, setSearch] = useState("");
+    const [list, setList] = useState(mealsdb)
+    const [filtered, setFiltered] = useState();
+    const [showfiltered, setShowfiltered] = useState(false);
+    const [typefilter, setTypefilter] = useState();
+    const [search, setSearch] = useState("");
+    const [newRateValue, setNewRateValue] = useState(3);
 
-  const filterList = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearch(searchQuery)
-    let filterColumn ="FoodCategory";
-    if(typefilter!=undefined){
-      filterColumn =typefilter;
+    const changenewRateValue = async (event) => {
+        setNewRateValue(event.target.value)
     }
-    const filteredList = list.filter((item) =>
-        item[filterColumn] && item[filterColumn].toString().toLowerCase().includes(searchQuery)
-    );
-    if(searchQuery!=""){
-      setFiltered(filteredList);
-      setShowfiltered(true)
-    }else{
-      setShowfiltered(false)
-    }
-  }
-  const RateMeal =(mealId) =>{
-    if(cu){
-        var newRate={"userRate": cu._id,"rate":4}
 
-        axios.put(`${process.env.backurl}/api/meal/Update/${mealId}`, {"newRate": newRate})
-        .then((dataRate) => { if (dataRate.data) {
-            // success(dataRate.data.message);
-            // window.location ="/meals"
-            window.location.reload()
-             success("Yor rate is added ");
-            } })
-        .catch((errorRate) => { if (errorRate.response) { 
-            // errorAlert(errorRate.response.data.message)
-            errorAlert("Some Problem to rate Meals")
-         } })
-        console.log("newRate"+JSON.stringify(newRate)+"mealId"+mealId)
+    const filterList = (event) => {
+        const searchQuery = event.target.value.toLowerCase();
+        setSearch(searchQuery)
+        let filterColumn = "FoodCategory";
+        if (typefilter != undefined) {
+            filterColumn = typefilter;
+        }
+        const filteredList = list.filter((item) =>
+            item[filterColumn] && item[filterColumn].toString().toLowerCase().includes(searchQuery)
+        );
+        if (searchQuery != "") {
+            setFiltered(filteredList);
+            setShowfiltered(true)
+        } else {
+            setShowfiltered(false)
+        }
     }
-    else{
-        errorAlert(" LOGIN BEFORE RATING !! ")
+    const RateMeal = (mealId) => {
+        if (cu) {
+            var newRate = { "userRate": cu._id, "rate": newRateValue }
+
+            axios.put(`${process.env.backurl}/api/meal/Update/${mealId}`, { "newRate": newRate })
+                .then((dataRate) => {
+                    if (dataRate.data) {
+                        // success(dataRate.data.message);
+
+                        // router.replace(router.asPath);
+                        window.location = "/meals"
+                        // window.location.reload()
+                        success("Yor rate is added ");
+                    }
+                })
+                .catch((errorRate) => {
+                    if (errorRate.response) {
+                        // errorAlert(errorRate.response.data.message)
+                        errorAlert("Some Problem to rate Meals")
+                    }
+                })
+            // console.log("newRate" + JSON.stringify(newRate) + "mealId" + mealId)
+
+        }
+        else {
+            infoAlert(" Login is required  !! ")
+        }
     }
-  }
-  const Somme = (MealRate)  => {
-    var somme = 0;
-    for (let i = 0; i < MealRate.length; i++) {
-        somme += MealRate[i].rate;
-      }
-    return somme;
-  }
-  const renderMeal = (meal, index) =>{
-    
-    return (
-        <div key={meal._id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12 ">
-            
-            <h6 key={meal.FoodCategory} className="navy-txt txtCenter"><a
-                                href="#">{meal.FoodCategory}</a>
-                    </h6>
-            <div key={index} className="product-item">
-                <div className="img">
-                    {/* <a href="#"> */}
+    const MyRate = (MealRate) => {
+        var myrate = 0;
+        if(cu){
+            for (let i = 0; i < MealRate.length; i++) {
+                if(MealRate[i].userRate == cu._id){
+                    myrate =MealRate[i].rate;
+                }
+            }
+        }
+        return myrate;
+    }
+    const Somme = (MealRate) => {
+        var somme = 0;
+        for (let i = 0; i < MealRate.length; i++) {
+            somme += MealRate[i].rate;
+        }
+        if (somme == 0)
+            return somme;
+        else
+            return somme / MealRate.length;
+    }
+    const renderMeal = (meal, index) => {
+
+        return (
+            <div key={meal._id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12 ">
+
+                <h6 key={meal.FoodCategory} className="navy-txt txtCenter"><a
+                    href="#">{meal.FoodCategory}</a>
+                </h6>
+                <div key={index} className="product-item">
+                    <div className="img">
+                        {/* <a href="#"> */}
                         <img
-                         src={ 
-                            meal.imgMeal   
-                            ?`${process.env.backurl}${meal.imgMeal}`
-                            :
-                            `${process.env.backurl}/uploads/Meal/altMeal.jpg` 
-                       } 
-                                alt="image meal"/>
-                                {/* </a> */}
-                    {/* <span>
+                            src={
+                                meal.imgMeal
+                                    ? `${process.env.backurl}${meal.imgMeal}`
+                                    :
+                                    `${process.env.backurl}/uploads/Meal/altMeal.jpg`
+                            }
+                            alt="image meal" />
+                        {/* </a> */}
+                        {/* <span>
                         <a href="#" 
                     className="button button product_type_simple add_to_cart_button ajax_add_to_cart product_type_simple"
                     ><i className="sl icon-basket"></i></a></span> */}
-                </div>
-                <div className="product-info">
-                    <h6 key={meal.FoodItem} className="navy-txt"><a
-                                href="#">{meal.FoodItem}</a>
-                    </h6>
-                    <p key={meal.calories_100g}>{meal.calories_100g}</p>  
+                    </div>
+                    <div className="product-info">
+                        <h6 key={meal.FoodItem} className="navy-txt"><a
+                            href="#">{meal.FoodItem}</a>
+                        </h6>
+                        <p key={meal.calories_100g}>{meal.calories_100g}</p>
 
-                    <div className="wd-shop-details-title-wrapper">
-                        <div className="wd-shop-product-review-star">
-                            <div className="rating-star">
-                                    <div className="star-rating" onClick={() => RateMeal(meal._id) }  >
-                                        <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
+                        <div className="wd-shop-details-title-wrapper">
+                            <div className="wd-shop-product-review-star">
+                                My Rate
+                                <div className="rating-star">
+                                     
+                                    <div className="star-rating" onClick={() => RateMeal(meal._id)}  >
+                                        <span style={{ width: `${(MyRate(meal.rate) / 5) * 100}%` }}></span>
                                     </div>
-                                {/* <div className="rating-count">
+                                    {/* <div className="rating-count">
                                     <strong className="rating">{Somme(meal.rate)}</strong>
                                 </div>                                                                                                             */}
-                                {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                                    {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="wd-shop-details-title-wrapper">
-                        <div className="wd-shop-product-review-star">
-                            <div className="rating-star">
+                        <hr/>
+                        <div className="wd-shop-details-title-wrapper">
+                            <div className="wd-shop-product-review-star">
+                                Average Rates
+                                <div className="rating-star">
                                     <div className="star-rating " >
-                                        <span style={{width:`${(Somme(meal.rate)/5)*100}%`}}></span>
+                                        <span style={{ width: `${(Somme(meal.rate) / 5) * 100}%` }}></span>
                                     </div>
-                                {/* <div className="rating-count">
+                                    {/* <div className="rating-count">
                                     <strong className="rating">{(Somme(meal.rate)/5)}</strong>
                                 </div>                                                                                                             */}
-                                {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                                    {/* <span className="woocommerce-review-link" rel="nofollow">(<span className="count">2</span> reviews)</span> */}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    </div>
-    )
-  }
-
-  
-  const [Page, setPage] = useState(1);
-  const [itemPerPage, setItemPerPage] = useState(12);
-  const indexOfLastpage = Page * itemPerPage;
-  const indexOfFirstpage = indexOfLastpage -itemPerPage;
-  const pageNumbers = [];
-  var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
-
-  if(showfiltered){
-    for (let i = 1; i <= Math.ceil(filtered.length / itemPerPage); i++) {
-        pageNumbers.push(i);
+        )
     }
-    currentlist = filtered.slice(indexOfFirstpage, indexOfLastpage)
-  }else{
-    for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
-        pageNumbers.push(i);
+
+
+    const [Page, setPage] = useState(1);
+    const [itemPerPage, setItemPerPage] = useState(12);
+    const indexOfLastpage = Page * itemPerPage;
+    const indexOfFirstpage = indexOfLastpage - itemPerPage;
+    const pageNumbers = [];
+    var currentlist = Array.isArray(list) ? list.slice(indexOfFirstpage, indexOfLastpage) : [];
+
+    if (showfiltered) {
+        for (let i = 1; i <= Math.ceil(filtered.length / itemPerPage); i++) {
+            pageNumbers.push(i);
+        }
+        currentlist = filtered.slice(indexOfFirstpage, indexOfLastpage)
+    } else {
+        for (let i = 1; i <= Math.ceil(list.length / itemPerPage); i++) {
+            pageNumbers.push(i);
+        }
+        currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
     }
-    currentlist = list.slice(indexOfFirstpage, indexOfLastpage)
-  }
 
-  const renderPageNumbers = pageNumbers.slice(Page-1,Page).map(number => {
-      return (
-          <li
-              key={number}
-              id={number}
+    const renderPageNumbers = pageNumbers.slice(Page - 1, Page).map(number => {
+        return (
+            <li
+                key={number}
+                id={number}
 
-              className={Page === number ? "page-item color-picker " : "page-item"}
-              onClick={() => setPage(number)}
-          >
-            {Page === number
-            ?
-            <a className="page-number current " style={{backgroundColor : "#016837",color: "white" }} >{number}  / {pageNumbers.length}</a>
-            :
-              <a className="page-number " >{number} / {pageNumbers.length}</a>
-            }
-          </li>
-      );
-  });
-  const changepage = async (nbr) =>{
-    var newnbr = Page+nbr;
-    if(pageNumbers.includes(newnbr)){
-      setPage(newnbr)
+                className={Page === number ? "page-item color-picker " : "page-item"}
+                onClick={() => setPage(number)}
+            >
+                {Page === number
+                    ?
+                    <a className="page-number current " style={{ backgroundColor: "#016837", color: "white" }} >{number}  / {pageNumbers.length}</a>
+                    :
+                    <a className="page-number " >{number} / {pageNumbers.length}</a>
+                }
+            </li>
+        );
+    });
+    const changepage = async (nbr) => {
+        var newnbr = Page + nbr;
+        if (pageNumbers.includes(newnbr)) {
+            setPage(newnbr)
+        }
     }
-  }
 
-  return (
-    <Container className="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab">
-      
-    <div className="vc_row wpb_row vc_row-fluid vc_custom_1641487967546">
-        <div className="wpb_column vc_column_container vc_col-sm-12">
-            <div className="vc_column-inner">
-                <div className="wpb_wrapper">      
-                    <div className=" wd-section-heading-wrapper text-center">
-                        <div className="wd-service-heading wd-section-heading">
-                            <span className="heading-subtitle">Featured Meals</span>
-                                <h3 className="wow fadeIn">Our Latest & <span className="wd-primary-color">Featured Meals</span></h3>
-                            <p></p>
-                        </div>
-                    </div>
-                    
-                    <div className="container">
-                    <div className="row">
+    return (
+        <Container className="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab">
 
-                        <div className="sidebar">
-                            <div  className="widget widget_search"><h4 className="widget-title txtCenter"> Filter List </h4>
-
-                            <Row >
-                            <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
-                                Search type :
-                                <br/>
-                            <select 
-                                className="greenBtn"   
-                                onChange={(event) =>{
-                                    setTypefilter(event.target.value);
-                                    setSearch("")
-                                    setShowfiltered(false)
-                                }
-                                }
-                                >
-                                <option value="FoodCategory"> Category </option>
-                                <option value="FoodItem"> Food </option>
-                                <option value="calories_100g"> Calorie 100 g/ml </option>
-                                </select>
-                            </div>
-                            
-                            
-                            <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
-                                Search value :
-                                <br/>
-                                <input 
-                                className="greenBtn"   
-                                onChange={filterList} placeholder="search" value={search} type="text"/>
+            <div className="vc_row wpb_row vc_row-fluid vc_custom_1641487967546">
+                <div className="wpb_column vc_column_container vc_col-sm-12">
+                    <div className="vc_column-inner">
+                        <div className="wpb_wrapper">
+                            <div className=" wd-section-heading-wrapper text-center">
+                                <div className="wd-service-heading wd-section-heading">
+                                    <span className="heading-subtitle">Featured Meals</span>
+                                    <h3 className="wow fadeIn">Our Latest & <span className="wd-primary-color">Featured Meals</span></h3>
+                                    <p></p>
+                                </div>
                             </div>
 
-                            </Row>
+                            <div className="container">
+                                <div className="row">
 
+                                    <div className="sidebar">
+                                        <div className="widget widget_search"><h4 className="widget-title txtCenter"> Filter List </h4>
+
+                                            <Row >
+                                                <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
+                                                    Search type :
+                                                    <br />
+                                                    <select
+                                                        className="greenBtn"
+                                                        onChange={(event) => {
+                                                            setTypefilter(event.target.value);
+                                                            setSearch("")
+                                                            setShowfiltered(false)
+                                                        }
+                                                        }
+                                                    >
+                                                        <option value="FoodCategory"> Category </option>
+                                                        <option value="FoodItem"> Food </option>
+                                                        <option value="calories_100g"> Calorie 100 g/ml </option>
+                                                    </select>
+                                                </div>
+
+
+                                                <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
+                                                    Search value :
+                                                    <br />
+                                                    <input
+                                                        className="greenBtn"
+                                                        onChange={filterList} placeholder="search" value={search} type="text" />
+                                                </div>
+
+                                            </Row>
+
+                                        </div>
+                                        <div className="widget widget_search"><h4 className="widget-title txtCenter"> Rate Value  </h4>
+                                            <div className=" txtCenter  centerMydiv  col-12 col-lg-6 " >
+
+                                                <input type="number" step={0.5} min="1" max="5" defaultValue={newRateValue} onChange={changenewRateValue} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-                    </div>
-                    
-                    <div className="wd-feature-products ">
-                        <div className="row">
-                            {currentlist && currentlist.map 
-                                ((meal, index)=> {
-                                    return (renderMeal(meal, index))
-                                })
-                            }
-                            {/* {showfiltered ?
+                            <div className="wd-feature-products ">
+                                <div className="row">
+                                    {currentlist && currentlist.map
+                                        ((meal, index) => {
+                                            return (renderMeal(meal, index))
+                                        })
+                                    }
+                                    {/* {showfiltered ?
                                 filtered && 
                                 <>
                                 {filtered.map
@@ -246,27 +284,27 @@ export default function Meal({ cu,mealsdb }) {
                                     return (renderMeal(meal, index))
                                 })
                             }  */}
+                                </div>
+                            </div>
+
+                            <nav aria-label="Page navigation example">
+                                <ul className="pagination justify-content-center ">
+                                    <div className="nav-links">
+                                        {Page != pageNumbers[0] &&
+                                            <a className="prev page-numbers " onClick={() => changepage(-1)}>&laquo;</a>
+                                        }
+                                        {renderPageNumbers}
+                                        {Page != pageNumbers[pageNumbers.length - 1] &&
+                                            <a className="next page-numbers" onClick={() => changepage(1)} >&raquo;</a>
+                                        }
+                                    </div>
+                                </ul>
+                            </nav>
+
                         </div>
                     </div>
-
-                    <nav aria-label="Page navigation example">
-                        <ul className="pagination justify-content-center ">
-                            <div className="nav-links">
-                            {Page != pageNumbers[0] &&
-                                <a className="prev page-numbers "  onClick={()=>changepage(-1)}>&laquo;</a>
-                            }
-                            {renderPageNumbers}
-                            {Page != pageNumbers[pageNumbers.length-1] &&
-                                <a className="next page-numbers" onClick={()=>changepage(1)} >&raquo;</a>
-                            }
-                            </div>
-                        </ul>
-                    </nav>
-
                 </div>
             </div>
-        </div>
-    </div>
-    </Container>
-  )
+        </Container>
+    )
 }

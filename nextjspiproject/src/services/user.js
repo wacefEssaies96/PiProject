@@ -28,7 +28,7 @@ export const submitUser = async (data, operationMode) => {
     if (data.target.image.files[0] !== undefined)
         formData.append('image', data.target.image.files[0]);
     else
-        formData.append('image', data.target.pathImg.value);
+        formData.append('image', data.target.pathImg.value.replace(/^http:\/\/localhost:3030\//, ""));
     
 
     if(operationMode === 'Create User' ){
